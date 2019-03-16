@@ -1,0 +1,880 @@
+@import './animate.scss';
+
+@mixin transition($args...) {
+	-webkit-transition: $args;
+	-moz-transition: $args;
+	-ms-transition: $args;
+	-o-transition: $args;
+	transition: $args;
+}
+
+// Override bulma styling
+.navbar {
+	border-radius: 0px;
+	max-height: 60px !important;
+}
+// Bulma's responsive navbar behaviour is a f#!+g joke
+@media screen and (max-width: 1087px) {
+	.navbar-brand .navbar-name:not(:hover), .navbar-item:not(:hover) {
+		color: #ecf0f1 !important;
+	}
+	.navbar-brand {
+		max-width: 100px;
+		float: left;
+	}
+
+	.navbar .navbar-menu {
+		background-color: #34495e;
+		border-radius: 0;
+		float: right;
+		padding: 0;
+		overflow: visible !important; /* Bulma makes it "touch" when using is-fixed-top, clever */
+		min-width: 301px;
+	}
+
+	.navbar-end {
+		width: 100%;
+		max-height: 64px;
+
+		.navbar-item {
+			line-height: 2;
+			display: inline-block;
+
+			.nav-add-entry {
+				position: relative;
+				top: -4px;
+				.control {
+					padding: .5rem .75rem;
+				}
+			}
+		}
+	}
+}
+
+.switch[type="checkbox"] + label {
+	padding-top: 0px;
+}
+
+.card-sm {
+	max-width: 300px;
+	min-width: 250px;
+	width: 100%;
+}
+
+.columns {
+	display: flex;  /* bulma removes this on < 768px width */
+	flex-flow: row wrap;
+	justify-content: space-evenly;
+}
+.content {
+
+	h1 { 
+		padding: 10px 6px;
+	}
+
+	&:not(:first-child) {
+		h1 { 
+			padding-top: 30px;
+		}
+	}
+}
+
+.card {
+	margin: 10px;
+}
+
+.notification {
+	padding: 15px;
+}
+
+.modal .modal-card-title {
+	margin-bottom: 0px !important; 
+}
+
+// bulma has no text-align helper, pulling pulls entirely out of parent container
+.is-text-right {
+	text-align: right;
+}
+
+// Global styling
+html, body {
+	font-size: 1em;
+	height: 100%;
+	background-color: #f0f0f0;
+}
+
+body {
+	font-family: Roboto, "Open Sans", Arial, sans-serif;
+}
+
+input:-moz-read-only { cursor: not-allowed; }
+input:read-only { cursor: not-allowed; }
+
+.hidden.hidden.hidden.hidden {
+	display: none !important;  // some bulma style overwrites .hidden due to specifity
+}
+
+#modal-remove-entry {
+	.modal-card-body {
+		text-align: center;
+
+		.entry-ident1 {
+			font-size: 150%;
+			margin-bottom: 10px;
+		}
+
+		.entry-ident2 {
+			font-style: italic;
+			font-size: 130%;
+			margin-bottom: 10px;
+		}
+	}
+}
+
+// Navbar
+.navbar-name {
+	font-size: 120%;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+#user-dropdown-menu {
+	max-width: 120px;
+
+	.dropdown-content {
+		padding: 0px !important;
+	}
+
+	.dropdown-item {
+		line-height: 2;
+
+		a {
+			display: block;
+		}
+	
+		&:hover {
+			&:first-child {
+				border-top-left-radius: .4em;  /* bulma radius */
+				border-top-right-radius: .4em;
+			}
+			&:last-child {
+				border-bottom-left-radius: .4em;
+				border-bottom-right-radius: .4em;
+			}
+			background-color: #f2f2f2;
+		}
+	}
+}
+
+// options
+.types-container .field {
+	margin-bottom: 0px;
+}
+
+.types-container .field .control {
+	margin-bottom: 2px;
+}
+
+.types-container .buttons {
+	margin-top: 20px;
+}
+
+.types-buttons {
+	margin-top: 10px;
+}
+
+// auth/login
+.login-form-container, .register-form-container, .reset-form-container {
+	width: 100%;
+	max-width: 500px;
+	margin: auto;
+}
+
+/* INLINE BLADE SVG STYLES */
+.svg-icon {
+	padding-right: 6px;
+
+	fill: currentColor;
+	display: inline-block;
+	font-size: inherit;
+	height: 1.2em;
+	overflow: visible;
+	vertical-align: -.2em;
+
+	&.icon-xs {
+		font-size: 70%;
+	}
+
+	&.icon-sm {
+		font-size: 80%;
+	}
+
+	&.icon-md {
+		font-size: 120%;
+	}
+
+	&.icon-lg {
+		font-size: 150%;
+	}
+}
+
+.svg-info {
+    color: blue;
+}
+
+.svg-warning {
+    color: orange;
+}
+.svg-danger {
+    color: #F75136;
+}
+.svg-crucial {
+    color: red;
+}
+
+.svg-dark {
+	color: black;
+}
+
+
+.notifications {
+	position: fixed;
+	top: 64px;
+	margin: 10px;
+	padding: 6px 10px;
+	right: 0px;
+	z-index: 9999;
+
+	.notification-item {
+		width: 333px;
+		max-width: 333px;
+
+		&.is-warning {
+			color: black;
+		}
+
+		.n-subtitle {
+			font-size: 120%;
+			font-weight: bold;
+			margin-bottom: 6px;
+		}
+
+		.n-text {
+			padding-left: 6px;
+		}
+	}
+}
+
+// release list style
+tr.is-released {
+	td {
+		background-color: rgb(242, 222, 222);
+	}
+
+	&:hover td {
+		background-color: rgb(233, 210, 210);
+	}
+}
+
+tr.is-soon {
+	td {
+		background-color: rgb(223, 240, 216);
+	}
+
+	&:hover td {
+		background-color: rgb(210, 236, 200);
+	}
+}
+
+tr.is-immediate {
+	td {
+		background-color:rgb(252, 248, 227);
+	}
+
+	&:hover td {
+		background-color: rgb(241, 236, 206);
+	}
+}
+
+.v-is-hidden {
+	color: #008000;
+
+	&:hover {
+		//color: #005700;
+		color: #008000;  // bulma uses a default hover effect on a tags brightening up the tag content - here svg
+	}
+}
+.v-is-private {
+	color: #ffa500;
+
+	&:hover {
+		//color: #c47f00;
+		color: #ffa500;
+	}
+}
+.v-is-public {
+	color: #d44141;
+
+	&:hover {
+		//color: #9e3434;
+		color: #d44141;
+	}
+}
+
+
+
+
+::selection {
+  color: #fff;
+  background: #2a2b39;
+}
+
+::-moz-selection {
+  color: #fff;
+  background: #2a2b39;
+}
+
+.main-container {
+	min-height: 100%;
+	padding-top: 20px;
+	position: relative;
+
+	.main-content {
+		padding-bottom: 70px;
+	}
+
+	footer.footer {
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		left: 0;
+		width: 100%;
+		height: 40px;
+		background-color: #34495e;
+		padding: 6px;
+		text-align: center;
+		
+		a {
+			color: white;
+		}
+
+		.container {
+			display: -ms-grid;
+			display: grid;
+			-ms-grid-columns: auto auto;
+			grid-template-columns: auto auto;
+		}
+	}
+}
+body.is-profile {
+	footer.footer {
+		-webkit-animation-name: fadeInUp;
+		animation-name: fadeInUp;
+	}
+}
+
+p {
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+}
+
+a {
+  color: #2a2b39;
+  text-decoration: none;
+  @include transition(all .3s ease-in-out);
+}
+a:hover {
+  color: #6acd79;
+}
+
+.card-item {
+	height: 200px;
+	width: 400px;
+	overflow: hidden;
+	box-shadow: 0px 0px 22px -10px black;
+	// Keep, or the front is total width, with a max width set breaking the css effect entirely
+	-moz-transform: translate(0%, 0%);
+	-ms-transform: translate(0%, 0%);
+	-webkit-transform: translate(0%, 0%);
+	transform: translate(0%, 0%);
+	float: left;
+	margin: 20px;
+	cursor: default;
+	@include transition(all .3s ease-in-out);
+  
+	&:hover {
+		box-shadow: 0px 0px 80px -10px #6d6c6c;
+	}
+
+	& .front:hover {
+		background-color: rgba(232, 244, 255, 0.596);
+	}
+
+	&.is-soon .front {
+		background-color: #c9e9bb;
+
+		&:hover {
+			background-color: #d0f0c2;
+		}
+	}
+	&.is-immediate .front {
+		background-color: #fdf7d5;
+
+		&:hover {
+			background-color: #fdf8db;
+		}
+	}
+	&.is-released .front {
+		background-color: #ebc5c5;
+
+		&:hover {
+			background-color: #f3cccc;
+		}
+	}
+
+	.action-buttons {
+		.dropdown-menu, .dropdown-content, .change-visibility {	
+			min-width: 35px;
+			max-width: 35px;
+			width: 35px;
+
+			.dropdown-menu {
+				left: -10px;
+			}
+
+			.dropdown-content {
+				padding: 0px;
+				
+				.dropdown-item:hover {
+					background-color: rgba(232, 244, 255, 0.596);
+				}
+
+				.dropdown-item {
+					padding: 6px 9px;
+				}
+
+				.dropdown-item:first-child {
+					border-top-left-radius: .4em;
+					border-top-right-radius: .4em;
+				}
+				
+				.dropdown-item:last-child {
+					border-bottom-left-radius: .4em;
+					border-bottom-right-radius: .4em;
+				}
+			}
+		}
+	}
+
+	.front {
+		@include transition(all .3s ease-in-out);
+		z-index: 11;
+		width: 100%;
+		position: absolute;
+		height: 100%;
+		background: #fff;
+		-moz-transform: scale(1, 1);
+		-ms-transform: scale(1, 1);
+		-webkit-transform: scale(1, 1);
+		transform: scale(1, 1);
+
+		.top {
+			@include transition(all .3s ease-in-out);
+			height: 40px;
+			width: 100%;
+			background: #34495e; //old #2a2b39;
+			top: -41px;  // 40px has a black line on <768px
+			position: absolute;
+
+			&:after {
+				position: absolute;
+				content: '';
+				pointer-events: none;
+				left: 50%;
+				width: 26px;
+				height: 26px;
+				-moz-transform: translateX(-50%) rotate(45deg);
+				-ms-transform: translateX(-50%) rotate(45deg);
+				-webkit-transform: translateX(-50%) rotate(45deg);
+				transform: translateX(-50%) rotate(45deg);
+				top: 27px;
+				z-index: -1;
+				background: inherit;
+			}
+
+			.action-buttons {
+				margin: auto;
+			}
+
+			.dropdown-content {
+				background-color: #34495e;
+			}
+		}
+
+		.entry-content {
+			margin-top: 2.4em;
+			-moz-transform: translateY(0);
+			-ms-transform: translateY(0);
+			-webkit-transform: translateY(0);
+			transform: translateY(0);
+			z-index: 8;
+
+			.ident-2 {
+				color: #2a2b39;
+				font-size: 190%;
+				font-family: 'Old Standard TT', serif;
+				text-align: center;
+				position: relative;
+				margin-bottom: .35em;
+				line-height: normal;
+
+				max-height: 80px;
+				overflow: hidden;
+			}
+
+			.ident-1 {
+				text-align: center;
+				color: #2a2b39;
+				font-size: 120%;
+				font-family: 'Old Standard TT', serif;
+				font-style: italic;
+			}
+		}
+
+		.mode-colorblind {
+			display: none;
+			position: absolute;
+			bottom: 8px;
+			left: 8px;
+
+			.svg-icon {
+				color: rgba(52, 73, 95, 0.5);
+			}
+		}
+	}
+
+	.back {
+		width: 100%;
+		height: 100%;
+		background: #fff;
+		backface-visibility: hidden;
+		position: absolute;
+	}
+}
+
+.is-user .flip:hover .front {
+	padding-top: 30px;
+	.top {
+		top: 0px;
+
+		&:after {
+			top: 27px;
+		}
+	}
+}
+
+.is-user .top .function-item {
+    width: 50%;
+    float: left;
+	text-align: center;
+	padding: 8px 0px;
+	z-index: 11;
+
+	&:hover {
+		cursor: pointer;
+		background-color: #3f4057;
+	}
+
+	&.remove-entry {
+		a {
+			color: white;
+			padding-left: 6px;
+		}
+		&:hover {
+			a {
+				color: rgb(216, 86, 86);
+			}
+		}
+	}
+	&.edit-entry {
+		a {
+			color: white;
+			padding-left: 6px;
+		}
+		&:hover {
+			a {
+				color: #6acd79;
+			}
+		}
+	}
+
+	// Bulma overwrite
+	.dropdown-trigger {
+		width: 100%;
+	}
+}
+
+.is-user .front .change-visibility:not(.dropdown-item) {
+	position: absolute;
+	bottom: 4px;
+	right: 4px;
+    padding: 4px;
+}
+
+// Generally display all colorblind mode elements
+// they should be styled whereever they are embedded in,
+// instead of separately. Set them to display:none by default.
+.is-colorblind .mode-colorblind {
+	display: inline !important;
+}
+
+.table-item {
+	margin: 0px 10px;
+
+	// bulma overwrite
+	ul.responsive-table {
+		margin-left: 0px;
+	}
+
+ 	.responsive-table {
+		li {
+			padding: 16px 30px;
+			display: flex;
+			justify-content: space-between;
+			margin-bottom: 14px;
+		}
+		.table-header {
+			background-color: #34495e;
+			color: #ecf0f1;
+			font-size: 14px;
+			text-transform: uppercase;
+			letter-spacing: 0.03em;
+			box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+
+			.js-sortable {
+				cursor: pointer;
+			}
+		}
+		.table-row {
+			background-color: #ffffff;
+			box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+
+			&:nth-child(2n+1) {
+				background-color: rgba(236, 243, 250, 0.5);
+			}
+
+			&:hover:not(:nth-child(2n+1)) {
+				background-color: rgba(242, 249, 255, 0.5);
+			}
+			&:hover:nth-child(2n+1) {
+				background-color: rgba(212, 227, 241, 0.5);
+			}
+
+			&:hover .visible-hover {
+				opacity: 1;
+			}
+			.visible-hover {
+				opacity: 0;
+				@include transition(opacity 150ms linear);
+				-webkit-transition-delay: 0s, 150ms;
+				transition-delay: 0s, 150ms;
+
+				span {
+					@include transition(all 0.2s ease-in-out);
+				}
+			}
+			@media screen and (max-width: 767px) {
+				.visible-hover {
+					opacity: 1;
+				}
+			}
+
+			&.is-soon {
+				background-color: #c9e9bb;
+		
+				&:hover {
+					background-color: #afe09a;
+				}
+			}
+			&.is-immediate {
+				background-color: #fdf7d5;
+		
+				&:hover {
+					background-color: #f0e9c2;
+				}
+			}
+			&.is-released {
+				background-color: #ebc5c5;
+		
+				&:hover {
+					background-color: #e9b9b9;
+				}
+			}
+
+			.mode-colorblind {
+				display: none;
+				left: -20px;
+				position: relative;
+			}
+
+			.col:last-child {
+				text-align: right;
+			}
+
+			.remove-entry {
+				.svg-trash {
+					color: black;
+
+					&:hover {
+						color: #d85656;
+					}
+				}
+			}
+			.edit-entry {
+				.svg-edit {
+					color: black;
+					padding-left: 6px;
+
+					&:hover {
+						color: #6acd79;
+					}
+				}
+			}
+		}
+		.col-1 {
+			flex-basis: 10%;
+		}
+		.col-2 {
+			flex-basis: 20%;
+		}
+		.col-3 {
+			flex-basis: 30%;
+		}
+		.col-4 {
+			flex-basis: 40%;
+		}
+
+		.dropdown-menu {
+			width: 35px;
+			max-width: 35px;
+			min-width: 35px;
+			padding: 0px;
+		}
+
+		.dropdown-content {
+			width: 35px;
+			max-width: 35px;
+			min-width: 35px;
+			padding: 0px;
+
+			.dropdown-item:hover {
+				background-color: rgba(232, 244, 255, 0.596);
+			}
+
+			.dropdown-item {
+				padding: 6px 9px;
+			}
+
+			.dropdown-item:first-child {
+				border-top-left-radius: .4em;
+				border-top-right-radius: .4em;
+			}
+			
+			.dropdown-item:last-child {
+				border-bottom-left-radius: .4em;
+				border-bottom-right-radius: .4em;
+			}
+		}
+	
+		@media all and (max-width: 767px) {
+			.table-header {
+				display: none;
+			}
+			li {
+				display: block;
+			}
+			.col {
+				flex-basis: 100%;
+			}
+			.col {
+				display: flex;
+				padding: 10px 0;
+				&:before {
+					color: #6C7A89;
+					padding-right: 10px;
+					content: attr(data-label);
+					flex-basis: 50%;
+					text-align: right;
+				}
+			}
+		}
+	}
+}
+.is-colorblind .mode-colorblind:not(.hidden) + span {
+	position: relative;
+	left: -20px;
+}
+@media screen and (max-width: 769px) {
+	.is-colorblind .mode-colorblind + span {
+		left: 0px;
+	}
+}
+
+// bulm overwrite
+@media screen and (min-width: 769px) {
+	.columns:not(.is-desktop) {
+		justify-content: space-evenly;
+	}
+}
+
+// Options
+.content .field {
+	padding-left: 20px;
+}
+
+.visibility-switch {
+	text-align: center;
+
+	.radio + .radio {
+		margin: 0px; /* bulma overwrite */
+	}
+
+	input[type=radio] {
+		position: absolute;
+		visibility: hidden;
+		display: none;
+	}
+
+	label {
+		display: inline-block;
+		cursor: pointer;
+		font-weight: bold;
+		border-radius: 3px;
+		padding: 5px 20px;
+
+		span {
+			cursor: help;
+		}
+	}
+
+	input[type=radio]:nth-of-type(1):checked + label {
+		background: green;
+		color: white !important;  /* bulma overwrite */
+	}
+	input[type=radio]:nth-of-type(2):checked + label {
+		background: orange;
+		color: white !important;  /* bulma overwrite */
+	}
+	input[type=radio]:nth-of-type(3):checked + label {
+		background: red;
+		color: white !important;  /* bulma overwrite */
+	}
+}
+
+.button.disabled {
+	background-color: #fff;
+	border-color: #dee2e5;
+	box-shadow: none;
+	opacity: .5;
+}
