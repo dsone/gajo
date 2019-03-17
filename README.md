@@ -39,6 +39,9 @@ Each list entry has three states:
 | private | Visible only when logged in or through your personal RSS feed link |
 | public | Visible publicly |  
 
+## RSS
+To be able to get notifications through any other service you can use a personal RSS Feed. Each RSS Feed has a random identifier that you can change whenever you want.  
+Upcoming entries with a release within the next two weeks will start to appear in that RSS Feed.
 
 ## Requirements
 PHP >=7.1, git, composer, npm and support for SQLite.
@@ -58,7 +61,7 @@ PHP >=7.1, git, composer, npm and support for SQLite.
 `php artisan migrate`  
 6. Install JS/CSS dependencies:  
 `npm install`  
-7. Production build css/js:
+7. Production build css/js:  
 `gulp`  
 
 Open your browser and visit APP_URL as entered inside .env.  
@@ -69,6 +72,6 @@ Done.
 Put your APP_ENV into "_production_" or any other label and this behaviour is disabled.
 
 ## Settings
-Most settings are inside .env. But to enable a multi user environment, you need to edit _config/app.php_ and the key _settings.multiUser_ and set it to `true`.  
+Most settings are inside .env. But to enable a multi user environment, you need to edit _config/app.php_ and the key _settings.multiUser_, set it to `true`.  
 
 If you run Gajo in multi user mode, perhaps change the database from SQLite to some DB system that supports parallel write access. 
