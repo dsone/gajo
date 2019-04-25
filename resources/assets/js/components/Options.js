@@ -47,7 +47,7 @@ export default function Options(config = {}) {
     });
 
     this.renderTypes();
-};
+}
 
 /**
  * Gets the state of a private profile.

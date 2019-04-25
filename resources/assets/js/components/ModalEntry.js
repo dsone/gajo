@@ -53,7 +53,7 @@ export default function ModalEntry(config = {}) {
     }
 
     this.renderSelectOptions();
-};
+}
 
 /**
  * Gets the selected DOM Element option.

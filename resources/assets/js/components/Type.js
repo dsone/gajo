@@ -26,7 +26,7 @@ export default function Type(config = {}) {
         sortBy: 'ident_1',  // default fallback
         sortOrderAsc: true, // dbl click toggles between asc - desc
     };
-};
+}
 
 /**
  * Adds a new entry to this type.
@@ -557,7 +557,7 @@ Type.prototype.renderHTML = function(target, clear = true) {
     // Prevent empty section being displayed
     if (!this.data.sortedList.length) {
         if (clear) {
-            if (clear) { target.innerHTML = ''; }
+            target.innerHTML = '';
         }
         return;
     }

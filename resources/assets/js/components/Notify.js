@@ -37,4 +37,4 @@ export default function Notify(title, message, className) {
     timer = setTimeout(function() {
         btn.click();
     }, 3000);
-};
+}
