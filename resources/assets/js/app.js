@@ -150,7 +150,7 @@ window.getEntryById = function(id) {
 
     // Create the HTML based on the embedded global ENTRIES
     window.TYPES = [];
-    Object.keys(ENTRIES).forEach(function(type, i) {
+    Object.keys(ENTRIES).sort().forEach(function(type, i) {
         //Create the Type
         window.TYPES.push(new Type({
             id: +ENTRIES[type].type.id,
