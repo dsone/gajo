@@ -187,14 +187,18 @@ window.getEntryById = function(id) {
         let btnAddEntry = $('.js-link-add-entry');
         if (btnAddEntry) {
             let modalAddEntry = $('#modal-add-entry');
-            $('input[data-visibility="1"]', modalAddEntry).click();  // for some reason this is not checked despite default setting in markup
-
+        
             btnAddEntry.addEventListener('click', function(e) {
                 if (USER_TYPES.length == 0) {
                     notify('Wait...', 'You have to add a type first!<br>See Options how to do that.', 'warning');
                     let abort = $('.close-modal', modalAddEntry);
                     abort.click();
                     return;
+                } else {
+                    // for some reason the default setting in markup is not checked
+                    // switching from dblclick of an entry to clicking the button leads to unchecked radio button
+                    // hence forcing it here
+                    $('input[data-visibility="1"]', modalAddEntry).click();
                 }
             });
 
