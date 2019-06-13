@@ -3,10 +3,11 @@ export default function Entry(config = {}) {
         return new Entry(config);
     }
 
+    let parser = new DOMParser();
     this.data = {
         id: config.id,
-        ident_1: config.ident_1,
-        ident_2: config.ident_2,
+        ident_1: parser.parseFromString(`<!doctype html><body>${config.ident_1}`,'text/html').body.textContent,
+        ident_2: parser.parseFromString(`<!doctype html><body>${config.ident_2}`,'text/html').body.textContent,
         release_at: config.release_at,
         visibility: config.visibility,
         belongsTo: config.belongsTo || undefined
