@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "name": "dsone/gajo",
+    "description": "Tool to help you remember upcoming releases.",
+    "keywords": ["lists", "releases", "privacy", "javascript", "laravel"],
     "license": "MIT",
     "type": "project",
     "require": {
