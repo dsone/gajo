@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,20 +14,6 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::group(['prefix' => '/v1'], function () {
-    Route::group(['middleware' => ['auth']], function () {
-        Route::post('/entry/change-visibility', 'EntryController@changeVisibility');
-        Route::post('/entry/remove', 'EntryController@remove');
-        
-        Route::post('/entry', 'EntryController@store');
-        Route::put('/entry', 'EntryController@update');
-
-        Route::post('/options/save-type', 'TypeController@store');
-        Route::delete('/options/type', 'TypeController@destroy');
-        Route::put('/options/type', 'TypeController@update');
-        Route::put('/options/type-order', 'TypeController@refreshOrder'); 
-        
-        Route::put('/options', 'OptionsController@update');
-        Route::get('/options/refresh/rss', 'OptionsController@refreshRss');
-    });
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
 });

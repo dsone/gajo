@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,24 +14,5 @@
 */
 
 Route::get('/', function () {
-    if (\Auth::user()) {
-        return redirect()->route('user-profile', [ 'user' => \Auth::user()->name ]);
-    } else {
-        return view('start.index');
-    }
-})->name('index');
-Route::get('/profile/{user}', 'ProfileController@index')->name('user-profile');
-Route::get('/profile/{user}/options', 'OptionsController@index')->name('user-options');
-Route::get('/rss/{user}/{id}', 'ProfileController@rss')->name('user-rss');
-Route::get('/privacy', function() { return view('page.privacy'); })->name('privacy');
-
-Route::get('/home', function () { return redirect('/'); });
-
-Auth::routes();
-
-Route::get('/profile', function() {
-    if (\Auth::user()) { return redirect()->route('user-profile', [ 'user' => \Auth::user()->name ]); }
-    return redirect('/');
+    return view('welcome');
 });
-
-Route::any('{catchall}', function($page) { abort(404); })->where('catchall', '(.*)');
