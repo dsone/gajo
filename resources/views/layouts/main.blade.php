@@ -15,6 +15,7 @@
         <meta name="description" content="">
         <link type="image/x-icon" href="./favicon.ico" rel="shortcut icon">
         <title>@yield('title', config('app.name', ''))</title>
+		<link href="{{ mix('/css/app.css') }}" rel="stylesheet">
     </head>
     <body class="has-navbar-fixed-top{{ \Auth::user() ? ' is-user' : ' is-visitor' }}">
         <div class="main-container">
@@ -23,6 +24,7 @@
             </div>
         </div>
 
+		<script src="{{ mix('/js/app.js') }}"></script>
         @yield('footerJS')
     </body>
 </html>
