@@ -1,0 +1,17 @@
+html, body {
+	@apply bg-primary-50 antialiased font-sans text-black text-base relative h-full p-0 m-0;
+
+	.main-navbar {
+		@apply fixed top-0 left-0 right-0 z-10 shadow-md;
+	}
+
+	main {
+		margin-top: 3.75rem;
+
+		@apply bg-primary-50 h-full;
+	}
+
+	.main-footer {
+		@apply w-full px-6 py-2 shadow-inner bg-primary-100 bottom-0;
+	}
+}

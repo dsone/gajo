@@ -857,6 +857,51 @@ video {
   width: 24px;
 }
 
+html, body {
+  --bg-opacity: 1;
+  background-color: #F5F6F7;
+  background-color: rgba(245, 246, 247, var(--bg-opacity));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --text-opacity: 1;
+  color: #000;
+  color: rgba(0, 0, 0, var(--text-opacity));
+  font-size: 1rem;
+  position: relative;
+  height: 100%;
+}
+
+html .main-navbar, body .main-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+html main, body main {
+  margin-top: 3.75rem;
+  --bg-opacity: 1;
+  background-color: #F5F6F7;
+  background-color: rgba(245, 246, 247, var(--bg-opacity));
+  height: 100%;
+}
+
+html .main-footer, body .main-footer {
+  width: 100%;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  --bg-opacity: 1;
+  background-color: #EBEDEF;
+  background-color: rgba(235, 237, 239, var(--bg-opacity));
+  bottom: 0;
+}
+
 .space-y-0 > :not(template) ~ :not(template) {
   --space-y-reverse: 0;
   margin-top: calc(0px * calc(1 - var(--space-y-reverse)));
