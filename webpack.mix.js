@@ -1,5 +1,6 @@
 const mix = require('laravel-mix');
 require('mix-tailwindcss');
+require('laravel-mix-purgecss');
 
 /*
  |--------------------------------------------------------------------------
@@ -29,4 +30,9 @@ mix.webpackConfig({
 
 mix.sass('./resources/sass/app.scss', './public/css/app.css')
 	.tailwind()
+	.purgeCss({
+		enabled: mix.inProduction(),
+		folders: [ 'resources/views' ],
+		extensions: [ 'html', 'js', 'php' ],
+	})
 	.version();
