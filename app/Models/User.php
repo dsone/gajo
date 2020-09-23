@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -40,4 +41,32 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+	protected static function boot() {
+        parent::boot();
+
+        static::created(function($user) {
+            $options = new Option();
+            while (true) {
+                try {
+                    $options->rss = Str::random(42);
+                    $options->user_id = $user->id;
+                    $options->save();
+                    return;
+                } catch (\Exception $e) {}
+            }
+        });
+    }
+
+	public function options() {
+        return $this->hasOne('App\Models\Option');
+    }
+
+    public function types() {
+        return $this->hasMany('App\Models\Type');
+    }
+
+    public function entries() {
+        return $this->hasMany('App\Models\Entry');
+    }
 }
