@@ -26,7 +26,7 @@ Route::group([ 'prefix' => '/profile' ], function() {
 });
 
 Route::group([ 'prefix' => '/page' ], function() {
-	Route::get('/privacy', function() { return view('page.privacy'); })->name('privacy');
+	Route::get('/privacy', function() { return view('page.privacy'); })->name('page-privacy');
 });
 
 Route::any('{catchall}', function($page) {
