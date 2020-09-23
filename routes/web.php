@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\OptionsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,11 +15,20 @@ use App\Http\Controllers\ProfileController;
 |
 */
 
-Route::get('/', function () {
-    if (Auth::user()) {
-        return redirect()->route('user-profile', [ 'user' => Auth::user()->name ]);
-    } else {
-        return view('welcome');
-    }
+Route::get('/', function() {
+	return view('welcome');
 })->name('index');
-Route::get('/profile/{user}', [ ProfileController::class, 'index' ])->name('user-profile')->middleware('verified');
+
+Route::group([ 'prefix' => '/profile' ], function() {
+	Route::get('/{user}', [ ProfileController::class, 'index' ])->name('user-profile');
+
+	Route::get('/{user}/options', [ OptionsController::class, 'index' ])->name('user-options')->middleware('auth');
+});
+
+Route::group([ 'prefix' => '/page' ], function() {
+	Route::get('/privacy', function() { return view('page.privacy'); })->name('privacy');
+});
+
+Route::any('{catchall}', function($page) {
+	return redirect()->route('index', 302);
+ })->where('catchall', '(.*)');
