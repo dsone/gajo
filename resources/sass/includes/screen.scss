@@ -15,3 +15,19 @@ html, body {
 		@apply w-full px-6 py-2 shadow-inner bg-primary-100 bottom-0;
 	}
 }
+
+.btn {
+	@apply px-4 py-1 text-white transition-colors duration-200 border rounded;
+
+	&.btn-default {
+		@apply bg-primary-500 border-primary-500;
+
+		&:focus {
+			@apply text-black bg-primary-100 
+		}
+
+		&:hover {
+			@apply bg-primary-100 text-black;
+		}
+	}
+}

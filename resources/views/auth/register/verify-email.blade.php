@@ -1,46 +1,56 @@
 @extends('layouts.main')
 
 @section('content')
-<div class="register-form-container">
+<div class="w-full px-4 pt-10 md:px-0 md:mx-auto md:w-1/3 lg:w-1/4">
 	@if (session('status') == 'verification-link-sent')
-		<section>
-			<div class="mb-4 font-medium text-sm text-green-600">
+	<section class="mb-8">
+		<div class="p-4 text-center bg-green-300 rounded shadow-md">
+			<div class="font-medium text-md">
 				Successfully registered!
 			</div>
-		</section>
+		</div>
+	</section>
 	@endif
 
-    <section class="section">
-        <h1 class="title">Verify Mail</h1>
-        <hr>
-        <div class="columns">
-            <div class="column">
-                <form method="POST" action="{{ route('verification.send') }}">
-                    @csrf
+	<section class="mb-8">
+		<div class="p-4 text-center bg-green-300 rounded shadow-md">
+			<div class="font-medium text-md">
+				Account registration successful!
+			</div>
+		</div>
+	</section>
 
-                    <div class="field">
-						@if (!session('status'))
-                        	<label class="label">Register successful</label>
-							<p class="control has-icons-left">
-								Your registration was successful.<br>
-								We send you a verification email with a confirmation link to activate your account.
-							</p>
-						@else
-							<label class="label">Confirmation mail resend</label>
-							<p class="control has-icons-left">
-								We re-send you a verification email with a confirmation link to activate your registered account.
-							</p>
-						@endif                       
-                    </div>
+    <section>
+		<div class="p-10 bg-white rounded shadow-md">
+			<div class="inline mx-auto">
+				<h1 class="text-3xl font-bold">
+					Verify Your E-Mail
+				</h1>
 
-                    <div class="field">
-                        <p class="control">
-                            <button type="submit" class="button is-success">Resend confirmation</button>
-                        </p>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
+				<div class="mt-4">
+					<form method="POST" action="{{ route('verification.send') }}">
+						@csrf
+
+						<div>
+							@if (!session('status'))
+                        		<span class="block">
+									We've sent you a verification email with a confirmation link to activate your account.
+								</span>								
+							@else
+								<span class="block">Confirmation mail re-sent</span>
+								<span class="block">
+									We've re-sent you a verification email with a confirmation link to activate your account.
+								</span>
+							@endif
+						</div>
+
+						<div class="mt-8 text-center">
+							<button class="btn btn-default" type="submit">Resend confirmation link</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
 </div>
 @endsection

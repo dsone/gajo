@@ -5,7 +5,7 @@
 			<div x-data="{ open: false }" class="flex flex-col max-w-screen-xl px-4 mx-auto md:items-center md:justify-between md:flex-row md:px-6 lg:px-8">
 				<div class="flex flex-row items-center justify-between p-2">
 					<a href="#" class="text-lg font-semibold tracking-widest uppercase rounded-lg dark-mode:text-white focus:outline-none focus:shadow-outline">
-						{{ env('APP_NAME') }}<span class="font-mono lowercase">@yield('title', '')</span>
+						{{ env('APP_NAME') }}<span class="font-mono text-base tracking-normal lowercase">@yield('title', '')</span>
 					</a>
 
 					@auth
@@ -26,15 +26,17 @@
 						<button class="hidden px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg md:mt-0 focus:outline-none focus:shadow-outline md:inline-block" href="#">
 							Add
 						</button>
-						<a class="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg md:mt-0 md:ml-4 focus:outline-none focus:shadow-outline" href="#">
+						<a class="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg md:mt-0 md:ml-4 focus:outline-none focus:shadow-outline" href="{{ route('user-profile', [ 'user' => \Auth::user()->name ]) }}">
 							Profile
 						</a>
-						<a class="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg md:mt-0 md:ml-4 focus:outline-none focus:shadow-outline" href="#">
+						<a class="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg md:mt-0 md:ml-4 focus:outline-none focus:shadow-outline" href="{{ route('user-options', [ 'user' => \Auth::user()->name ]) }}">
 							Options
 						</a>
-						<a class="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg md:mt-0 md:ml-4 focus:outline-none focus:shadow-outline" href="#">
+						<a class="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg md:mt-0 md:ml-4 focus:outline-none focus:shadow-outline" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
 							Logout
 						</a>
+
+						<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">@csrf</form>
 					@else
 						<a class="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg md:mt-0 md:ml-4 focus:outline-none focus:shadow-outline" href="{{ route('login') }}" class="text-sm text-gray-700 underline">Login</a>
 

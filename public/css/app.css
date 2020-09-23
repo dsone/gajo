@@ -870,6 +870,8 @@ html, body {
   font-size: 1rem;
   position: relative;
   height: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 html .main-navbar, body .main-navbar {
@@ -900,6 +902,47 @@ html .main-footer, body .main-footer {
   background-color: #EBEDEF;
   background-color: rgba(235, 237, 239, var(--bg-opacity));
   bottom: 0;
+}
+
+.btn {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  --text-opacity: 1;
+  color: #fff;
+  color: rgba(255, 255, 255, var(--text-opacity));
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 200ms;
+  border-width: 1px;
+  border-radius: 0.25rem;
+}
+
+.btn.btn-default {
+  --bg-opacity: 1;
+  background-color: #34495E;
+  background-color: rgba(52, 73, 94, var(--bg-opacity));
+  --border-opacity: 1;
+  border-color: #34495E;
+  border-color: rgba(52, 73, 94, var(--border-opacity));
+}
+
+.btn.btn-default:focus {
+  --text-opacity: 1;
+  color: #000;
+  color: rgba(0, 0, 0, var(--text-opacity));
+  --bg-opacity: 1;
+  background-color: #EBEDEF;
+  background-color: rgba(235, 237, 239, var(--bg-opacity));
+}
+
+.btn.btn-default:hover {
+  --bg-opacity: 1;
+  background-color: #EBEDEF;
+  background-color: rgba(235, 237, 239, var(--bg-opacity));
+  --text-opacity: 1;
+  color: #000;
+  color: rgba(0, 0, 0, var(--text-opacity));
 }
 
 .space-y-0 > :not(template) ~ :not(template) {

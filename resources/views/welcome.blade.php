@@ -2,8 +2,8 @@
 @section('title', ' | Welcome')
 
 @section('content')
-<div class="w-full px-4 pt-20 md:px-0 md:mx-auto md:w-1/2">
-	<section class="pt-20">
+<div class="w-full px-4 pt-10 md:px-0 md:mx-auto md:w-1/2">
+	<section>
 		<div class="p-10 bg-white rounded shadow-md">
 			<h1 class="text-3xl font-bold">
 				Gajo
@@ -26,7 +26,7 @@
 				<p>Put an end to that with Gajo!</p>
 				@registerable
 					<p class="pt-10">
-						<a class="button is-primary" href="./register">Register now</a>
+						<a class="btn btn-default" href="./register">Register now</a>
 					</p>
 				@endregisterable
 			</div>

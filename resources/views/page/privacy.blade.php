@@ -2,11 +2,11 @@
 @section('title', ' | Privacy')
 
 @section('content')
-<div class="w-full px-4 pt-20 md:px-0 md:mx-auto md:w-1/2">
-	<section class="mt-20">
+<div class="w-full px-4 pt-10 md:px-0 md:mx-auto md:w-1/2">
+	<section>
 		<div class="p-10 bg-white rounded shadow-md">
 			<h1 class="text-3xl font-bold">
-				Gajo
+				Privacy
 			</h1>
 			<div class="mt-4">
 				<p>

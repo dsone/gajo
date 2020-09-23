@@ -16,6 +16,10 @@ use App\Http\Controllers\OptionsController;
 */
 
 Route::get('/', function() {
+	if (\Auth::user()) {
+		return redirect()->route('user-profile', [ 'user' => \Auth::user()->name ], 301);
+	}
+
 	return view('welcome');
 })->name('index');
 
@@ -31,4 +35,4 @@ Route::group([ 'prefix' => '/page' ], function() {
 
 Route::any('{catchall}', function($page) {
 	return redirect()->route('index', 302);
- })->where('catchall', '(.*)');
+})->where('catchall', '(.*)');
