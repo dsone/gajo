@@ -1,5 +1,5 @@
 @extends('layouts.main')
-@section('title', ' | Welcome')
+@section('title', 'Welcome')
 
 @section('content')
 <div class="w-full px-4 pt-10 md:px-0 md:mx-auto md:w-1/2">
