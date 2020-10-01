@@ -2,14 +2,14 @@
 	<div class="absolute inset-0 z-50 hidden transition-all duration-200 opacity-0 modal-overlay">
 		<div class="absolute inset-0 bg-black opacity-75"></div>
 		<div class="absolute inset-0 z-30">
-			<div class="flex flex-col items-center justify-center h-full mx-auto">
-				<div class="w-full px-4 md:w-2/3 md:px-0 lg:w-3/5 xl:w-3/6 xxl:w-2/5">
+			<div class="flex flex-col items-center p-4 mx-auto mt-4 lg:mt-16">
+				<div class="absolute top-0 right-0 mt-6 mr-6">
 					<span class="float-right">
 						<button title="Close" class="text-4xl font-bold leading-none text-white text-secondary-200 focus:outline-none hover:text-secondary-100">×</button>
 					</span>
 				</div>
-				<div class="md:w-2/3 md:px-0 lg:w-3/5 xl:w-3/6 xxl:w-2/5">
-					<div class="w-full p-4 bg-white rounded modal-content">
+				<div class="w-full p-8 pt-6 mx-auto mt-16 bg-white rounded md:w-2/3 lg:w-1/2 xl:w-1/3">
+					<div class="modal-content">
 						{{-- dynamically filled --}}
 					</div>
 				</div>
@@ -21,9 +21,9 @@
 	(function() {
 		var modalTmpl = document.querySelector('template#modal').content;
 
-		var Modal = function(title, bodyContent) {
+		var Modal = function(bodyContent) {
 			if (!(this instanceof Modal)) {
-				return new Modal(title, bodyContent);
+				return new Modal(bodyContent);
 			}
 
 			this.element = modalTmpl.cloneNode(true);
@@ -47,12 +47,19 @@
 		};
 
 		Modal.prototype.show = function() {
+			window.scrollTo(0, 0);
 			this.element.classList.remove('hidden', 'opacity-0');
 			document.body.classList.add('overflow-hidden');
+		};
+		Modal.prototype.open = function() {
+			this.show();
 		};
 		Modal.prototype.hide = function() {
 			this.element.classList.add('hidden', 'opacity-0');
 			document.body.classList.remove('overflow-hidden');
+		};
+		Modal.prototype.close = function() {
+			this.hide();
 		};
 		window.Modal = Modal;
 
