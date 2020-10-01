@@ -11,14 +11,17 @@ class Option extends Model
 
 	protected $hidden = [ 'id', 'user_id' ];
     protected $fillable = [
-        'private', 'colorblind', 'hideReleased', 'hideTBA', 'rss', 'user_id'
+        'privateProfile', 'colorblind', 'hideReleased', 'hideTBA', 'rss'
     ];
     protected $casts = [
-        'private'		=> 'boolean',
-        'colorblind'	=> 'boolean',
-        'hideReleased'	=> 'boolean',
-        'hideTBA'		=> 'boolean',
+        'privateProfile'	=> 'boolean',
+        'colorblind'		=> 'boolean',
+        'hideReleased'		=> 'boolean',
+        'hideTBA'			=> 'boolean',
     ];
+	protected $dates = [
+		'updated_at', 'created_at'
+	];
 	protected $dateFormat = 'c';
 
     public function user() {
