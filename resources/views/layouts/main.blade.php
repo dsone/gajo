@@ -22,6 +22,7 @@
 
 		@include('layouts._footer')
 
+		@include('layouts._modal')
 		<script src="{{ mix('/js/app.js') }}"></script>
         @yield('footerJS')
     </body>
