@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OptionsController;
+use App\Http\Controllers\API\TypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,9 @@ Route::group([ 'prefix' => '/profile' ], function() {
 	Route::get('/{user}', [ ProfileController::class, 'index' ])->name('user-profile');
 
 	Route::get('/{user}/options', [ OptionsController::class, 'index' ])->name('user-options')->middleware('auth');
+	Route::post('/{user}/options', [ OptionsController::class, 'update' ])->name('user-options-update')->middleware('auth');
+	Route::post('/{user}/type', [ TypeController::class, 'store' ])->name('user-type-store')->middleware('auth');
+	Route::delete('/{user}/type/{type}', [ TypeController::class, 'destroy' ])->name('user-type-destroy')->middleware('auth');
 });
 
 Route::group([ 'prefix' => '/page' ], function() {
