@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title', 'Verify Mail')
 
 @section('content')
 <div class="w-full px-4 pt-10 md:px-0 md:mx-auto md:w-1/3 lg:w-1/4">

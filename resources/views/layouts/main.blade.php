@@ -10,7 +10,7 @@
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
         <link type="image/x-icon" href="./favicon.ico" rel="shortcut icon">
-        <title>{{ config('app.name', '') }}@yield('title', '')</title>
+        <title>{{ config('app.name', '') }}@hasSection('title') | @yield('title', '')@endif</title>
 		<link href="{{ mix('/css/app.css') }}" rel="stylesheet">
     </head>
     <body class="{{ \Auth::user() ? ' is-user' : ' is-visitor' }}">

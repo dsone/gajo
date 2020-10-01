@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title', 'Profile')
 
 @section('content')
 	@if (Route::has('login'))
