@@ -858,6 +858,7 @@ video {
 }
 
 html, body {
+  min-height: 100%;
   --bg-opacity: 1;
   background-color: #F5F6F7;
   background-color: rgba(245, 246, 247, var(--bg-opacity));
@@ -869,7 +870,6 @@ html, body {
   color: rgba(0, 0, 0, var(--text-opacity));
   font-size: 1rem;
   position: relative;
-  height: 100%;
   padding: 0;
   margin: 0;
 }
@@ -884,11 +884,12 @@ html .main-navbar, body .main-navbar {
 }
 
 html main, body main {
-  margin-top: 3.75rem;
+  padding-top: 3.75rem;
+  padding-bottom: 1.75rem;
+  min-height: 100vh;
   --bg-opacity: 1;
   background-color: #F5F6F7;
   background-color: rgba(245, 246, 247, var(--bg-opacity));
-  height: 100%;
 }
 
 html .main-footer, body .main-footer {
@@ -943,6 +944,138 @@ html .main-footer, body .main-footer {
   --text-opacity: 1;
   color: #000;
   color: rgba(0, 0, 0, var(--text-opacity));
+}
+
+.btn.btn-danger {
+  --bg-opacity: 1;
+  background-color: #f56565;
+  background-color: rgba(245, 101, 101, var(--bg-opacity));
+  --border-opacity: 1;
+  border-color: #f56565;
+  border-color: rgba(245, 101, 101, var(--border-opacity));
+}
+
+.btn.btn-danger:focus {
+  --text-opacity: 1;
+  color: #000;
+  color: rgba(0, 0, 0, var(--text-opacity));
+  --bg-opacity: 1;
+  background-color: #fff5f5;
+  background-color: rgba(255, 245, 245, var(--bg-opacity));
+}
+
+.btn.btn-danger:hover {
+  --bg-opacity: 1;
+  background-color: #fff5f5;
+  background-color: rgba(255, 245, 245, var(--bg-opacity));
+  --text-opacity: 1;
+  color: #f56565;
+  color: rgba(245, 101, 101, var(--text-opacity));
+}
+
+.btn.btn-success {
+  --bg-opacity: 1;
+  background-color: #48bb78;
+  background-color: rgba(72, 187, 120, var(--bg-opacity));
+  --border-opacity: 1;
+  border-color: #48bb78;
+  border-color: rgba(72, 187, 120, var(--border-opacity));
+}
+
+.btn.btn-success:focus {
+  --text-opacity: 1;
+  color: #000;
+  color: rgba(0, 0, 0, var(--text-opacity));
+  --bg-opacity: 1;
+  background-color: #f0fff4;
+  background-color: rgba(240, 255, 244, var(--bg-opacity));
+}
+
+.btn.btn-success:hover {
+  --bg-opacity: 1;
+  background-color: #f0fff4;
+  background-color: rgba(240, 255, 244, var(--bg-opacity));
+  --text-opacity: 1;
+  color: #48bb78;
+  color: rgba(72, 187, 120, var(--text-opacity));
+}
+
+.btn.btn-icon {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.btn.btn-icon svg {
+  display: inline;
+}
+
+.switch {
+  position: relative;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  width: 3rem;
+  margin-right: 0.5rem;
+  line-height: 1.5;
+}
+
+.switch > input[type=checkbox] {
+  display: none;
+}
+
+.switch > input[type=checkbox]:checked + label {
+  --bg-opacity: 1;
+  background-color: #68d391;
+  background-color: rgba(104, 211, 145, var(--bg-opacity));
+  box-shadow: none;
+}
+
+.switch > input[type=checkbox]:checked + label:before {
+  right: 0;
+}
+
+.switch label {
+  display: block;
+  overflow: hidden;
+  cursor: pointer;
+  --bg-opacity: 1;
+  background-color: #fc8181;
+  background-color: rgba(252, 129, 129, var(--bg-opacity));
+  border-width: 1px;
+  border-radius: 9999px;
+  height: 1.5rem;
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+}
+
+.switch label:before {
+  right: 50%;
+  content: "";
+  position: absolute;
+  transition-property: all;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+  display: block;
+  --bg-opacity: 1;
+  background-color: #cbd5e0;
+  background-color: rgba(203, 213, 224, var(--bg-opacity));
+  top: 0;
+  bottom: 0;
+  width: 1.5rem;
+  border-width: 1px;
+  border-radius: 9999px;
+  margin-left: -0.25rem;
+}
+
+.form-input:focus, .form-select:focus {
+  outline: none;
+  box-shadow: none;
+  --border-opacity: 1;
+  border-color: #71808E;
+  border-color: rgba(113, 128, 142, var(--border-opacity));
 }
 
 .space-y-0 > :not(template) ~ :not(template) {

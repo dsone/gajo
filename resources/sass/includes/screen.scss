@@ -1,14 +1,18 @@
 html, body {
-	@apply bg-primary-50 antialiased font-sans text-black text-base relative h-full p-0 m-0;
+	min-height: 100%;
+
+	@apply bg-primary-50 antialiased font-sans text-black text-base relative p-0 m-0;
 
 	.main-navbar {
 		@apply fixed top-0 left-0 right-0 z-10 shadow-md;
 	}
 
 	main {
-		margin-top: 3.75rem;
+		padding-top: 3.75rem;
+		padding-bottom: 1.75rem;
+		min-height: 100vh;
 
-		@apply bg-primary-50 h-full;
+		@apply bg-primary-50;
 	}
 
 	.main-footer {
@@ -30,4 +34,65 @@ html, body {
 			@apply bg-primary-100 text-black;
 		}
 	}
+	&.btn-danger {
+		@apply bg-red-500 border-red-500;
+
+		&:focus {
+			@apply text-black bg-red-100;
+		}
+
+		&:hover {
+			@apply bg-red-100 text-red-500;
+		}
+	}
+	&.btn-success {
+		@apply bg-green-500 border-green-500;
+
+		&:focus {
+			@apply text-black bg-green-100;
+		}
+
+		&:hover {
+			@apply bg-green-100 text-green-500;
+		}
+	}
+	&.btn-icon {
+		@apply px-2;
+
+		svg {
+			@apply inline;
+		}
+	}
+}
+.switch {
+    @apply relative select-none w-12 mr-2 leading-normal;
+
+	& > input[type=checkbox] {
+		@apply hidden;
+
+		&:checked + label {
+			@apply bg-green-400 shadow-none;
+		}
+
+		&:checked + label:before {
+			@apply right-0;
+		}
+	}
+
+	label {
+		@apply block overflow-hidden cursor-pointer bg-red-400 border rounded-full h-6 shadow-inner transition-colors duration-200 ease-in;
+	}
+	label:before {
+		right: 50%;
+		content: '';
+
+		@apply absolute  transition-all duration-200 ease-in block bg-gray-400 top-0 bottom-0 w-6 border rounded-full -ml-1;
+	}
+}
+
+.form-input:focus, .form-select:focus {
+    outline: none;
+    box-shadow: none;
+
+	@apply border-primary-400;
 }
