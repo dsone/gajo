@@ -1,6 +1,10 @@
 .btn {
 	@apply px-4 py-1 text-white transition-colors duration-200 border rounded;
 
+	&:disabled {
+		@apply cursor-not-allowed;
+	}
+
 	&.btn-default {
 		@apply bg-primary-500 border-primary-500;
 

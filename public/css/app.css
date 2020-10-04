@@ -933,6 +933,10 @@ video {
   border-radius: 0.25rem;
 }
 
+.btn:disabled {
+  cursor: not-allowed;
+}
+
 .btn.btn-default {
   --bg-opacity: 1;
   background-color: #34495E;

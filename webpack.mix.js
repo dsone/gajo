@@ -13,8 +13,8 @@ require('laravel-mix-purgecss');
  |
  */
 
-mix.js('./resources/js/app.js', './public/js/app.js')
-	.version();
+mix.js('./resources/js/app.js', './public/js/app.js').version();
+mix.js('./resources/js/options.js', './public/js/options.js').version();
 
 mix.webpackConfig({
 	module: {
