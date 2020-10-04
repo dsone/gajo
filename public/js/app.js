@@ -2056,30 +2056,146 @@ process.umask = function () {
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
   \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _components_Notify__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/Notify */ "./resources/js/components/Notify.js");
 
-var hello = 'hello';
-var world = "".concat(hello, " word");
+window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+(function () {
+  window.notify = _components_Notify__WEBPACK_IMPORTED_MODULE_0__["default"];
+})();
 
 /***/ }),
 
-/***/ "./resources/js/bootstrap.js":
-/*!***********************************!*\
-  !*** ./resources/js/bootstrap.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ "./resources/js/components/Notify.js":
+/*!*******************************************!*\
+  !*** ./resources/js/components/Notify.js ***!
+  \*******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Notify; });
 /**
- * We'll load the axios HTTP library which allows us to easily issue requests
- * to our Laravel back-end. This library automatically handles sending the
- * CSRF token as a header based on the value of the "XSRF" token cookie.
+ * Helper class to keep track on the last displayed notification.
+ * Preventing duplicates being displayed for a certain amount of time.
+ * Unless another notification was displayed in the meantime.
+ * Implemented with a Singleton pattern since Notify is not instantiated.
  */
-window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+var NotificationStatus = function () {
+  var instance;
+
+  function createInstance() {
+    var NotificationStatus = function NotificationStatus() {
+      this.lastNotify = '';
+      this.threshold = undefined;
+    };
+
+    NotificationStatus.prototype.last = function (msg) {
+      this.timer(msg);
+      var oldValue = this.lastNotify;
+      return this.lastNotify = msg, oldValue === msg;
+    }; // Resets timer if necessary, or starts it
+
+
+    NotificationStatus.prototype.timer = function (msg) {
+      var _this = this;
+
+      if (!this.threshold) {
+        this.threshold = setTimeout(function () {
+          _this.lastNotify = '';
+          _this.threshold = undefined;
+        }, 3000);
+      } else if (msg != this.lastNotify) {
+        this.threshold = clearTimeout(this.threshold);
+        this.timer();
+      }
+    };
+
+    return new NotificationStatus();
+  }
+
+  return {
+    getInstance: function getInstance() {
+      if (!instance) {
+        instance = createInstance();
+      }
+
+      return instance;
+    }
+  };
+}();
+
+function Notify(title, message, type, duration) {
+  var status = NotificationStatus.getInstance();
+
+  if (status.last(message)) {
+    return;
+  }
+
+  duration = Math.max(900, duration || 3000); // <900 might be problematic due to the animations
+
+  var timerClose = undefined; // notification container, holding all elements
+
+  var tile = document.createElement('div');
+  tile.classList.add('notification', 'notification-item', 'is-' + type, 'animated', 'fast', 'fadeInDown', 'group');
+  tile.addEventListener('click', function (e) {
+    if (timerClose !== undefined) {
+      timerClose = clearTimeout(timerClose);
+    }
+
+    if (timerFadeIn !== undefined) {
+      timerFadeIn = clearTimeout(timerFadeIn);
+    }
+
+    tile.classList.add('fadeOutRight');
+    setTimeout(function () {
+      tile.remove();
+    }, 900);
+  });
+  tile.addEventListener('mouseover', function (e) {
+    if (timerClose !== undefined) {
+      timerClose = clearTimeout(timerClose);
+    }
+  });
+  tile.addEventListener('mouseleave', function (e) {
+    timerClose = setTimeout(function () {
+      tile.click();
+    }, duration);
+  }); // The button to prematurely close the notification;
+
+  var btn = document.createElement('button');
+  btn.classList.add('n-remove', type === 'warning' || type === 'info' ? 'group-hover:text-gray-500' : 'group-hover:text-gray-200');
+  btn.innerHTML = 'x';
+  btn.addEventListener('click', function (e) {
+    tile.click();
+  });
+  tile.appendChild(btn); // Title for the notification
+
+  var header = document.createElement('h3');
+  header.classList.add('n-title');
+  header.innerText = title;
+  tile.appendChild(header); // Text node, aka message
+
+  var text = document.createElement('div');
+  text.classList.add('n-text');
+  text.innerHTML = message;
+  tile.appendChild(text); // Add it to global notification container
+
+  document.querySelector('.notifications').prepend(tile);
+  var timerFadeIn = setTimeout(function () {
+    tile.classList.remove('fadeInDown');
+  }, 900); // animation runs for 800ms (due to .fast), but rendering might need a ms more to prevent "jumping" of element
+  // start timer to close automatically after 5s by triggering mouseleave event
+
+  tile.dispatchEvent(new Event('mouseleave'));
+}
 
 /***/ }),
 

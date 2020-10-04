@@ -2,7 +2,11 @@
 
 @tailwind components;
 
+@import 'includes/animation';
+@import 'includes/buttons';
 @import 'includes/icons';
+@import 'includes/notifications';
+@import 'includes/switch';
 @import 'includes/screen';
 
 @tailwind utilities;

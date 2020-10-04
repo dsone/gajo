@@ -1,4 +1,8 @@
-require('./bootstrap');
+import Notify from './components/Notify';
 
-let hello = 'hello'
-let world = `${ hello } word`;
+window.axios = require('axios');
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+(function() {
+	window.notify = Notify;
+})();

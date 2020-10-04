@@ -1,0 +1,44 @@
+.btn {
+	@apply px-4 py-1 text-white transition-colors duration-200 border rounded;
+
+	&.btn-default {
+		@apply bg-primary-500 border-primary-500;
+
+		&:focus {
+			@apply text-black bg-primary-100 
+		}
+
+		&:hover {
+			@apply bg-primary-100 text-black;
+		}
+	}
+	&.btn-danger {
+		@apply bg-red-500 border-red-500;
+
+		&:focus {
+			@apply text-black bg-red-100;
+		}
+
+		&:hover {
+			@apply bg-red-100 text-red-500;
+		}
+	}
+	&.btn-success {
+		@apply bg-green-500 border-green-500;
+
+		&:focus {
+			@apply text-black bg-green-100;
+		}
+
+		&:hover {
+			@apply bg-green-100 text-green-500;
+		}
+	}
+	&.btn-icon {
+		@apply px-2;
+
+		svg {
+			@apply inline;
+		}
+	}
+}

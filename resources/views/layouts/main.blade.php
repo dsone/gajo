@@ -23,6 +23,7 @@
 		@include('layouts._footer')
 
 		@include('layouts._modal')
+		@include('layouts._notifications')
 		<script src="{{ mix('/js/app.js') }}"></script>
         @yield('footerJS')
     </body>
