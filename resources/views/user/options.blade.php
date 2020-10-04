@@ -137,31 +137,46 @@
 					<div class="js-types-container">
 						{{-- Filled in JavaScript at runtime --}}
 
+						<div class="h-6 drag-target">
+							&nbsp;
+						</div>
 						@foreach($types as $type)
-						<div class="flex flex-row mb-2">
-							<span class="mr-1">
-								<button class="h-full btn btn-default btn-icon">
+						<div class="flex flex-row justify-center mb-6 draggable-item" data-id="{{ $type->id }}">
+							<div class="flex items-center mr-2 md:mr-1 justify-items-center">
+								<button draggable="true" class="btn btn-default btn-icon draggable js-btn-drag" type="button">
 									<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path></svg>
 								</button>
-							</span>
+							</div>
 
-							<input class="form-input" name="name" value="{{ $type['name'] }}" type="text">
-							<input class="form-input" name="ident_1" value="{{ $type['ident_1'] }}" type="text">
-							<input class="form-input" name="ident_2" value="{{ $type['ident_2'] }}" type="text">
+							<div class="flex flex-col w-3/4">
+								<div class="block md:flex md:flex-row">
+									<input class="w-full md:w-1/2 form-input" name="name" value="{{ $type['name'] }}" type="text">
 
-							<select class="form-select">
-								<option value="1" @if($type['display'] == 1) selected="selected" @endif>List Display</option>
-								<option value="2" @if($type['display'] == 2) selected="selected" @endif>Card Display</option>
-							</select>
+									<select class="w-full mt-1 md:w-1/2 md:ml-1 form-select md:mt-0">
+										<option value="1" @if($type['display'] == 1) selected="selected" @endif>List Display</option>
+										<option value="2" @if($type['display'] == 2) selected="selected" @endif>Card Display</option>
+									</select>
+								</div>
 
-							<form action="{{ route('user-type-destroy', [ 'user' => $user->name, 'type' => $type->id ]) }}" method="POST">
-								@csrf
-								<input type="hidden" name="_method" value="delete">
+								<div class="block mt-1 md:flex md:flex-row">
+									<input class="w-full md:w-1/2 form-input" name="ident_1" value="{{ $type['ident_1'] }}" type="text">
+									<input class="w-full mt-1 md:w-1/2 md:ml-1 form-select md:mt-0 form-input" name="ident_2" value="{{ $type['ident_2'] }}" type="text">
+								</div>
+							</div>
 
-								<button class="ml-1 btn btn-danger btn-icon" type="submit">
-									<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-								</button>
-							</form>
+							<div class="flex items-center ml-2 justify-items-center md:ml-1">
+								<form action="{{ route('user-type-destroy', [ 'user' => $user->name, 'type' => $type->id ]) }}" method="POST">
+									@csrf
+									<input type="hidden" name="_method" value="delete">
+
+									<button class="btn btn-danger btn-icon" type="submit">
+										<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+									</button>
+								</form>
+							</div>
+						</div>
+						<div class="h-4 drag-target">
+							&nbsp;
 						</div>
 						@endforeach
 					</div>
@@ -296,6 +311,69 @@
 				});
 			}
 		}, 1000);
+	})();
+</script>
+
+<style>
+	.draggable-item .draggable {
+		cursor: grab;
+	}
+
+	.draggable-item .draggable:active {
+		cursor: grabbing;
+	}
+
+	.draggable-item {
+		transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+	}
+	.draggable-item.dragging {
+		opacity: .7;
+		transform: scale(.9);
+	}
+
+	.drag-target.drop  {
+		border: 2px dashed gray;
+	}
+</style>
+<script>
+	(function() {
+		var draggable = Array.from(document.querySelectorAll('.draggable-item .js-btn-drag'));
+
+		var start = function(event, parent) {
+			event.dataTransfer.setData('text/html', parent.outerHTML);
+			event.dataTransfer.setData('text/plain', parent.dataset.id);
+		};
+
+		draggable.forEach(function(el) {
+			var parent = el.closest('.draggable-item');
+			el.addEventListener('dragstart', function(e) {
+				start(e, parent);
+				parent.classList.add('dragging');
+			});
+			el.addEventListener('dragend', function(e) {
+				parent.classList.remove('dragging');
+			});
+		});
+
+		Array.from(document.querySelectorAll('.drag-target')).forEach(el => {
+			el.addEventListener('dragover', function(e) {  // auto fires every 350ms-ish
+				e.preventDefault();
+			});
+
+			el.addEventListener('drop', function(e) {  // auto fires every 350ms-ish
+				console.log('test', e.dataTransfer);
+				Array.from(document.querySelectorAll('.drop')).forEach(el => el.classList.remove('drop'));
+				document.querySelector(`[data-id="${ e.dataTransfer.getData('text/plain') }"]`).remove();
+				e.currentTarget.innerHTML = e.currentTarget.innerHTML + e.dataTransfer.getData('text/html');
+			});
+
+			el.addEventListener('dragenter', function(e) {
+				e.currentTarget.classList.add('drop');
+			});
+			el.addEventListener('dragleave', function(e) {
+				e.currentTarget.classList.remove('drop');
+			});
+		});
 	})();
 </script>
 
