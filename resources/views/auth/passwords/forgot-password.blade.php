@@ -26,7 +26,7 @@
 
 						<div>
 							<label class="block">
-								<span class="block">E-Mail Address</span>
+								<span class="block mb-1 font-bold">E-Mail Address</span>
 								<input class="block w-full form-input{{ $errors->has('email') ? ' is-danger' : '' }}" type="text" placeholder="E-Mail Address" value="{{ $email ?? old('email') }}" name="email" required>
 							</label>
 

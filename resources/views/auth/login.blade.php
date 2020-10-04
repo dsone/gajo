@@ -16,7 +16,7 @@
 
 						<div>
 							<label class="block">
-								<span class="block">Username</span>
+								<span class="block mb-1 font-bold">Username</span>
 								<input class="block w-full form-input{{ $errors->has('email') ? ' is-danger' : '' }}" name="email" type="text" placeholder="Username" value="{{ old('email') }}" required>
 							</label>
 
@@ -28,7 +28,7 @@
 						</div>
 						<div class="mt-4">
 							<label class="block">
-								<span class="block">Password</span>
+								<span class="block mb-1 font-bold">Password</span>
 								<input class="block w-full form-input" name="password" type="password" value="" placeholder="Password" required>
 							</label>
 
