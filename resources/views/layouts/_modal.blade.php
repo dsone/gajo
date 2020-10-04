@@ -32,6 +32,7 @@
 			document.body.appendChild(this.element);
 			this.element = document.body.lastElementChild;
 			this.btnClose = this.element.querySelector('button');
+			this.scrollTop = 0;
 
 			var that = this;
 			this.element.addEventListener('click', function(e) {
@@ -47,6 +48,8 @@
 		};
 
 		Modal.prototype.show = function() {
+			this.scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+
 			window.scrollTo(0, 0);
 			this.element.classList.remove('hidden', 'opacity-0');
 			document.body.classList.add('overflow-hidden');
@@ -57,6 +60,8 @@
 		Modal.prototype.hide = function() {
 			this.element.classList.add('hidden', 'opacity-0');
 			document.body.classList.remove('overflow-hidden');
+
+			window.scrollTo(0, this.scrollTop);
 		};
 		Modal.prototype.close = function() {
 			this.hide();
