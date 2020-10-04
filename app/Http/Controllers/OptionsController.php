@@ -43,18 +43,34 @@ class OptionsController extends Controller
      */
     public function update(Request $request, $id)
     {
-		$in = $request->all();
-		$user = Auth::user();
-        $userOptions = $user->options;
-		$userOptions->update([
-			'colorblind'		=> isset($in['colorblind']),
-			'privateProfile'	=> isset($in['privateProfile']),
-		]);
+		try {
+			$data = $this->validate($request, [
+				'hideTBA'			=> 'required|boolean',
+				'colorblind'		=> 'required|boolean',
+				'hideReleased'		=> 'required|boolean',
+				'privateProfile'	=> 'required|boolean',
+			]);
 
-		return view('user.options', [
-			'user'		=> $user,
-			'types'		=> $user->types,
-			'options'	=> $userOptions,
-		]);
+			$user = Auth::user();
+			$userOptions = $user->options;
+			$userOptions->update([
+				'hideTBA'			=> $data['hideTBA'],
+				'colorblind'		=> $data['colorblind'],
+				'hideReleased'		=> $data['hideReleased'],
+				'privateProfile'	=> $data['privateProfile'],
+			]);
+
+			return response()->json([
+					'error' => false,
+					'data' => [
+						'options' => $userOptions
+					]
+				]);
+		} catch (\Exception $e) {
+			return response()->json([
+				'error' => true,
+				'message' => $e->getMessage()
+			]);
+		}
     }
 }

@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\OptionsController;
+use App\Http\Controllers\RSSController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group([ 'prefix' => '/v1', 'middleware' => [ 'auth' ] ], function () {
+	Route::put('/{user}/options', [ OptionsController::class, 'update' ])->name('user-options-update')->middleware('auth');
+
+	Route::get('/options/rss', [ RSSController::class, 'changeToken' ])->name('api-refresh-rss');
 });
