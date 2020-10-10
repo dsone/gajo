@@ -863,6 +863,11 @@ video {
   animation-duration: 800ms;
 }
 
+.animated.slow {
+  -webkit-animation-duration: 3000ms;
+  animation-duration: 3000ms;
+}
+
 @-webkit-keyframes fadeInDown {
   from {
     opacity: 0;
@@ -917,6 +922,33 @@ video {
 .fadeOutRight {
   -webkit-animation-name: fadeOutRight;
   animation-name: fadeOutRight;
+}
+
+@-webkit-keyframes flash {
+  from, 50%, to {
+    opacity: 1;
+  }
+
+  25%, 75% {
+    opacity: 0;
+  }
+}
+
+@keyframes flash {
+  from, 50%, to {
+    opacity: 1;
+  }
+
+  25%, 75% {
+    opacity: 0;
+  }
+}
+
+.flash {
+  -webkit-animation-name: flash;
+  animation-name: flash;
+  -webkit-animation-iteration-count: infinite;
+          animation-iteration-count: infinite;
 }
 
 .btn {

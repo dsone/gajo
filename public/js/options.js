@@ -3045,6 +3045,18 @@ function Options() {
     hideTBA: this.config.hideTBA.checked
   };
 
+  var toggleInProgress = function toggleInProgress(inProgress) {
+    if (inProgress) {
+      _this.config.ajaxInProgress = true;
+
+      _this.config.pending.show();
+    } else {
+      _this.config.ajaxInProgress = false;
+
+      _this.config.pending.hide();
+    }
+  };
+
   var main = function main() {
     _this.config.changeRSS.addEventListener('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
       var uri;
@@ -3052,8 +3064,18 @@ function Options() {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
+              if (!_this.config.ajaxInProgress) {
+                _context.next = 3;
+                break;
+              }
+
+              e.preventDefault();
+              return _context.abrupt("return", false);
+
+            case 3:
               try {
                 uri = _this.config.changeRSS.getAttribute('data-uri');
+                toggleInProgress(true);
 
                 _this.config.changeRSS.setAttribute('disabled', 'disabled');
 
@@ -3066,16 +3088,19 @@ function Options() {
                   }
 
                   _this.config.changeRSS.removeAttribute('disabled', 'disabled');
+
+                  toggleInProgress(false);
                 })["catch"](function (json) {
                   _this.config.changeRSS.removeAttribute('disabled', 'disabled');
 
                   notify('Error', 'Failed to update RSS token', 'danger');
+                  toggleInProgress(false);
                 });
               } catch (e) {
                 console.error(e);
               }
 
-            case 1:
+            case 4:
             case "end":
               return _context.stop();
           }
@@ -3083,47 +3108,99 @@ function Options() {
       }, _callee);
     })));
 
+    var update = function update(data) {
+      toggleInProgress(true);
+
+      _this.config.ajax.put(__ROUTES.options, data).then(function (json) {
+        if (!json.data.error) {
+          _this.data = Object.assign({}, data);
+          notify('Success', 'Updated Options', 'success');
+        } else {
+          notify('Error', json.message, 'danger');
+        }
+
+        toggleInProgress(false);
+      })["catch"](function (json) {
+        notify('Error', 'Failed to update options', 'danger');
+        toggleInProgress(false);
+      });
+    };
+
     var timer = undefined;
+    var updateOptions = Object.assign({
+      _method: 'put'
+    }, _this.data);
     ['privateProfile', 'colorblind', 'hideReleased', 'hideTBA'].forEach(function (key) {
       _this.config[key].addEventListener('click', function (e) {
         if (_this.config.ajaxInProgress) {
           e.preventDefault();
-          return;
+          return false;
         }
 
-        _this.data = Object.assign({
-          _method: 'put'
-        }, _this.data);
-        _this.data[key] = _this.config[key].checked;
-
-        var update = function update(data) {
-          _this.config.ajaxInProgress = true;
-
-          _this.config.ajax.put(__ROUTES.options, data).then(function (json) {
-            if (!json.data.error) {
-              _this.data[key] = _this.config[key].checked;
-              notify('Success', 'Updated Options', 'success');
-            } else {
-              notify('Error', json.message, 'danger');
-            }
-
-            _this.config.ajaxInProgress = false;
-          })["catch"](function (json) {
-            _this.config.ajaxInProgress = false;
-            notify('Error', 'Failed to update RSS token', 'danger');
-          });
-        };
-
+        updateOptions[key] = _this.config[key].checked;
         clearTimeout(timer);
         timer = setTimeout(function () {
-          return update(_this.data);
-        }, 2000);
+          return update(updateOptions);
+        }, 1000);
       });
     });
   };
 
   main();
 }
+
+/***/ }),
+
+/***/ "./resources/js/components/Pending.js":
+/*!********************************************!*\
+  !*** ./resources/js/components/Pending.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var Pending = function () {
+  var container = undefined;
+  var pending = false;
+
+  var init = function init() {
+    var id = +new Date();
+    container = document.createElement('div');
+    container.setAttribute('id', "i".concat(id));
+    container.setAttribute('class', 'pending-container fixed bottom-0 left-0 ml-4 mb-4 text-primary-400 animated slow invisible');
+    container.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>';
+    document.body.appendChild(container);
+    container = document.querySelector("#i".concat(id));
+  }; // trigger once for "above the fold" images
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    init();
+  });
+
+  var show = function show() {
+    container.classList.remove('invisible');
+    container.classList.add('flash');
+    pending = true;
+  };
+
+  var hide = function hide() {
+    container.classList.add('invisible');
+    container.classList.remove('flash');
+    pending = false;
+  };
+
+  var isPending = function isPending() {
+    return pending;
+  };
+
+  return {
+    hide: hide,
+    show: show,
+    isPending: isPending
+  };
+}();
+
+module.exports = Pending;
 
 /***/ }),
 
@@ -3138,6 +3215,9 @@ function Options() {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Ajax__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/Ajax */ "./resources/js/components/Ajax.js");
 /* harmony import */ var _components_Options__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/Options */ "./resources/js/components/Options.js");
+/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/Pending */ "./resources/js/components/Pending.js");
+/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_components_Pending__WEBPACK_IMPORTED_MODULE_2__);
+
 
 
 var options = new _components_Options__WEBPACK_IMPORTED_MODULE_1__["default"]({
@@ -3147,7 +3227,8 @@ var options = new _components_Options__WEBPACK_IMPORTED_MODULE_1__["default"]({
   hideTBA: $('.js-options-hideTBA'),
   rss: $('.js-options-rss'),
   changeRSS: $('.js-btn-rss'),
-  ajax: _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"]
+  ajax: _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"],
+  pending: _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a
 });
 
 /***/ }),

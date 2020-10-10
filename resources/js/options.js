@@ -1,5 +1,6 @@
 import Ajax from './components/Ajax';
 import Options from './components/Options';
+import Pending from './components/Pending';
 
 let options = new Options({
 	privateProfile:	$('.js-options-privateProfile'),
@@ -9,4 +10,5 @@ let options = new Options({
 	rss:			$('.js-options-rss'),
 	changeRSS:		$('.js-btn-rss'),
 	ajax:			Ajax,
+	pending:		Pending,
 });
