@@ -46,6 +46,7 @@ class TypeController extends Controller
 			'ident_1'	=> $request->ident_1,
 			'ident_2'	=> $request->ident_2,
             'display'	=> $request->display,
+			'sort'		=> Type::count()+1,
 		]);
 
 		return redirect()->route('user-options', [ 'user' => $user->name ]);
