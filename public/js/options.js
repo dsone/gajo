@@ -3279,6 +3279,102 @@ module.exports = Pending;
 
 /***/ }),
 
+/***/ "./resources/js/components/Types.js":
+/*!******************************************!*\
+  !*** ./resources/js/components/Types.js ***!
+  \******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Types; });
+function Types() {
+  var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+  if (!(this instanceof Types)) {
+    return new Types(config);
+  }
+
+  this.container = config.container;
+  this.types = [
+    /**
+     {
+    	 "id": 1,
+    	 "name": "Test",
+    	 "ident_1": "Test1",
+    	 "ident_2": "Test1",
+    	 "sort": 1,
+    	 "display": 1
+     }
+     */
+  ];
+  this.types = config.types.slice(0);
+  this.template = config.template;
+  this.render();
+}
+
+Types.prototype.render = function () {
+  var _this = this;
+
+  this.container.innerHTML = '';
+  this.types.forEach(function (type) {
+    var element = _this.template.slice(0);
+
+    element = element.replace(/#type_id#/gim, type.id).replace(/#type_id_url#/gim, type.id).replace(/#type_name#/gim, type.name).replace(/#type_ident1#/gim, type.ident_1).replace(/#type_ident2#/gim, type.ident_2);
+    _this.container.innerHTML += element;
+    element = _this.container.querySelector("div[data-id=\"".concat(type.id, "\"]"));
+    console.log(element);
+    var select = element.querySelector('.js-type-select');
+    select.selectedIndex = type.display - 1;
+  });
+  this.dragndrop();
+};
+
+Types.prototype.dragndrop = function () {
+  // Create Drag'n'Drop features
+  var draggable = Array.from($$('.draggable-item .js-btn-drag'));
+
+  var start = function start(event, parent) {
+    event.dataTransfer.setData('text/html', parent.outerHTML);
+    event.dataTransfer.setData('text/plain', parent.dataset.id);
+  };
+
+  draggable.forEach(function (el) {
+    var parent = el.closest('.draggable-item');
+    el.addEventListener('dragstart', function (e) {
+      start(e, parent);
+      parent.classList.add('dragging');
+    });
+    el.addEventListener('dragend', function (e) {
+      parent.classList.remove('dragging');
+    });
+  });
+  Array.from($$('.drag-target')).forEach(function (el) {
+    el.addEventListener('dragover', function (e) {
+      // auto fires every 350ms-ish
+      e.preventDefault();
+    });
+    el.addEventListener('drop', function (e) {
+      // auto fires every 350ms-ish
+      console.log('test', e.dataTransfer);
+      Array.from($$('.drop')).forEach(function (el) {
+        return el.classList.remove('drop');
+      });
+      $("[data-id=\"".concat(e.dataTransfer.getData('text/plain'), "\"]")).remove();
+      e.currentTarget.innerHTML = e.currentTarget.innerHTML + e.dataTransfer.getData('text/html');
+    });
+    el.addEventListener('dragenter', function (e) {
+      e.currentTarget.classList.add('drop');
+    });
+    el.addEventListener('dragleave', function (e) {
+      e.currentTarget.classList.remove('drop');
+    });
+  });
+};
+
+/***/ }),
+
 /***/ "./resources/js/options.js":
 /*!*********************************!*\
   !*** ./resources/js/options.js ***!
@@ -3292,14 +3388,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/Modal */ "./resources/js/components/Modal.js");
 /* harmony import */ var _components_Modal__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_components_Modal__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _components_Options__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/Options */ "./resources/js/components/Options.js");
-/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/Pending */ "./resources/js/components/Pending.js");
-/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_components_Pending__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _components_Types__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/Types */ "./resources/js/components/Types.js");
+/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/Pending */ "./resources/js/components/Pending.js");
+/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_components_Pending__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
  // Create modal for adding types
 
-var typeModal = new _components_Modal__WEBPACK_IMPORTED_MODULE_1___default.a(document.querySelector('template#modal-type').innerHTML);
+var typeModal = new _components_Modal__WEBPACK_IMPORTED_MODULE_1___default.a($('template#modal-type').innerHTML);
 var btnCloseModal = typeModal.element.querySelector('.js-modal-close');
 
 if (btnCloseModal) {
@@ -3313,7 +3411,7 @@ if (btnCloseModal) {
   });
 }
 
-var btnAddType = document.querySelector('.js-modal-add-type');
+var btnAddType = $('.js-modal-add-type');
 
 if (btnAddType) {
   btnAddType.addEventListener('click', function () {
@@ -3330,46 +3428,13 @@ var options = new _components_Options__WEBPACK_IMPORTED_MODULE_2__["default"]({
   rss: $('.js-options-rss'),
   changeRSS: $('.js-btn-rss'),
   ajax: _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"],
-  pending: _components_Pending__WEBPACK_IMPORTED_MODULE_3___default.a
-}); // Create Drag'n'Drop features
+  pending: _components_Pending__WEBPACK_IMPORTED_MODULE_4___default.a
+}); // Init Types
 
-var draggable = Array.from(document.querySelectorAll('.draggable-item .js-btn-drag'));
-
-var start = function start(event, parent) {
-  event.dataTransfer.setData('text/html', parent.outerHTML);
-  event.dataTransfer.setData('text/plain', parent.dataset.id);
-};
-
-draggable.forEach(function (el) {
-  var parent = el.closest('.draggable-item');
-  el.addEventListener('dragstart', function (e) {
-    start(e, parent);
-    parent.classList.add('dragging');
-  });
-  el.addEventListener('dragend', function (e) {
-    parent.classList.remove('dragging');
-  });
-});
-Array.from(document.querySelectorAll('.drag-target')).forEach(function (el) {
-  el.addEventListener('dragover', function (e) {
-    // auto fires every 350ms-ish
-    e.preventDefault();
-  });
-  el.addEventListener('drop', function (e) {
-    // auto fires every 350ms-ish
-    console.log('test', e.dataTransfer);
-    Array.from(document.querySelectorAll('.drop')).forEach(function (el) {
-      return el.classList.remove('drop');
-    });
-    document.querySelector("[data-id=\"".concat(e.dataTransfer.getData('text/plain'), "\"]")).remove();
-    e.currentTarget.innerHTML = e.currentTarget.innerHTML + e.dataTransfer.getData('text/html');
-  });
-  el.addEventListener('dragenter', function (e) {
-    e.currentTarget.classList.add('drop');
-  });
-  el.addEventListener('dragleave', function (e) {
-    e.currentTarget.classList.remove('drop');
-  });
+var types = new _components_Types__WEBPACK_IMPORTED_MODULE_3__["default"]({
+  container: $('.js-types-container'),
+  template: $('template#type-item').innerHTML,
+  types: __TYPES
 });
 
 /***/ }),
