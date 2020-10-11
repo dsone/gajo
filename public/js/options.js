@@ -2966,6 +2966,81 @@ function Ajax() {
 
 /***/ }),
 
+/***/ "./resources/js/components/Modal.js":
+/*!******************************************!*\
+  !*** ./resources/js/components/Modal.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var Modal = function () {
+  var modalTmpl = document.querySelector('template#modal').content;
+
+  var Modal = function Modal(bodyContent) {
+    if (!(this instanceof Modal)) {
+      return new Modal(bodyContent);
+    }
+
+    this.element = modalTmpl.cloneNode(true);
+    this.content = this.element.querySelector('.modal-content');
+    this.content.innerHTML = bodyContent;
+    document.body.appendChild(this.element);
+    this.element = document.body.lastElementChild;
+    this.btnClose = this.element.querySelector('button');
+    this.scrollTop = 0;
+    var that = this;
+    this.element.addEventListener('click', function (e) {
+      if (e.target.closest('.modal-content')) {
+        return;
+      }
+
+      that.hide();
+    });
+    this.btnClose.addEventListener('click', function (e) {
+      that.element.click();
+    });
+  };
+
+  Modal.prototype.show = function () {
+    this.scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    window.scrollTo(0, 0);
+    this.element.classList.remove('hidden', 'opacity-0');
+    document.body.classList.add('overflow-hidden');
+  };
+
+  Modal.prototype.open = function () {
+    this.show();
+  };
+
+  Modal.prototype.hide = function () {
+    this.element.classList.add('hidden', 'opacity-0');
+    document.body.classList.remove('overflow-hidden');
+    window.scrollTo(0, this.scrollTop);
+  };
+
+  Modal.prototype.close = function () {
+    this.hide();
+  };
+
+  document.body.addEventListener('keyup', function (e) {
+    var key = e.keyCode || e.which;
+
+    if (key === 27) {
+      var openModal = document.querySelector('.modal-overlay:not(.hidden)');
+
+      if (openModal) {
+        openModal.click();
+      }
+    }
+  });
+  window.Modal = Modal;
+  return Modal;
+}();
+
+module.exports = Modal;
+
+/***/ }),
+
 /***/ "./resources/js/components/Options.js":
 /*!********************************************!*\
   !*** ./resources/js/components/Options.js ***!
@@ -3214,13 +3289,40 @@ module.exports = Pending;
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Ajax__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/Ajax */ "./resources/js/components/Ajax.js");
-/* harmony import */ var _components_Options__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/Options */ "./resources/js/components/Options.js");
-/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/Pending */ "./resources/js/components/Pending.js");
-/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_components_Pending__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _components_Modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/Modal */ "./resources/js/components/Modal.js");
+/* harmony import */ var _components_Modal__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_components_Modal__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _components_Options__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/Options */ "./resources/js/components/Options.js");
+/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/Pending */ "./resources/js/components/Pending.js");
+/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_components_Pending__WEBPACK_IMPORTED_MODULE_3__);
 
 
 
-var options = new _components_Options__WEBPACK_IMPORTED_MODULE_1__["default"]({
+ // Create modal for adding types
+
+var typeModal = new _components_Modal__WEBPACK_IMPORTED_MODULE_1___default.a(document.querySelector('template#modal-type').innerHTML);
+var btnCloseModal = typeModal.element.querySelector('.js-modal-close');
+
+if (btnCloseModal) {
+  var typeModalForm = typeModal.element.querySelector('form');
+  btnCloseModal.addEventListener('click', function (e) {
+    typeModal.hide();
+
+    if (typeModalForm) {
+      typeModalForm.reset();
+    }
+  });
+}
+
+var btnAddType = document.querySelector('.js-modal-add-type');
+
+if (btnAddType) {
+  btnAddType.addEventListener('click', function () {
+    typeModal.show();
+  });
+} // Init Options
+
+
+var options = new _components_Options__WEBPACK_IMPORTED_MODULE_2__["default"]({
   privateProfile: $('.js-options-privateProfile'),
   colorblind: $('.js-options-colorblind'),
   hideReleased: $('.js-options-hideReleased'),
@@ -3228,7 +3330,46 @@ var options = new _components_Options__WEBPACK_IMPORTED_MODULE_1__["default"]({
   rss: $('.js-options-rss'),
   changeRSS: $('.js-btn-rss'),
   ajax: _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"],
-  pending: _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a
+  pending: _components_Pending__WEBPACK_IMPORTED_MODULE_3___default.a
+}); // Create Drag'n'Drop features
+
+var draggable = Array.from(document.querySelectorAll('.draggable-item .js-btn-drag'));
+
+var start = function start(event, parent) {
+  event.dataTransfer.setData('text/html', parent.outerHTML);
+  event.dataTransfer.setData('text/plain', parent.dataset.id);
+};
+
+draggable.forEach(function (el) {
+  var parent = el.closest('.draggable-item');
+  el.addEventListener('dragstart', function (e) {
+    start(e, parent);
+    parent.classList.add('dragging');
+  });
+  el.addEventListener('dragend', function (e) {
+    parent.classList.remove('dragging');
+  });
+});
+Array.from(document.querySelectorAll('.drag-target')).forEach(function (el) {
+  el.addEventListener('dragover', function (e) {
+    // auto fires every 350ms-ish
+    e.preventDefault();
+  });
+  el.addEventListener('drop', function (e) {
+    // auto fires every 350ms-ish
+    console.log('test', e.dataTransfer);
+    Array.from(document.querySelectorAll('.drop')).forEach(function (el) {
+      return el.classList.remove('drop');
+    });
+    document.querySelector("[data-id=\"".concat(e.dataTransfer.getData('text/plain'), "\"]")).remove();
+    e.currentTarget.innerHTML = e.currentTarget.innerHTML + e.dataTransfer.getData('text/html');
+  });
+  el.addEventListener('dragenter', function (e) {
+    e.currentTarget.classList.add('drop');
+  });
+  el.addEventListener('dragleave', function (e) {
+    e.currentTarget.classList.remove('drop');
+  });
 });
 
 /***/ }),

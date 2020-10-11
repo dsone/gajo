@@ -141,7 +141,9 @@
 					<div class="flex flex-row justify-center mb-6 draggable-item" data-id="{{ $type->id }}">
 						<div class="flex items-center mr-2 md:mr-1 justify-items-center">
 							<button draggable="true" class="btn btn-default btn-icon draggable js-btn-drag" type="button">
-								<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path></svg>
+								<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 pb-1" viewBox="0 0 20 20" fill="currentColor">
+									<path fill-rule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+								</svg>
 							</button>
 						</div>
 
@@ -191,16 +193,8 @@
 	</section>
 </div>
 
-@section('footerJS')
-	<script>
-		var __ROUTES = {
-			options: '{{ route('user-options-update', [ 'user' => $user->name ]) }}',
-		};
-	</script>
-	<script src="{{ mix('/js/options.js') }}"></script>
-@endsection
-
 <template id="type-item">
+
 </template>
 
 <template id="modal-type">
@@ -292,95 +286,13 @@
 		</div>
 	</div>
 </template>
+@endsection
 
-<script async="false">
-	(function() {
-		setTimeout(function() {
-			var typeModal = new Modal(document.querySelector('template#modal-type').innerHTML);
-			var btnCloseModal = typeModal.element.querySelector('.js-modal-close');
-			if (btnCloseModal) {
-				var typeModalForm = typeModal.element.querySelector('form');
-				btnCloseModal.addEventListener('click', function(e) {
-					typeModal.hide();
-
-					if (typeModalForm) {
-						typeModalForm.reset();
-					}
-				});
-			}
-
-			var btnAddType = document.querySelector('.js-modal-add-type');
-			if (btnAddType) {
-				btnAddType.addEventListener('click', function() {
-					typeModal.show();
-				});
-			}
-		}, 1000);
-	})();
-</script>
-
-<style>
-	.draggable-item .draggable {
-		cursor: grab;
-	}
-
-	.draggable-item .draggable:active {
-		cursor: grabbing;
-	}
-
-	.draggable-item {
-		transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-	}
-	.draggable-item.dragging {
-		opacity: .7;
-		transform: scale(.9);
-	}
-
-	.drag-target.drop  {
-		border: 2px dashed gray;
-	}
-</style>
-<script>
-	(function() {
-		var draggable = Array.from(document.querySelectorAll('.draggable-item .js-btn-drag'));
-
-		var start = function(event, parent) {
-			event.dataTransfer.setData('text/html', parent.outerHTML);
-			event.dataTransfer.setData('text/plain', parent.dataset.id);
+@section('footerJS')
+	<script>
+		var __ROUTES = {
+			options: '{{ route('user-options-update', [ 'user' => $user->name ]) }}',
 		};
-
-		draggable.forEach(function(el) {
-			var parent = el.closest('.draggable-item');
-			el.addEventListener('dragstart', function(e) {
-				start(e, parent);
-				parent.classList.add('dragging');
-			});
-			el.addEventListener('dragend', function(e) {
-				parent.classList.remove('dragging');
-			});
-		});
-
-		Array.from(document.querySelectorAll('.drag-target')).forEach(el => {
-			el.addEventListener('dragover', function(e) {  // auto fires every 350ms-ish
-				e.preventDefault();
-			});
-
-			el.addEventListener('drop', function(e) {  // auto fires every 350ms-ish
-				console.log('test', e.dataTransfer);
-				Array.from(document.querySelectorAll('.drop')).forEach(el => el.classList.remove('drop'));
-				document.querySelector(`[data-id="${ e.dataTransfer.getData('text/plain') }"]`).remove();
-				e.currentTarget.innerHTML = e.currentTarget.innerHTML + e.dataTransfer.getData('text/html');
-			});
-
-			el.addEventListener('dragenter', function(e) {
-				e.currentTarget.classList.add('drop');
-			});
-			el.addEventListener('dragleave', function(e) {
-				e.currentTarget.classList.remove('drop');
-			});
-		});
-	})();
-</script>
-
-
+	</script>
+	<script src="{{ mix('/js/options.js') }}"></script>
 @endsection

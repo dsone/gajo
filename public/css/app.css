@@ -1277,6 +1277,29 @@ html .main-footer, body .main-footer {
   border-color: rgba(113, 128, 142, var(--border-opacity));
 }
 
+.draggable-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.draggable-item.dragging {
+  opacity: 0.7;
+  transform: scale(0.9);
+}
+
+.draggable-item .draggable {
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+
+.draggable-item .draggable:active {
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
+
+.drag-target.drop {
+  border: 2px dashed gray;
+}
+
 .space-y-0 > :not(template) ~ :not(template) {
   --space-y-reverse: 0;
   margin-top: calc(0px * calc(1 - var(--space-y-reverse)));
