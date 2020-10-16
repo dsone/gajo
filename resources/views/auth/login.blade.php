@@ -41,7 +41,7 @@
 
 						<div class="mt-4">
 							<label class="cursor-pointer">
-								<input class="text-primary-500 form-checkbox" type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me
+								<input class="text-primary-500 form-checkbox border-primary-500" type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me
 							</label>
 						</div>
 
