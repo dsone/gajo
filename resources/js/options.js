@@ -40,6 +40,7 @@ let options = new Options({
 // Init Types
 let types = new Types({
 	container: $('.js-types-container'),
+	emptyContainer: $('.js-types-empty'),
 	template: $('template#type-item').innerHTML,
 	types: __TYPES,
 });

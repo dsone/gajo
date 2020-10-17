@@ -3289,6 +3289,41 @@ module.exports = Pending;
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Types; });
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+    arr2[i] = arr[i];
+  }
+
+  return arr2;
+}
+
 function Types() {
   var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
@@ -3297,6 +3332,7 @@ function Types() {
   }
 
   this.container = config.container;
+  this.emptyContainer = config.emptyContainer;
   this.types = [
     /**
      {
@@ -3317,54 +3353,68 @@ function Types() {
 Types.prototype.render = function () {
   var _this = this;
 
-  this.container.innerHTML = '';
-  this.types.forEach(function (type) {
-    var element = _this.template.slice(0);
+  this.container.innerHTML = '<div class="h-6 drag-target" data-target="-1">&nbsp;</div>';
 
-    element = element.replace(/#type_id#/gim, type.id).replace(/#type_id_url#/gim, type.id).replace(/#type_name#/gim, type.name).replace(/#type_ident1#/gim, type.ident_1).replace(/#type_ident2#/gim, type.ident_2);
-    _this.container.innerHTML += element;
-    element = _this.container.querySelector("div[data-id=\"".concat(type.id, "\"]"));
-    console.log(element);
-    var select = element.querySelector('.js-type-select');
-    select.selectedIndex = type.display - 1;
-  });
-  this.dragndrop();
+  if (this.types.length > 0) {
+    this.emptyContainer.classList.add('hidden');
+    this.types.forEach(function (type, index) {
+      var element = _this.template.slice(0);
+
+      element = element.replace(/#type_id#/gim, type.id).replace(/#type_id_url#/gim, type.id).replace(/#type_name#/gim, type.name).replace(/#type_ident1#/gim, type.ident_1).replace(/#type_ident2#/gim, type.ident_2).replace(/#type_index#/gim, index);
+      _this.container.innerHTML += element;
+      element = _this.container.querySelector("div[data-id=\"".concat(type.id, "\"]"));
+      var select = element.querySelector('.js-type-select');
+      select.selectedIndex = type.display - 1;
+    });
+    this.dragndrop();
+  } else {
+    this.emptyContainer.classList.remove('hidden');
+  }
 };
 
 Types.prototype.dragndrop = function () {
   // Create Drag'n'Drop features
   var draggable = Array.from($$('.draggable-item .js-btn-drag'));
-
-  var start = function start(event, parent) {
-    event.dataTransfer.setData('text/html', parent.outerHTML);
-    event.dataTransfer.setData('text/plain', parent.dataset.id);
-  };
-
+  var draggedItemIndex;
   draggable.forEach(function (el) {
     var parent = el.closest('.draggable-item');
     el.addEventListener('dragstart', function (e) {
-      start(e, parent);
+      draggedItemIndex = parseInt(parent.querySelector('.drag-target').getAttribute('data-target'), 10);
       parent.classList.add('dragging');
     });
     el.addEventListener('dragend', function (e) {
       parent.classList.remove('dragging');
     });
   });
+  var that = this;
   Array.from($$('.drag-target')).forEach(function (el) {
+    var draggedItemTargetIndex = parseInt(el.getAttribute('data-target'));
     el.addEventListener('dragover', function (e) {
       // auto fires every 350ms-ish
       e.preventDefault();
     });
     el.addEventListener('drop', function (e) {
-      // auto fires every 350ms-ish
-      console.log('test', e.dataTransfer);
-      Array.from($$('.drop')).forEach(function (el) {
-        return el.classList.remove('drop');
-      });
-      $("[data-id=\"".concat(e.dataTransfer.getData('text/plain'), "\"]")).remove();
-      e.currentTarget.innerHTML = e.currentTarget.innerHTML + e.dataTransfer.getData('text/html');
+      if (draggedItemTargetIndex > draggedItemIndex) {
+        var _that$types; // = is excluded below
+
+
+        (_that$types = that.types).splice.apply(_that$types, [draggedItemTargetIndex, 0].concat(_toConsumableArray(that.types.splice(draggedItemIndex, 1))));
+      } else {
+        var _that$types2; // if a type is moved upwards (lower index) we need to add 1 to target,
+        // or we move before the target, ie 2 upwards instead of 1
+
+
+        (_that$types2 = that.types).splice.apply(_that$types2, [draggedItemTargetIndex + 1, 0].concat(_toConsumableArray(that.types.splice(draggedItemIndex, 1))));
+      }
+
+      that.render();
     });
     el.addEventListener('dragenter', function (e) {
+      // skip draggable-item's own drag-target and the target directly before that
+      if (draggedItemIndex === draggedItemTargetIndex || draggedItemIndex - 1 === draggedItemTargetIndex) {
+        return;
+      }
+
       e.currentTarget.classList.add('drop');
     });
     el.addEventListener('dragleave', function (e) {
@@ -3433,6 +3483,7 @@ var options = new _components_Options__WEBPACK_IMPORTED_MODULE_2__["default"]({
 
 var types = new _components_Types__WEBPACK_IMPORTED_MODULE_3__["default"]({
   container: $('.js-types-container'),
+  emptyContainer: $('.js-types-empty'),
   template: $('template#type-item').innerHTML,
   types: __TYPES
 });
