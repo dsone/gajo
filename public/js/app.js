@@ -262,8 +262,8 @@ function Notify(title, message, type, duration) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! A:\Projekte\Server\Gajo2\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! A:\Projekte\Server\Gajo2\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /home/ds/projects/Gajo2/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /home/ds/projects/Gajo2/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

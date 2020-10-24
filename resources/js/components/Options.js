@@ -86,6 +86,7 @@ export default function Options(config = {}) {
 					toggleInProgress(false);
 				});
 		};
+
 		let timer = undefined;
 		let updateOptions = Object.assign({ _method: 'put'}, this.data);
 		[ 'privateProfile', 'colorblind', 'hideReleased', 'hideTBA' ].forEach(key => {

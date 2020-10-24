@@ -3279,16 +3279,16 @@ module.exports = Pending;
 
 /***/ }),
 
-/***/ "./resources/js/components/Types.js":
-/*!******************************************!*\
-  !*** ./resources/js/components/Types.js ***!
-  \******************************************/
+/***/ "./resources/js/components/TypeList.js":
+/*!*********************************************!*\
+  !*** ./resources/js/components/TypeList.js ***!
+  \*********************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Types; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return TypeList; });
 function _toConsumableArray(arr) {
   return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
 }
@@ -3324,55 +3324,129 @@ function _arrayLikeToArray(arr, len) {
   return arr2;
 }
 
-function Types() {
+function TypeList() {
   var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-  if (!(this instanceof Types)) {
-    return new Types(config);
+  if (!(this instanceof TypeList)) {
+    return new TypeList(config);
   }
 
   this.container = config.container;
   this.emptyContainer = config.emptyContainer;
-  this.types = [
-    /**
-     {
-    	 "id": 1,
-    	 "name": "Test",
-    	 "ident_1": "Test1",
-    	 "ident_2": "Test1",
-    	 "sort": 1,
-    	 "display": 1
-     }
-     */
-  ];
+  /**this.types = [
+  	{
+  		"id": 1,
+  		"name": "Test",
+  		"ident_1": "Test1",
+  		"ident_2": "Test1",
+  		"sort": 1,
+  		"display": 1
+  	}
+  ];*/
+
   this.types = config.types.slice(0);
   this.template = config.template;
+  this.renderCallback = config.renderCallback;
+  this.dragndropCallback = config.dragndropCallback;
+  this.updateTypeCallback = config.updateTypeCallback;
   this.render();
 }
+/**
+ * Returns a type by a given index, wheras the index means the index of the position inside the types array.
+ * Removing types will obviously change the index
+ * 
+ * @param 	integer	i	The index of the type to return.
+ * @returns				The Type JSON literal representing the requested type, by value, not ref.	
+ */
 
-Types.prototype.render = function () {
+TypeList.prototype.getByIndex = function (i) {
+  if (typeof this.types[i] === 'undefined') {
+    return undefined;
+  }
+
+  return this.types.slice(i, i + 1)[0];
+};
+/**
+ * Removes a Type by its id. Using id here is more secure than using the Type's index position.
+ * Rerenders the type display after removal.
+ * 
+ * @param	integer	id	The id of the Type to remove.
+ */
+
+
+TypeList.prototype.removeById = function (id) {
+  this.types = this.types.filter(function (type) {
+    return type.id !== id;
+  });
+  this.render();
+};
+/**
+ * Adds a new Type to the list.
+ * 
+ * @param JSON	type	The JSON representation of the new Type.
+ */
+
+
+TypeList.prototype.addType = function (type) {
+  this.types.push(type);
+  this.render();
+};
+
+TypeList.prototype.render = function () {
   var _this = this;
 
   this.container.innerHTML = '<div class="h-6 drag-target" data-target="-1">&nbsp;</div>';
 
   if (this.types.length > 0) {
     this.emptyContainer.classList.add('hidden');
+    var events = {
+      selects: [],
+      inputs: [],
+      selectedIndex: {}
+    }; //! Setting innerHTML with '+=' resets events and the selectedIndex on previous selects
+
     this.types.forEach(function (type, index) {
       var element = _this.template.slice(0);
 
-      element = element.replace(/#type_id#/gim, type.id).replace(/#type_id_url#/gim, type.id).replace(/#type_name#/gim, type.name).replace(/#type_ident1#/gim, type.ident_1).replace(/#type_ident2#/gim, type.ident_2).replace(/#type_index#/gim, index);
+      element = element.replace(/#type_id#/gim, type.id).replace(/#type_name#/gim, type.name).replace(/#type_ident1#/gim, type.ident_1).replace(/#type_ident2#/gim, type.ident_2).replace(/#type_index#/gim, index);
       _this.container.innerHTML += element;
       element = _this.container.querySelector("div[data-id=\"".concat(type.id, "\"]"));
-      var select = element.querySelector('.js-type-select');
-      select.selectedIndex = type.display - 1;
+      events.selectedIndex[type.id] = type.display - 1;
+      events.selects.push([type.id, element.querySelector('.js-type-select')]);
+      events.inputs.push([type.id, [element.querySelector('.js-type-name'), element.querySelector('.js-type-ident1'), element.querySelector('.js-type-ident2')]]);
+    }); // No set events as needed
+
+    this.types.forEach(function (type, index) {
+      var typeElement = _this.container.querySelector("div[data-id=\"".concat(type.id, "\"]"));
+
+      var select = typeElement.querySelector('.js-type-select');
+      select.selectedIndex = events.selectedIndex[type.id];
+      select.addEventListener('change', function (e) {
+        _this.update(type, select.name, parseInt(select.options[select.selectedIndex].value));
+      });
+      [typeElement.querySelector('.js-type-name'), typeElement.querySelector('.js-type-ident1'), typeElement.querySelector('.js-type-ident2')].forEach(function (el) {
+        el.addEventListener('change', function (e) {
+          _this.update(type, el.name, el.value);
+        });
+      });
     });
     this.dragndrop();
   } else {
     this.emptyContainer.classList.remove('hidden');
+
+    if (!!this.renderCallback) {
+      this.renderCallback(false);
+    }
   }
 };
+/**
+ * Adds event listeners for drag and drop.
+ * Deals with changing position of a Type within the list.
+ * Calls render() when necessary and a custom callback function on drop.
+ */
 
-Types.prototype.dragndrop = function () {
+
+TypeList.prototype.dragndrop = function () {
   // Create Drag'n'Drop features
   var draggable = Array.from($$('.draggable-item .js-btn-drag'));
   var draggedItemIndex;
@@ -3408,6 +3482,10 @@ Types.prototype.dragndrop = function () {
       }
 
       that.render();
+
+      if (!!that.dragndropCallback) {
+        that.dragndropCallback();
+      }
     });
     el.addEventListener('dragenter', function (e) {
       // skip draggable-item's own drag-target and the target directly before that
@@ -3421,7 +3499,293 @@ Types.prototype.dragndrop = function () {
       e.currentTarget.classList.remove('drop');
     });
   });
+
+  if (!!this.renderCallback) {
+    this.renderCallback(true);
+  }
 };
+
+TypeList.prototype.update = function (type, attrName, value) {
+  var _this2 = this; // Name has a unique constraint for a user
+
+
+  if (attrName === 'name') {
+    var uniqueNameError = this.types.some(function (tp) {
+      return tp.name === value && tp.id !== type.id;
+    });
+
+    if (uniqueNameError) {
+      notify('Error', 'Name of Type must be unique!', 'danger');
+      return this.render(); // deletes duplicate name
+    }
+  }
+
+  if (!!this.updateTypeCallback) {
+    var copy = Object.assign({}, type);
+    copy[attrName] = value;
+    this.updateTypeCallback(copy).then(function (success) {
+      if (success) {
+        type[attrName] = value;
+      } // if error, success = false -> reset to old value
+
+
+      _this2.render();
+    });
+  }
+};
+
+/***/ }),
+
+/***/ "./resources/js/funcs/types.js":
+/*!*************************************!*\
+  !*** ./resources/js/funcs/types.js ***!
+  \*************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _components_Ajax__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/Ajax */ "./resources/js/components/Ajax.js");
+/* harmony import */ var _components_Modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Modal */ "./resources/js/components/Modal.js");
+/* harmony import */ var _components_Modal__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_components_Modal__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/Pending */ "./resources/js/components/Pending.js");
+/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_components_Pending__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _components_TypeList__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/TypeList */ "./resources/js/components/TypeList.js");
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    if (enumerableOnly) symbols = symbols.filter(function (sym) {
+      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+    });
+    keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(Object(source), true).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+
+
+
+ // Create Modal for confirmation of type removal
+
+var removalConfirmModal = new _components_Modal__WEBPACK_IMPORTED_MODULE_1___default.a($('template#modal-remove-confirm').innerHTML); // Init Types
+
+var typeList = new _components_TypeList__WEBPACK_IMPORTED_MODULE_3__["default"]({
+  container: $('.js-types-container'),
+  emptyContainer: $('.js-types-empty'),
+  template: $('template#type-item').innerHTML,
+  types: __TYPES,
+  // Whenever a rendering was done, reset events
+  renderCallback: function renderCallback(listAvailable) {
+    var _this = this;
+
+    if (listAvailable) {
+      var btnRemove = $$('.js-remove-type');
+      btnRemove.forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          var index = btn.getAttribute('data-index');
+
+          var type = _this.getByIndex(index);
+
+          var elName = removalConfirmModal.element.querySelector('[bind-name]');
+          var ident1 = removalConfirmModal.element.querySelector('[bind-ident1]');
+          var ident2 = removalConfirmModal.element.querySelector('[bind-ident2]');
+          var confirmBtn = removalConfirmModal.element.querySelector('[bind-type-id]');
+
+          try {
+            elName.innerHTML = type.name;
+            ident1.innerHTML = type.ident_1;
+            ident2.innerHTML = type.ident_2;
+            confirmBtn.setAttribute('type-id', type.id);
+          } catch (e) {
+            return;
+          }
+
+          removalConfirmModal.show();
+        });
+      });
+    }
+  },
+  // Updating order via dragndrop invokes this function
+  // if nothing was changed, this is not called
+  dragndropCallback: function dragndropCallback() {
+    var newOrder = this.types.reduce(function (prevV, curV) {
+      prevV.push(curV.id);
+      return prevV;
+    }, []);
+    _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"].post(__ROUTES.types.order, {
+      order: newOrder
+    }).then(function (resp) {
+      var json = resp.data;
+
+      if (!json.error) {
+        notify('Success', 'Order saved!', 'success');
+      } else {
+        notify('Error', json.message, 'danger');
+      }
+
+      _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.hide();
+    })["catch"](function (err) {
+      notify('Error', err.message, 'danger');
+      _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.hide();
+    });
+  },
+  // If a type was chaned inline, this func is invoked
+  updateTypeCallback: function updateTypeCallback(type) {
+    _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.show();
+    return _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"].post(__ROUTES.types.update, _objectSpread({
+      _method: 'put'
+    }, type)).then(function (resp) {
+      var json = resp.data;
+
+      if (!json.error) {
+        notify('Success', 'Type updated', 'success');
+      } else {
+        notify('Error', json.message, 'danger');
+      }
+
+      _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.hide();
+      return !json.error;
+    })["catch"](function (err) {
+      notify('Error', err.message, 'danger');
+      _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.hide();
+      return false;
+    });
+  }
+}); // Create modal for adding types
+
+var typeModal = new _components_Modal__WEBPACK_IMPORTED_MODULE_1___default.a($('template#modal-type').innerHTML);
+var typeModalForm = typeModal.element.querySelector('form');
+var btnCloseModal = typeModal.element.querySelector('.js-modal-close');
+
+if (btnCloseModal) {
+  btnCloseModal.addEventListener('click', function (e) {
+    typeModal.hide();
+
+    if (typeModalForm) {
+      typeModalForm.reset();
+    }
+  });
+}
+
+var btnSaveType = typeModal.element.querySelector('.js-save-type');
+
+if (btnSaveType) {
+  btnSaveType.addEventListener('click', function (e) {
+    typeModal.hide();
+    _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"].post(__ROUTES.types.store, {
+      name: typeModalForm.name.value,
+      ident_1: typeModalForm.ident_1.value,
+      ident_2: typeModalForm.ident_2.value,
+      display: typeModalForm.display.options[typeModalForm.display.selectedIndex].value
+    }).then(function (resp) {
+      var json = resp.data;
+
+      if (!json.error) {
+        typeList.addType(json.data);
+
+        if (typeModalForm) {
+          typeModalForm.reset();
+        }
+
+        notify('Success', 'Type added', 'success');
+      } else {
+        notify('Error', json.message, 'danger');
+      }
+
+      _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.hide();
+    })["catch"](function (err) {
+      notify('Error', err.message, 'danger');
+      _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.hide();
+    });
+  });
+} // Open Form modal for new Type
+
+
+var btnAddType = $('.js-modal-add-type');
+
+if (btnAddType) {
+  btnAddType.addEventListener('click', function () {
+    typeModal.show();
+  });
+} // Create Modal to remove a type
+
+
+var btnAbortRemoval = removalConfirmModal.element.querySelector('.js-modal-close');
+
+if (btnAbortRemoval) {
+  btnAbortRemoval.addEventListener('click', function (e) {
+    removalConfirmModal.hide();
+  });
+}
+
+var btnConfirmRemoval = removalConfirmModal.element.querySelector('.js-modal-confirm');
+
+if (btnConfirmRemoval) {
+  btnConfirmRemoval.addEventListener('click', function (e) {
+    removalConfirmModal.hide();
+    var typeId = parseInt(btnConfirmRemoval.getAttribute('type-id'));
+
+    if (!!typeId) {
+      _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.show();
+      _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"].post(__ROUTES.types.remove, {
+        id: typeId,
+        _method: 'delete'
+      }).then(function (resp) {
+        var json = resp.data;
+
+        if (!json.error) {
+          typeList.removeById(typeId);
+          notify('Success', 'Type removed', 'success');
+        } else {
+          notify('Error', json.message, 'danger');
+        }
+
+        _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.hide();
+      })["catch"](function (err) {
+        notify('Error', err.message, 'danger');
+        _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.hide();
+      });
+    }
+  });
+}
 
 /***/ }),
 
@@ -3435,42 +3799,14 @@ Types.prototype.dragndrop = function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Ajax__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/Ajax */ "./resources/js/components/Ajax.js");
-/* harmony import */ var _components_Modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/Modal */ "./resources/js/components/Modal.js");
-/* harmony import */ var _components_Modal__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_components_Modal__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _components_Options__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/Options */ "./resources/js/components/Options.js");
-/* harmony import */ var _components_Types__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/Types */ "./resources/js/components/Types.js");
-/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/Pending */ "./resources/js/components/Pending.js");
-/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_components_Pending__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _components_Options__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/Options */ "./resources/js/components/Options.js");
+/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/Pending */ "./resources/js/components/Pending.js");
+/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_components_Pending__WEBPACK_IMPORTED_MODULE_2__);
 
 
+ // Init Options
 
-
- // Create modal for adding types
-
-var typeModal = new _components_Modal__WEBPACK_IMPORTED_MODULE_1___default.a($('template#modal-type').innerHTML);
-var btnCloseModal = typeModal.element.querySelector('.js-modal-close');
-
-if (btnCloseModal) {
-  var typeModalForm = typeModal.element.querySelector('form');
-  btnCloseModal.addEventListener('click', function (e) {
-    typeModal.hide();
-
-    if (typeModalForm) {
-      typeModalForm.reset();
-    }
-  });
-}
-
-var btnAddType = $('.js-modal-add-type');
-
-if (btnAddType) {
-  btnAddType.addEventListener('click', function () {
-    typeModal.show();
-  });
-} // Init Options
-
-
-var options = new _components_Options__WEBPACK_IMPORTED_MODULE_2__["default"]({
+var options = new _components_Options__WEBPACK_IMPORTED_MODULE_1__["default"]({
   privateProfile: $('.js-options-privateProfile'),
   colorblind: $('.js-options-colorblind'),
   hideReleased: $('.js-options-hideReleased'),
@@ -3478,15 +3814,10 @@ var options = new _components_Options__WEBPACK_IMPORTED_MODULE_2__["default"]({
   rss: $('.js-options-rss'),
   changeRSS: $('.js-btn-rss'),
   ajax: _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"],
-  pending: _components_Pending__WEBPACK_IMPORTED_MODULE_4___default.a
-}); // Init Types
-
-var types = new _components_Types__WEBPACK_IMPORTED_MODULE_3__["default"]({
-  container: $('.js-types-container'),
-  emptyContainer: $('.js-types-empty'),
-  template: $('template#type-item').innerHTML,
-  types: __TYPES
+  pending: _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a
 });
+
+__webpack_require__(/*! ./funcs/types */ "./resources/js/funcs/types.js");
 
 /***/ }),
 
@@ -3497,7 +3828,7 @@ var types = new _components_Types__WEBPACK_IMPORTED_MODULE_3__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! A:\Projekte\Server\Gajo2\resources\js\options.js */"./resources/js/options.js");
+module.exports = __webpack_require__(/*! /home/ds/projects/Gajo2/resources/js/options.js */"./resources/js/options.js");
 
 
 /***/ })

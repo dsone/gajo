@@ -1,29 +1,7 @@
 import Ajax from './components/Ajax';
-import Modal from './components/Modal';
 
 import Options from './components/Options';
-import Types from './components/Types';
 import Pending from './components/Pending';
-
-// Create modal for adding types
-let typeModal = new Modal($('template#modal-type').innerHTML);
-let btnCloseModal = typeModal.element.querySelector('.js-modal-close');
-if (btnCloseModal) {
-	let typeModalForm = typeModal.element.querySelector('form');
-	btnCloseModal.addEventListener('click', function(e) {
-		typeModal.hide();
-
-		if (typeModalForm) {
-			typeModalForm.reset();
-		}
-	});
-}
-let btnAddType = $('.js-modal-add-type');
-if (btnAddType) {
-	btnAddType.addEventListener('click', function() {
-		typeModal.show();
-	});
-}
 
 // Init Options
 let options = new Options({
@@ -37,10 +15,4 @@ let options = new Options({
 	pending:		Pending,
 });
 
-// Init Types
-let types = new Types({
-	container: $('.js-types-container'),
-	emptyContainer: $('.js-types-empty'),
-	template: $('template#type-item').innerHTML,
-	types: __TYPES,
-});
+require('./funcs/types');

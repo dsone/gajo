@@ -22,7 +22,7 @@
 							</label>
 						</div>
 						<div class="w-2/3 p-2 text-sm">
-							If this is enabled, your profile is only visible to yourself when logged in, or via RSS links. Accessing your profile from outside will display a 404 page. Default: on.
+							If this is enabled, your profile is only visible to yourself when logged in, or via RSS links. Accessing your profile from outside will display a 404 page. <span class="whitespace-no-wrap">Default: on</span>.
 						</div>
 					</div>
 
@@ -37,7 +37,7 @@
 							</label>
 						</div>
 						<div class="w-2/3 p-2 text-sm">
-							Gajo uses color to differentiate released, soon-to-be and future release entries. Enabling this will make it easier for you to distinguish those states if you are colorblind. Default: off.
+							Gajo uses color to differentiate released, soon-to-be and future release entries. Enabling this will make it easier for you to distinguish those states if you are colorblind. <span class="whitespace-no-wrap">Default: off</span>.
 						</div>
 					</div>
 				</div>
@@ -64,7 +64,7 @@
 							</label>
 						</div>
 						<div class="w-2/3 p-2 text-sm">
-							If this is enabled, releases that are in the past, are not displayed on your public list anymore. This helps keeping your list tidy. Default: yes.
+							If this is enabled, releases that are in the past, are not displayed on your public list anymore. This helps keeping your list tidy. <span class="whitespace-no-wrap">Default: yes</span>.
 						</div>
 					</div>
 
@@ -79,7 +79,7 @@
 							</label>
 						</div>
 						<div class="w-2/3 p-2 text-sm">
-							If this is enabled, releases that have not yet a name and/or no release date are hidden from your public list. If you have many rumored releases, or those are pushed back multiple times already, you can use this to further tidy up your public list. Default: yes.
+							If this is enabled, releases that have not yet a name and/or no release date are hidden from your public list. If you have many rumored releases, or those are pushed back multiple times already, you can use this to further tidy up your public list. <span class="whitespace-no-wrap">Default: yes</span>.
 						</div>
 					</div>
 				</div>
@@ -161,29 +161,24 @@
 
 			<div class="flex flex-col w-3/4">
 				<div class="block md:flex md:flex-row">
-					<input class="w-full md:w-1/2 form-input" name="name" value="#type_name#" type="text">
+					<input class="w-full md:w-1/2 form-input js-type-name" name="name" value="#type_name#" type="text" placeholder="Name">
 
-					<select class="w-full mt-1 md:w-1/2 md:ml-1 form-select md:mt-0 js-type-select">
+					<select class="w-full mt-1 md:w-1/2 md:ml-1 form-select md:mt-0 js-type-select" name="display">
 						<option value="1">List Display</option>
 						<option value="2">Card Display</option>
 					</select>
 				</div>
 
 				<div class="block mt-1 md:flex md:flex-row">
-					<input class="w-full md:w-1/2 form-input" name="ident_1" value="#type_ident1#" type="text">
-					<input class="w-full mt-1 md:w-1/2 md:ml-1 form-select md:mt-0 form-input" name="ident_2" value="#type_ident2#" type="text">
+					<input class="w-full md:w-1/2 form-input js-type-ident1" name="ident_1" value="#type_ident1#" type="text" placeholder="Descriptor 1">
+					<input class="w-full mt-1 md:w-1/2 md:ml-1 form-input md:mt-0 js-type-ident2" name="ident_2" value="#type_ident2#" type="text" placeholder="Descriptor 2">
 				</div>
 			</div>
 
 			<div class="flex items-center ml-2 justify-items-center md:ml-1">
-				<form action="{{ route('user-type-destroy', [ 'user' => $user->name, 'type' => '#type_id_url#' ]) }}" method="POST">
-					@csrf
-					<input type="hidden" name="_method" value="delete">
-
-					<button class="btn btn-danger btn-icon" type="submit">
-						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-					</button>
-				</form>
+				<button class="btn btn-danger btn-icon js-remove-type" type="text" data-index="#type_index#">
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+				</button>
 			</div>
 		</div>
 
@@ -197,24 +192,16 @@
 	<div>
 		<h2 class="mb-4 text-xl font-bold">Add a new type</h2>
 		<div class="w-full">
-			<form method="POST" action="{{ route('user-type-store', [ 'user' => $user->name ]) }}">
-				@csrf
-
+			<form method="POST" action="/">
 				<div>
 					<label class="block">
 						<span class="block mb-1 font-bold">Name</span>
-						<input class="block w-full form-input{{ $errors->has('name') ? ' is-danger' : '' }}" name="name" type="text" placeholder="Name" value="{{ old('name') }}" required>
+						<input class="block w-full form-input" name="name" type="text" placeholder="Name" value="{{ old('name') }}" required>
 					</label>
 
 					<span class="block mt-1 text-sm">
 						The name for your Type. Will be displayed as a header.
 					</span>
-
-					@if ($errors->has('name'))
-					<p>
-						<strong>{{ $errors->first('name') }}</strong>
-					</p>
-					@endif
 				</div>
 				<div class="mt-4">
 					<label class="block">
@@ -225,12 +212,6 @@
 					<span class="block mt-1 text-sm">
 						A further describing attribute, ie. the Artist for a CD, or the Author for book or similar.
 					</span>
-
-					@if ($errors->has('ident_1'))
-					<p class="help is-danger">
-						<strong>{{ $errors->first('ident_1') }}</strong>
-					</p>
-					@endif
 				</div>
 
 				<div class="mt-4">
@@ -242,12 +223,6 @@
 					<span class="block mt-1 text-sm">
 						The second attribute, usually the tile or name, like of a record, or of a book.
 					</span>
-
-					@if ($errors->has('ident_2'))
-					<p class="help is-danger">
-						<strong>{{ $errors->first('ident_2') }}</strong>
-					</p>
-					@endif
 				</div>
 
 				<div class="mt-4">
@@ -261,16 +236,10 @@
 					<span class="block mt-1 text-sm">
 						How should this type be displayed? List is default, but Card if for the occasions where you want something fancy.
 					</span>
-
-					@if ($errors->has('display'))
-					<p class="help is-danger">
-						<strong>{{ $errors->first('display') }}</strong>
-					</p>
-					@endif
 				</div>
 
 				<div class="flex flex-row justify-between mt-8">
-					<button class="btn btn-success btn-icon" type="submit">
+					<button class="btn btn-success btn-icon js-save-type" type="button">
 						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Save
 					</button>
 
@@ -282,13 +251,48 @@
 		</div>
 	</div>
 </template>
+<template id="modal-remove-confirm">
+	<div>
+		<h2 class="mb-4 text-xl font-bold text-center">Do you want to remove this type?</h2>
+		<div class="w-full">
+			<div class="mt-4 text-xl">
+				<div class="text-center" bind-name></div>
+				<div class="flex flex-row justify-center">
+					<div bind-ident1></div>
+					<span class="mx-2">-</span>
+					<div bind-ident2></div>
+				</div>
+			</div>
+			
+			<div class="mt-4 text-center">
+				<p>Do you really want to delete this Type?</p>
+				All remaining Entries attached to this type will lose their Type.
+			</div>
+
+			<div class="flex flex-row justify-between mt-8">
+				<button class="btn btn-success btn-icon js-modal-confirm" type="button" bind-type-id>
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Remove
+				</button>
+
+				<button class="btn btn-default btn-icon js-modal-close" type="button">
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Cancel
+				</button>
+			</div>
+		</div>
+	</div>
+</template>
 @endsection
 
 @section('footerJS')
 	<script>
 		var __ROUTES = {
 			options: '{{ route('user-options-update', [ 'user' => $user->name ]) }}',
-			types:	 '{{ route('user-type-destroy', [ 'user' => $user->name, 'type' => '#type_id_url#' ]) }}',
+			types: {
+				store: '{{ route('api-type-store') }}',
+				order: '{{ route('api-type-order') }}',
+				update: '{{ route('api-type-update') }}',
+				remove: '{{ route('api-type-destroy') }}',
+			}
 		};
 		var __TYPES = @json($types);
 	</script>
