@@ -63,7 +63,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function types() {
-        return $this->hasMany('App\Models\Type');
+        return $this->hasMany('App\Models\Type')->orderBy('sort');
     }
 
     public function entries() {
