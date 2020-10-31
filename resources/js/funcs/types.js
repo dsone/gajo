@@ -108,8 +108,13 @@ if (btnCloseModal) {
 let btnSaveType = typeModal.querySelector('.js-save-type');
 if (btnSaveType) {
 	btnSaveType.addEventListener('click', function(e) {
-		typeModal.hide();
+		if (Pending.isPending()) {
+			notify('Warning', 'Another request is in progress, please wait a second!', 'warning');
+			return;
+		}
 
+		btnSaveType.setAttribute('disabled', 'disabled');
+		btnSaveType.classList.add('cursor-wait');
 		Pending.show();
 		Ajax.post(
 				__ROUTES.types.store, {
@@ -121,6 +126,8 @@ if (btnSaveType) {
 			).then(resp => {
 				let json = resp.data;
 				if (!json.error) {
+					typeModal.hide();
+
 					typeList.addType(json.data);
 					if (typeModalForm) {
 						typeModalForm.reset();
@@ -130,9 +137,11 @@ if (btnSaveType) {
 				} else {
 					notify('Error', json.message, 'danger');
 				}
-				Pending.hide();
 			}).catch(err => {
 				notify('Error', err.message, 'danger');
+			}).finally(resp => {
+				btnSaveType.removeAttribute('disabled');
+				btnSaveType.classList.remove('cursor-wait');
 				Pending.hide();
 			});
 	});
