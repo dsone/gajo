@@ -337,6 +337,13 @@
 
 @section('footerJS')
 	<script>
+		var __ROUTES = {
+			entries: {
+				store: '{{ route('api-entry-store') }}',
+				update: '{{ route('api-entry-update') }}',
+				remove: '{{ route('api-entry-destroy') }}',
+			}
+		};
 		var __EDITMODE = {{ $ownProfile }};
 		var __TYPES = @json($types);
     </script>
