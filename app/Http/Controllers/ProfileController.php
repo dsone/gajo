@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\Models\User;
 
 class ProfileController extends Controller {
@@ -12,9 +13,9 @@ class ProfileController extends Controller {
      */
     public function index($user) {
 		// Profile must exist, or 404
-		$userProfile = User::where('name', $user)->firstOrFail();
+		$userProfile = User::where('name', $user)->with([ 'types', 'types.entries' ])->firstOrFail();
 
-		$authUser = \Auth::user();
+		$authUser = Auth::user();
 		// Auth'd user tries to access own profile, but has no verified mail
 		if ($authUser && $authUser->name === $user && !$authUser->hasVerifiedEmail()) {
 			return redirect()->route('verification.notice', 303);
@@ -25,6 +26,10 @@ class ProfileController extends Controller {
 			abort(404);
 		}
 
-        return view('user.profile');
+        return view('user.profile', [
+			'user'			=> $userProfile,
+			'types'			=> $userProfile->types,
+			'ownProfile'	=> $userProfile->name == Auth::user()->name,
+		]);
     }
 }
