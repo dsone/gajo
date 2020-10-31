@@ -128,7 +128,7 @@ TypeList.prototype.render = function() {
  */
 TypeList.prototype.dragndrop = function() {
 	// Create Drag'n'Drop features
-	let draggable = Array.from($$('.draggable-item .js-btn-drag'));
+	let draggable = Array.from(document.querySelectorAll('.draggable-item .js-btn-drag'));
 
 	let draggedItemIndex;
 	draggable.forEach(function(el) {
@@ -144,7 +144,7 @@ TypeList.prototype.dragndrop = function() {
 	});
 
 	let that = this;
-	Array.from($$('.drag-target')).forEach(el => {
+	Array.from(document.querySelectorAll('.drag-target')).forEach(el => {
 		let draggedItemTargetIndex = parseInt(el.getAttribute('data-target'));
 
 		el.addEventListener('dragover', function(e) {  // auto fires every 350ms-ish
