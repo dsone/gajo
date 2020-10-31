@@ -1,13 +1,14 @@
 /* NOTIFICATIONS */
 .notifications {
-	@apply fixed right-0 z-30 p-6 transition-shadow duration-500 pointer-events-none;
+	@apply fixed right-0 p-6 transition-shadow duration-500 pointer-events-none;
 	/* pointer-events makes sure that click events go through to underlying elements */
+	z-index: 51; // make sure notifications are above modals, while modals are over anything else
 
 	top: 48px;
 	width: 400px;
 
 	.notification-item {
-		@apply z-30 w-full p-3 mt-4 text-base leading-snug transition-all border-l-4 rounded shadow-md cursor-pointer opacity-80;
+		@apply w-full p-3 mt-4 text-base leading-snug transition-all border-l-4 rounded shadow-md cursor-pointer opacity-80;
 		pointer-events: all;
 
 		.n-title {
