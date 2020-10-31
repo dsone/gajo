@@ -110,6 +110,7 @@ if (btnSaveType) {
 	btnSaveType.addEventListener('click', function(e) {
 		typeModal.hide();
 
+		Pending.show();
 		Ajax.post(
 				__ROUTES.types.store, {
 					name: typeModalForm.name.value,
