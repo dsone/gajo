@@ -27,9 +27,9 @@ class ProfileController extends Controller {
 		}
 
         return view('user.profile', [
-			'user'			=> $userProfile,
-			'types'			=> $userProfile->types,
-			'ownProfile'	=> $userProfile->name == Auth::user()->name,
-		]);
+				'user'			=> $userProfile,
+				'types'			=> $userProfile->types,
+				'ownProfile'	=> $userProfile->name == Auth::user()->name,
+			]);
     }
 }

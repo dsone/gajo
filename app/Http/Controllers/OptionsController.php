@@ -68,9 +68,9 @@ class OptionsController extends Controller
 				]);
 		} catch (\Exception $e) {
 			return response()->json([
-				'error' => true,
-				'message' => $e->getMessage()
-			]);
+					'error' => true,
+					'message' => $e->getMessage()
+				]);
 		}
     }
 }

@@ -31,14 +31,14 @@ class RSSController extends Controller {
 			$user->options->save();
 
 			return response()->json([
-				'error' => false,
-				'data' => $user->options->rss
-			]);
+					'error' => false,
+					'data' => $user->options->rss
+				]);
 		} catch (\Exception $e) {
 			return response()->json([
-				'error' => true,
-				'message' => $e->getMessage()
-			]);
+					'error' => true,
+					'message' => $e->getMessage()
+				]);
 		}
     }
 }

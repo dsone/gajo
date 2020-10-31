@@ -115,10 +115,10 @@ class TypeController extends Controller
 			$type->delete();
 
 			return response()->json([
-				'error' => false,
-				'message' => 'Type removed',
-				'data' => []
-			]);
+					'error' => false,
+					'message' => 'Type removed',
+					'data' => []
+				]);
 		}
 
 		return response()->json([
@@ -141,8 +141,8 @@ class TypeController extends Controller
 		$order = $request->order;
 		if (Auth::user()->types->count() != count($order)) {
 			return response()->json([
-				'error' => true, 'message' => 'Missing Types to update order.'
-			]);
+					'error' => true, 'message' => 'Missing Types to update order.'
+				]);
 		}
 
 		$mapOrder = [];
@@ -156,7 +156,7 @@ class TypeController extends Controller
 		}
 		
 		return response()->json([
-			'error' => false, 'message' => 'Types reorderd!'
-		]);
+				'error' => false, 'message' => 'Types reorderd!'
+			]);
     }
 }
