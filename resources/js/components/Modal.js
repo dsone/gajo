@@ -46,6 +46,9 @@ let Modal = (() => {
 	Modal.prototype.close = function() {
 		this.hide();
 	};
+	Modal.prototype.querySelector = function(selector) {
+		return this.element.querySelector(selector);
+	};
 
 	document.body.addEventListener('keyup', e => {
 		let key = e.keyCode || e.which;
