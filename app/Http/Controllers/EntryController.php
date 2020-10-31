@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
+use Carbon\Carbon;
 use App\Models\Entry;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -26,7 +28,50 @@ class EntryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+		$validated = $this->validate($request, [
+						'type'			=> 'required|integer',
+						'ident_1'		=> 'required|string',
+						'ident_2'		=> 'required|string',
+						'release'		=> 'nullable|date_format:"Y-m-d"',
+						'visibility'	=> 'required|integer|min:1|max:4',
+					]);
+
+		$type = Auth::user()->types()->find($validated['type']);
+		if (!$type) {
+			return response()->json([
+				'error' => true,
+				'message' => 'Invalid Type provided!',
+				'data' => []
+			]);
+		}
+		
+		$release = null;
+        $release = strlen($validated['release']) == 0 ? '1970-01-01T00:00:00.000Z' : $validated['release'];
+        $release = Carbon::instance(new \DateTime($release));
+
+		$entry = null;
+		try {
+			$entry = Entry::create([
+                'ident_1'		=> e($validated['ident_1']),
+                'ident_2'		=> e($validated['ident_2']),
+                'release_at'	=> $release,
+                'visibility'	=> $validated['visibility'],
+                'type_id'		=> $validated['type'],
+                'user_id'		=> Auth::user()->id
+            ]);
+		} catch(\Exception $e) {
+			return response()->json([
+					'error' => true,
+					'message' => 'You already have an entry with this information!'
+				]);
+		}
+
+		return response()->json([
+				'error' => false,
+				'data' => [
+					'entry' => $entry
+				]
+			]);
     }
 
     /**
