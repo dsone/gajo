@@ -20,10 +20,10 @@ let typeList = new TypeList({
 					let index = btn.getAttribute('data-index');
 					let type = this.getByIndex(index);
 					
-					let elName = removalConfirmModal.element.querySelector('[bind-name]');
-					let ident1 = removalConfirmModal.element.querySelector('[bind-ident1]');
-					let ident2 = removalConfirmModal.element.querySelector('[bind-ident2]');
-					let confirmBtn = removalConfirmModal.element.querySelector('[bind-type-id]');
+					let elName = removalConfirmModal.querySelector('[bind-name]');
+					let ident1 = removalConfirmModal.querySelector('[bind-ident1]');
+					let ident2 = removalConfirmModal.querySelector('[bind-ident2]');
+					let confirmBtn = removalConfirmModal.querySelector('[bind-type-id]');
 
 					try {
 						elName.innerHTML = type.name;
@@ -92,8 +92,8 @@ let typeList = new TypeList({
 
 // Create modal for adding types
 let typeModal = new Modal($('template#modal-type').innerHTML);
-let typeModalForm = typeModal.element.querySelector('form');
-let btnCloseModal = typeModal.element.querySelector('.js-modal-close');
+let typeModalForm = typeModal.querySelector('form');
+let btnCloseModal = typeModal.querySelector('.js-modal-close');
 if (btnCloseModal) {
 	btnCloseModal.addEventListener('click', function(e) {
 		typeModal.hide();
@@ -104,7 +104,8 @@ if (btnCloseModal) {
 	});
 }
 
-let btnSaveType = typeModal.element.querySelector('.js-save-type');
+// Save a type
+let btnSaveType = typeModal.querySelector('.js-save-type');
 if (btnSaveType) {
 	btnSaveType.addEventListener('click', function(e) {
 		typeModal.hide();
@@ -145,13 +146,14 @@ if (btnAddType) {
 
 
 // Create Modal to remove a type
-let btnAbortRemoval = removalConfirmModal.element.querySelector('.js-modal-close');
+let btnAbortRemoval = removalConfirmModal.querySelector('.js-modal-close');
 if (btnAbortRemoval) {
 	btnAbortRemoval.addEventListener('click', function(e) {
 		removalConfirmModal.hide();
 	});
 }
-let btnConfirmRemoval = removalConfirmModal.element.querySelector('.js-modal-confirm');
+// Remove type
+let btnConfirmRemoval = removalConfirmModal.querySelector('.js-modal-confirm');
 if (btnConfirmRemoval) {
 	btnConfirmRemoval.addEventListener('click', function(e) {
 		removalConfirmModal.hide();
