@@ -14,7 +14,7 @@ class Entry extends Model
         'ident_1', 'ident_2', 'release_at', 'visibility', 'type_id', 'user_id'
     ];
     protected $hidden = [
-        'user_id'
+        'user_id', 'created_at', 'updated_at'
     ];
     protected $dates = [
         'release_at', 'created_at', 'updated_at'
