@@ -27,15 +27,15 @@ class TypeController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-			'name'		=> 'required|string',
-			'ident_1'	=> 'required|string',
-			'ident_2'	=> 'required|string',
-            'display'	=> 'required|integer',
-        ]);
+        $validated = $this->validate($request, [
+						'name'		=> 'required|string',
+						'ident_1'	=> 'required|string',
+						'ident_2'	=> 'required|string',
+						'display'	=> 'required|integer',
+					]);
 
 		$user = Auth::user();
-		$type = Type::whereName($request->name)->where('user_id', $user->id)->first();
+		$type = Type::whereName($validated['name'])->where('user_id', $user->id)->first();
 		if ($type) {
 			return response()->json([
 				'error' => true, 'message' => 'Type exists already!'
@@ -44,10 +44,10 @@ class TypeController extends Controller
 
 		$type = Type::create([
 			'user_id'	=> $user->id,
-			'name'		=> $request->name,
-			'ident_1'	=> $request->ident_1,
-			'ident_2'	=> $request->ident_2,
-            'display'	=> $request->display,
+			'name'		=> $validated['name'],
+			'ident_1'	=> $validated['ident_1'],
+			'ident_2'	=> $validated['ident_2'],
+            'display'	=> $validated['display'],
 			'sort'		=> Type::count()+1,
 		]);
 
@@ -64,16 +64,16 @@ class TypeController extends Controller
      */
     public function update(Request $request)
 	{
-        $this->validate($request, [
-			'id'		=> 'required|integer',
-			'name'		=> 'required|string',
-			'ident_1'	=> 'required|string',
-			'ident_2'	=> 'required|string',
-            'display'	=> 'required|integer',
-        ]);
+        $validated = $this->validate($request, [
+						'id'		=> 'required|integer',
+						'name'		=> 'required|string',
+						'ident_1'	=> 'required|string',
+						'ident_2'	=> 'required|string',
+						'display'	=> 'required|integer',
+					]);
 
 		$user = Auth::user();
-		$type = Type::whereId($request->id)->where('user_id', $user->id)->first();
+		$type = Type::whereId($validated['id'])->where('user_id', $user->id)->first();
 		if (!$type) {
 			return response()->json([
 				'error' => true, 'message' => 'Type does not exist!'
@@ -82,10 +82,10 @@ class TypeController extends Controller
 
 		try {
 			$type = $type->update([
-				'name'		=> $request->name,
-				'ident_1'	=> $request->ident_1,
-				'ident_2'	=> $request->ident_2,
-				'display'	=> $request->display,
+				'name'		=> $validated['name'],
+				'ident_1'	=> $validated['ident_1'],
+				'ident_2'	=> $validated['ident_2'],
+				'display'	=> $validated['display'],
 			]);
 		} catch (\Exception $e) {
 			return response()->json([
@@ -106,10 +106,10 @@ class TypeController extends Controller
      */
     public function destroy(Request $request)
     {
-		$this->validate($request, [
-			'id'		=> 'required|integer',
-        ]);
-		$type = Auth::user()->types()->find($request->id);
+		$validated = $this->validate($request, [
+						'id'		=> 'required|integer',
+					]);
+		$type = Auth::user()->types()->find($validated['id']);
 
 		if ($type) {
 			$type->delete();
@@ -134,11 +134,11 @@ class TypeController extends Controller
      */
     public function order(Request $request)
     {
-		$this->validate($request, [
-			'order'	=> 'required|array'
-        ]);
+		$validated = $this->validate($request, [
+						'order'	=> 'required|array'
+					]);
 
-		$order = $request->order;
+		$order = $validated['order'];
 		if (Auth::user()->types->count() != count($order)) {
 			return response()->json([
 					'error' => true, 'message' => 'Missing Types to update order.'
