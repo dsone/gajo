@@ -14,16 +14,15 @@ let Modal = (() => {
 		this.btnClose = this.element.querySelector('button');
 		this.scrollTop = 0;
 
-		var that = this;
-		this.element.addEventListener('click', function(e) {
+		this.element.addEventListener('click', e => {
 			if (e.target.closest('.modal-content')) {
 				return;
 			}
 
-			that.hide();
+			this.hide();
 		});
-		this.btnClose.addEventListener('click', function(e) {
-			that.element.click();
+		this.btnClose.addEventListener('click', e => {
+			this.element.click();
 		});
 	};
 
@@ -48,6 +47,42 @@ let Modal = (() => {
 	};
 	Modal.prototype.querySelector = function(selector) {
 		return this.element.querySelector(selector);
+	};
+
+	Modal.prototype.bindValues = function(mapping = {}) {
+		let selectors = Object.keys(mapping);
+		selectors.forEach(selector => {
+			let elements = Array.from(this.element.querySelectorAll(selector));
+
+			elements.forEach(element => {
+				switch (element.nodeName.toLocaleLowerCase()) {
+					case 'select':
+						if (!isNaN(mapping[selector])) {
+							element.selectedIndex = parseInt(mapping[selector], 10);
+						} else {
+							Array.from(element.options).some((option, i) => {
+								if (option.value == mapping[selector]) {
+									element.selectedIndex = i;
+									return  true;
+								}
+
+								return false;
+							});
+						}
+					break;
+					case 'input':
+					case 'textarea':
+						element.value = mapping[selector];
+					break;
+					case 'button':
+						element.setAttribute(selector.replace(/\[|\]|bind-/gi, ''), mapping[selector]);
+					break;
+					default:
+						element.innerHTML = mapping[selector];
+					break;
+				}
+			});
+		});
 	};
 
 	document.body.addEventListener('keyup', e => {
