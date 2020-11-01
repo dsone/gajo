@@ -17,7 +17,7 @@ class CreateEntriesTable extends Migration
             $table->id();
             $table->string('ident_1')->default('TBA');
             $table->string('ident_2')->default('TBA');
-            $table->timestamp('release_at');
+            $table->timestamp('release_at')->nullable();
             $table->integer('visibility')->default(config('gajo.settings.list.visibility.private'));
             $table->integer('type_id')->unsigned();
             $table->integer('user_id')->unsigned();
