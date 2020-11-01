@@ -56,15 +56,18 @@ let typeList = new TypeList({
 				} else {
 					notify('Error', json.message, 'danger');
 				}
-				Pending.hide();
 			}).catch(err => {
 				notify('Error', err.message, 'danger');
+			}).finally(resp => {
 				Pending.hide();
+
+				return resp;
 			});
 	},
 	// If a type was chaned inline, this func is invoked
 	updateTypeCallback: function(type) {
 		Pending.show();
+
 		return Ajax.post(
 				__ROUTES.types.update, {
 					_method: 'put',
@@ -77,14 +80,16 @@ let typeList = new TypeList({
 				} else {
 					notify('Error', json.message, 'danger');
 				}
-				Pending.hide();
 
 				return !json.error;
 			}).catch(err => {
 				notify('Error', err.message, 'danger');
-				Pending.hide();
 
 				return false;
+			}).finally(resp => {
+				Pending.hide();
+
+				return resp;
 			});
 	}
 });
@@ -166,8 +171,13 @@ if (btnAbortRemoval) {
 let btnConfirmRemoval = removalConfirmModal.querySelector('.js-modal-confirm');
 if (btnConfirmRemoval) {
 	btnConfirmRemoval.addEventListener('click', function(e) {
-		removalConfirmModal.hide();
+		if (Pending.isPending()) {
+			notify('Warning', 'Another request is in progress, please wait a second!', 'warning');
+			return;
+		}
 
+		btnConfirmRemoval.setAttribute('disabled', 'disabled');
+		btnConfirmRemoval.classList.add('cursor-pointer');
 		let typeId = parseInt(btnConfirmRemoval.getAttribute('type-id'));
 		if (!!typeId) {
 			Pending.show();
@@ -183,9 +193,13 @@ if (btnConfirmRemoval) {
 					} else {
 						notify('Error', json.message, 'danger');
 					}
-					Pending.hide();
 				}).catch(err => {
 					notify('Error', err.message, 'danger');
+				}).finally(resp => {
+					btnConfirmRemoval.removeAttribute('disabled');
+					btnConfirmRemoval.classList.remove('cursor-wait');
+
+					removalConfirmModal.hide();
 					Pending.hide();
 				});
 		}
