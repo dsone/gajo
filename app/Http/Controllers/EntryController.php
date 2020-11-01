@@ -92,7 +92,52 @@ class EntryController extends Controller
      */
     public function update(Request $request, Entry $entry)
     {
-        //
+        $validated = $this->validate($request, [
+						'id'			=> 'required|integer',
+						'type'			=> 'required|integer',
+						'ident_1'		=> 'required|string',
+						'ident_2'		=> 'nullable|string',
+						'release'		=> 'nullable|date_format:"Y-m-d"',
+						'visibility'	=> 'required|integer|min:1|max:4',
+					]);
+
+		$user = Auth::user();
+		$type = Auth::user()->types()->find($validated['type']);
+		if (!$type) {
+			return response()->json([
+				'error' => true, 'message' => 'Type does not exist!'
+			]);
+		}
+		
+		$entry = Auth::user()->entries()->find($validated['id']);
+		if (!$entry) {
+			return response()->json([
+				'error' => true, 'message' => 'Entry does not exist!'
+			]);
+		}
+
+		try {
+			$release = strlen($validated['release']) == 0 ? null : Carbon::instance(new \DateTime($validated['release']));
+			$entry->update([
+				'ident_1'		=> e($validated['ident_1']),
+				'ident_2'		=> strlen($validated['ident_2']) === 0 ? 'TBA' : e($validated['ident_2']),
+				'release_at'	=> $release,
+				'visibility'	=> $validated['visibility'],
+				'type_id'		=> $validated['type']
+			]);
+		} catch (\Exception $e) {
+			return response()->json([
+				'error' => true, 'message' => 'Update failed. DB is busy or unique constraints failed.'
+			]);
+		}
+
+		return response()->json([
+			'error' => false,
+			'message' => 'Entry updated!',
+			'data' => [
+				'entry' => $entry
+			]
+		]);
     }
 
     /**
@@ -104,8 +149,8 @@ class EntryController extends Controller
     public function destroy(Request $request)
     {
         $this->validate($request, [
-			'id'		=> 'required|integer',
-        ]);
+					'id'		=> 'required|integer',
+				]);
 		$entry = Auth::user()->entries()->find($request->id);
 
 		if ($entry) {
