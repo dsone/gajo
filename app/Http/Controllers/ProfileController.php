@@ -21,15 +21,16 @@ class ProfileController extends Controller {
 			return redirect()->route('verification.notice', 303);
 		}
 
-		// Other user's profile, but that user has no verified mail
-		if (!$userProfile->hasVerifiedEmail()) {
+		$ownProfile = Auth::user() && $userProfile->name == Auth::user()->name;
+		// Other user's profile, but that user has no verified mail or is in privatemode
+		if (!$userProfile->hasVerifiedEmail() || (!$ownProfile && $userProfile->options->privateProfile)) {
 			abort(404);
 		}
 
         return view('user.profile', [
 				'user'			=> $userProfile,
 				'types'			=> $userProfile->types,
-				'ownProfile'	=> $userProfile->name == Auth::user()->name,
+				'ownProfile'	=> $ownProfile,
 			]);
     }
 }
