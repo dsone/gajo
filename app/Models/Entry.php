@@ -27,6 +27,11 @@ class Entry extends Model
 
     public function getReleaseAtAttribute($value) {
         $c = Carbon::parse($value);
-        return $c->year == 1970 ? null : $c->toIso8601ZuluString();
+        return $value == null ? null : $c->toIso8601ZuluString();
     }
+
+	public function setReleaseAtAttribute($date)
+	{
+		$this->attributes['release_at'] = empty($date) ? null : Carbon::parse($date);
+	}
 }
