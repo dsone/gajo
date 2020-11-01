@@ -92,6 +92,14 @@ let Modal = (() => {
 			if (openModal) {
 				openModal.click();
 			}
+		} else if (key === 13) {
+			var openModal = document.querySelector('.modal-overlay:not(.hidden)');
+			if (openModal) {
+				let btnConfirm = openModal.querySelector('.js-modal-confirm');
+				if (btnConfirm) {
+					btnConfirm.click();
+				}
+			}
 		}
 	});
 	window.Modal = Modal;
