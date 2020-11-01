@@ -1,6 +1,7 @@
-<template id="modal-entry-add">
+
+<template id="modal-entry-edit">
 	<div>
-		<h2 class="mb-4 text-xl font-bold">Add a new Entry</h2>
+		<h2 class="mb-4 text-xl font-bold">Edit Entry</h2>
 		<div class="w-full">
 			<form method="POST" action="/">
 				<div>
@@ -65,7 +66,7 @@
 				</div>
 
 				<div class="flex flex-row justify-between mt-8">
-					<button class="btn btn-success btn-icon js-modal-confirm" type="button">
+					<button class="btn btn-success btn-icon js-modal-confirm" type="button" bind-entry-id bind-entry-type>
 						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Save
 					</button>
 

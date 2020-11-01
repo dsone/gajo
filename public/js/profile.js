@@ -3037,19 +3037,14 @@ var Modal = function () {
       elements.forEach(function (element) {
         switch (element.nodeName.toLocaleLowerCase()) {
           case 'select':
-            if (!isNaN(mapping[selector])) {
-              element.selectedIndex = parseInt(mapping[selector], 10);
-            } else {
-              Array.from(element.options).some(function (option, i) {
-                if (option.value == mapping[selector]) {
-                  element.selectedIndex = i;
-                  return true;
-                }
+            Array.from(element.options).some(function (option, i) {
+              if (option.value == mapping[selector]) {
+                element.selectedIndex = i;
+                return true;
+              }
 
-                return false;
-              });
-            }
-
+              return false;
+            });
             break;
 
           case 'input':
@@ -3190,8 +3185,8 @@ Card.prototype.getElement = function () {
   var visibility = entry.querySelector('div[bind-visibility]');
   visibility.classList.add('card-visibility--' + ['', 'green', 'orange', '', 'red'][this.data.visibility]);
   visibility.setAttribute('title', ['', 'Hidden', 'Private', '', 'Public'][this.data.visibility]);
-  entry.querySelector('div[bind-edit]').setAttribute('card-id', this.data.id);
-  entry.querySelector('div[bind-remove]').setAttribute('card-id', this.data.id);
+  entry.querySelector('div[bind-edit]').setAttribute('entry-id', this.data.id);
+  entry.querySelector('div[bind-remove]').setAttribute('entry-id', this.data.id);
   return entry;
 };
 
@@ -3245,6 +3240,7 @@ function CardList() {
     targetContainer: config.targetContainer,
     sectionTemplate: config.sectionTemplate,
     modalEntryRemove: config.modalEntryRemove,
+    modalEntryEdit: config.modalEntryEdit,
     sectionContainer: undefined
   };
   this.data = Object.assign({}, config.type);
@@ -3307,6 +3303,10 @@ CardList.prototype.removeEntryById = function (id) {
   this.render();
 };
 
+CardList.prototype.getEntries = function () {
+  return this.entries;
+};
+
 CardList.prototype.render = function () {
   var _this2 = this;
 
@@ -3326,7 +3326,7 @@ CardList.prototype.render = function () {
   var removalBtn = Array.from(cardsTarget.querySelectorAll('div[bind-remove]'));
   removalBtn.forEach(function (entryRemoval) {
     entryRemoval.removeAttribute('bind-remove');
-    var id = entryRemoval.getAttribute('card-id');
+    var id = entryRemoval.getAttribute('entry-id');
 
     var card = _this2.getEntryById(id);
 
@@ -3340,6 +3340,29 @@ CardList.prototype.render = function () {
       });
 
       _this2.config.modalEntryRemove.show();
+    });
+  });
+  var editBtn = Array.from(cardsTarget.querySelectorAll('div[bind-edit]'));
+  editBtn.forEach(function (entryEdit) {
+    entryEdit.removeAttribute('bind-edit');
+    var id = entryEdit.getAttribute('entry-id');
+
+    var entry = _this2.getEntryById(id);
+
+    entryEdit.addEventListener('click', function (e) {
+      _this2.config.modalEntryEdit.bindValues({
+        'select[name=type]': _this2.data.id,
+        '[bind-ident1]': entry.getIdent1(),
+        'input[name=ident_1]': entry.getIdent1(),
+        '[bind-ident2]': entry.getIdent2(),
+        'input[name=ident_2]': entry.getIdent2(),
+        'input[name=release]': (entry.getRelease() || '').substr(0, 10),
+        // date input only accept yyyy-mm-dd values
+        '[bind-entry-id]': id,
+        '[bind-entry-type]': 1
+      });
+
+      _this2.config.modalEntryEdit.show();
     });
   });
 };
@@ -3382,11 +3405,11 @@ TableEntry.prototype.getElement = function () {
   entry.querySelector('div[bind-ident1]').innerHTML = this.data.ident_1;
   entry.querySelector('div[bind-ident2]').innerHTML = this.data.ident_2;
   entry.querySelector('div[bind-release]').innerHTML = this.data.release_at != null ? new Date(this.data.release_at).toLocaleDateString() : 'TBA';
-  entry.querySelector('div[bind-edit]').setAttribute('entry-id', this.data.id);
-  entry.querySelector('div[bind-remove]').setAttribute('entry-id', this.data.id);
   var visibility = entry.querySelector('div[bind-visibility]');
   visibility.classList.add('entry-visibility--' + ['', 'green', 'orange', '', 'red'][this.data.visibility]);
   visibility.setAttribute('title', ['', 'Hidden', 'Private', '', 'Public'][this.data.visibility]);
+  entry.querySelector('div[bind-edit]').setAttribute('entry-id', this.data.id);
+  entry.querySelector('div[bind-remove]').setAttribute('entry-id', this.data.id);
   return entry;
 };
 
@@ -3456,7 +3479,7 @@ function TableList() {
     targetContainer: config.targetContainer,
     sectionTemplate: config.sectionTemplate,
     tableTemplate: config.tableTemplate
-  }, _defineProperty(_this$config, "entryTemplate", config.entryTemplate), _defineProperty(_this$config, "modalEntryRemove", config.modalEntryRemove), _defineProperty(_this$config, "sectionContainer", undefined), _this$config);
+  }, _defineProperty(_this$config, "entryTemplate", config.entryTemplate), _defineProperty(_this$config, "modalEntryRemove", config.modalEntryRemove), _defineProperty(_this$config, "modalEntryEdit", config.modalEntryEdit), _defineProperty(_this$config, "sectionContainer", undefined), _this$config);
   this.data = Object.assign({}, config.type);
   this.entries = this.data.entries.map(function (entry) {
     return new _TableEntry__WEBPACK_IMPORTED_MODULE_0__["default"]({
@@ -3517,6 +3540,10 @@ TableList.prototype.removeEntryById = function (id) {
   this.render();
 };
 
+TableList.prototype.getEntries = function () {
+  return this.entries;
+};
+
 TableList.prototype.render = function () {
   var _this2 = this;
 
@@ -3560,6 +3587,31 @@ TableList.prototype.render = function () {
       _this2.config.modalEntryRemove.show();
     });
   });
+  var editBtn = Array.from(tableTarget.querySelectorAll('div[bind-edit]'));
+  editBtn.forEach(function (entryEdit) {
+    entryEdit.removeAttribute('bind-edit');
+    var id = entryEdit.getAttribute('entry-id');
+
+    var entry = _this2.getEntryById(id);
+
+    entryEdit.addEventListener('click', function (e) {
+      console.log(_this2.data.id);
+
+      _this2.config.modalEntryEdit.bindValues({
+        'select[name=type]': _this2.data.id,
+        '[bind-ident1]': entry.getIdent1(),
+        'input[name=ident_1]': entry.getIdent1(),
+        '[bind-ident2]': entry.getIdent2(),
+        'input[name=ident_2]': entry.getIdent2(),
+        'input[name=release]': (entry.getRelease() || '').substr(0, 10),
+        // date input only accept yyyy-mm-dd values
+        '[bind-entry-id]': id,
+        '[bind-entry-type]': 1
+      });
+
+      _this2.config.modalEntryEdit.show();
+    });
+  });
 };
 
 /***/ }),
@@ -3585,6 +3637,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+var startContainer = document.querySelector('div[bind-start]');
+var editEntryModal = new _components_Modal__WEBPACK_IMPORTED_MODULE_2___default.a($('template#modal-entry-edit').innerHTML);
 var modalEntryRemove = new _components_Modal__WEBPACK_IMPORTED_MODULE_2___default.a($('template#modal-remove-confirm').innerHTML);
 
 var listing = __TYPES.map(function (type) {
@@ -3596,7 +3650,8 @@ var listing = __TYPES.map(function (type) {
       targetContainer: $('.section-container'),
       sectionTemplate: $('template#skeleton-card-section').innerHTML,
       entryTemplate: $('template#skeleton-card-entry').innerHTML,
-      modalEntryRemove: modalEntryRemove
+      modalEntryRemove: modalEntryRemove,
+      modalEntryEdit: editEntryModal
     });
   } else {
     return new _components_profile_TableList__WEBPACK_IMPORTED_MODULE_4__["default"]({
@@ -3607,10 +3662,17 @@ var listing = __TYPES.map(function (type) {
       sectionTemplate: $('template#skeleton-table-section').innerHTML,
       tableTemplate: $('template#skeleton-table').innerHTML,
       entryTemplate: $('template#skeleton-table-entry').innerHTML,
-      modalEntryRemove: modalEntryRemove
+      modalEntryRemove: modalEntryRemove,
+      modalEntryEdit: editEntryModal
     });
   }
-}); // Abort Removal Modal
+});
+
+if (!listing.some(function (list) {
+  return list.getEntries().length > 0;
+})) {
+  startContainer.classList.remove('hidden');
+} // Abort Removal Modal
 
 
 var btnCloseEntryRemoveModal = modalEntryRemove.querySelector('.js-modal-close');
@@ -3650,6 +3712,13 @@ if (btnConfirmEntryRemoveModal) {
           notify('Success', 'Entry removed', 'success');
         } else {
           notify('Error', json.message, 'danger');
+        } // Check if all listings are empty
+
+
+        if (!listing.some(function (list) {
+          return list.getEntries().length > 0;
+        })) {
+          startContainer.classList.remove('hidden');
         }
       })["catch"](function (err) {
         notify('Error', err.message, 'danger');
@@ -3664,7 +3733,7 @@ if (btnConfirmEntryRemoveModal) {
 } // Add Entry modal
 
 
-var addEntryModal = new _components_Modal__WEBPACK_IMPORTED_MODULE_2___default.a($('template#modal-entry').innerHTML);
+var addEntryModal = new _components_Modal__WEBPACK_IMPORTED_MODULE_2___default.a($('template#modal-entry-add').innerHTML);
 var entryModalForm = addEntryModal.querySelector('form'); // Setup modal
 
 if (addEntryModal) {
@@ -3726,6 +3795,7 @@ if (btnSaveEntry) {
 
         listing.some(function (type) {
           if (type.getId() == json.data.entry.type_id) {
+            startContainer.classList.add('hidden');
             type.addEntry(json.data.entry);
             return true;
           }
@@ -3765,6 +3835,107 @@ var navbarBtn = $('.js-navbar-add-entry');
 if (navbarBtn) {
   navbarBtn.addEventListener('click', function (e) {
     addEntryModal.show();
+  });
+} // Edit Entry modal
+
+
+var editEntryModalForm = editEntryModal.querySelector('form'); // Setup modal
+
+if (editEntryModal) {
+  var _selectType = editEntryModal.querySelector('[bind-types]');
+
+  if (_selectType) {
+    __TYPES.forEach(function (type, i) {
+      var option = document.createElement('option');
+      option.value = type.id;
+      option.text = type.name;
+      option.setAttribute('data-ident1', type.ident_1);
+      option.setAttribute('data-ident2', type.ident_2);
+
+      _selectType.appendChild(option);
+    }); // Update input fields to reflect selected type
+
+
+    _selectType.addEventListener('change', function (e) {
+      var selOption = _selectType.options[_selectType.selectedIndex];
+      var ident1 = selOption.getAttribute('data-ident1');
+      var ident2 = selOption.getAttribute('data-ident2');
+      editEntryModal.querySelector('[bind-ident1]').innerText = ident1;
+      editEntryModal.querySelector('[name=ident_1]').setAttribute('placeholder', ident1);
+      editEntryModal.querySelector('[bind-ident2]').innerText = ident2;
+      editEntryModal.querySelector('[name=ident_2]').setAttribute('placeholder', ident2);
+    }); // make first element in options auto-select and fill in idents
+
+
+    _selectType.dispatchEvent(new Event('change'));
+  }
+} // Save entered entry
+
+
+var btnEditEntry = editEntryModal.querySelector('.js-modal-confirm');
+
+if (btnEditEntry) {
+  btnEditEntry.addEventListener('click', function (e) {
+    if (_components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a.isPending()) {
+      notify('Warning', 'Another request is in progress, please wait a second!', 'warning');
+      return;
+    }
+
+    btnEditEntry.setAttribute('disabled', 'disabled');
+    btnEditEntry.classList.add('cursor-wait');
+    _components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a.show();
+    _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"].post(__ROUTES.entries.update, {
+      type: editEntryModalForm.type.options[editEntryModalForm.type.selectedIndex].value,
+      ident_1: editEntryModalForm.ident_1.value,
+      ident_2: editEntryModalForm.ident_2.value,
+      release: editEntryModalForm.release.value,
+      visibility: editEntryModalForm.visibility.value
+    }).then(function (resp) {
+      var json = resp.data;
+
+      if (!json.error) {
+        editEntryModal.hide();
+
+        if (editEntryModalForm) {
+          editEntryModalForm.reset();
+        }
+
+        listing.some(function (type) {
+          if (type.getId() == json.data.entry.type_id) {
+            var entry = type.getEntryById(json.data.id);
+            entry = Object.assign({}, json.data.entry); // overwriting reference with copy of response
+
+            type.render();
+            startContainer.classList.add('hidden');
+            return true;
+          }
+
+          return false;
+        });
+        notify('Success', 'Entry added', 'success');
+      } else {
+        notify('Error', json.message, 'danger');
+      }
+    })["catch"](function (err) {
+      notify('Error', err.message, 'danger');
+    })["finally"](function (resp) {
+      btnEditEntry.removeAttribute('disabled');
+      btnEditEntry.classList.remove('cursor-wait');
+      _components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a.hide();
+    });
+  });
+} // Close Add Entry modal and reset form
+
+
+var btnCloseEntryEditModal = editEntryModal.querySelector('.js-modal-close');
+
+if (btnCloseEntryEditModal) {
+  btnCloseEntryEditModal.addEventListener('click', function (e) {
+    editEntryModal.hide();
+
+    if (editEntryModalForm) {
+      editEntryModalForm.reset();
+    }
   });
 }
 

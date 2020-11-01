@@ -13,6 +13,7 @@ export default function CardList(config = {}) {
 		targetContainer:	config.targetContainer,
 		sectionTemplate:	config.sectionTemplate,
 		modalEntryRemove:	config.modalEntryRemove,
+		modalEntryEdit:		config.modalEntryEdit,
 
 		sectionContainer: undefined,
 	};
@@ -68,6 +69,9 @@ CardList.prototype.removeEntryById = function(id) {
 	this.entries = this.entries.filter(card => card.getId() != id);
 	this.render();
 };
+CardList.prototype.getEntries = function() {
+	return this.entries;
+};
 CardList.prototype.render = function() {
 	let cardsTarget = this.config.sectionContainer.querySelector('div[bind-cards]');
 	cardsTarget.innerHTML = '';
@@ -86,7 +90,7 @@ CardList.prototype.render = function() {
 		removalBtn.forEach(entryRemoval => {
 			entryRemoval.removeAttribute('bind-remove');
 
-			let id = entryRemoval.getAttribute('card-id');
+			let id = entryRemoval.getAttribute('entry-id');
 			let card = this.getEntryById(id);
 			entryRemoval.addEventListener('click', e => {
 				this.config.modalEntryRemove.bindValues({
@@ -99,4 +103,26 @@ CardList.prototype.render = function() {
 				this.config.modalEntryRemove.show();
 			});
 		});
+
+	let editBtn = Array.from(cardsTarget.querySelectorAll('div[bind-edit]'));
+		editBtn.forEach(entryEdit => {
+			entryEdit.removeAttribute('bind-edit');
+
+			let id = entryEdit.getAttribute('entry-id');
+			let entry = this.getEntryById(id);
+			entryEdit.addEventListener('click', e => {
+				this.config.modalEntryEdit.bindValues({
+					'select[name=type]': this.data.id,
+					'[bind-ident1]': entry.getIdent1(),
+					'input[name=ident_1]': entry.getIdent1(),
+					'[bind-ident2]': entry.getIdent2(),
+					'input[name=ident_2]': entry.getIdent2(),
+					'input[name=release]': (entry.getRelease() || '').substr(0, 10),  // date input only accept yyyy-mm-dd values
+					'[bind-entry-id]': id,
+					'[bind-entry-type]': 1,
+				});
+				this.config.modalEntryEdit.show();
+			});
+		});
+
 };

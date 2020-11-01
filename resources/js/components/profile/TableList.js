@@ -15,6 +15,7 @@ export default function TableList(config = {}) {
 		tableTemplate:		config.tableTemplate,
 		entryTemplate:		config.entryTemplate,
 		modalEntryRemove:	config.modalEntryRemove,
+		modalEntryEdit:		config.modalEntryEdit,
 
 		sectionContainer:	undefined,
 	};
@@ -71,6 +72,9 @@ TableList.prototype.removeEntryById = function(id) {
 	this.entries = this.entries.filter(entry => entry.getId() != id);
 	this.render();
 };
+TableList.prototype.getEntries = function() {
+	return this.entries;
+};
 TableList.prototype.render = function() {
 	let tableTarget = this.config.sectionContainer.querySelector('div[bind-table]');
 	tableTarget.innerHTML = '';
@@ -109,6 +113,29 @@ TableList.prototype.render = function() {
 					'[bind-entry-type]': 1,
 				});
 				this.config.modalEntryRemove.show();
+			});
+		});
+
+	let editBtn = Array.from(tableTarget.querySelectorAll('div[bind-edit]'));
+		editBtn.forEach(entryEdit => {
+			entryEdit.removeAttribute('bind-edit');
+
+			let id = entryEdit.getAttribute('entry-id');
+			let entry = this.getEntryById(id);
+
+			entryEdit.addEventListener('click', e => {
+				console.log(this.data.id);
+				this.config.modalEntryEdit.bindValues({
+					'select[name=type]': this.data.id,
+					'[bind-ident1]': entry.getIdent1(),
+					'input[name=ident_1]': entry.getIdent1(),
+					'[bind-ident2]': entry.getIdent2(),
+					'input[name=ident_2]': entry.getIdent2(),
+					'input[name=release]': (entry.getRelease() || '').substr(0, 10),  // date input only accept yyyy-mm-dd values
+					'[bind-entry-id]': id,
+					'[bind-entry-type]': 1,
+				});
+				this.config.modalEntryEdit.show();
 			});
 		});
 };
