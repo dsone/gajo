@@ -57,18 +57,14 @@ let Modal = (() => {
 			elements.forEach(element => {
 				switch (element.nodeName.toLocaleLowerCase()) {
 					case 'select':
-						if (!isNaN(mapping[selector])) {
-							element.selectedIndex = parseInt(mapping[selector], 10);
-						} else {
-							Array.from(element.options).some((option, i) => {
-								if (option.value == mapping[selector]) {
-									element.selectedIndex = i;
-									return  true;
-								}
+						Array.from(element.options).some((option, i) => {
+							if (option.value == mapping[selector]) {
+								element.selectedIndex = i;
+								return true;
+							}
 
-								return false;
-							});
-						}
+							return false;
+						});
 					break;
 					case 'input':
 					case 'textarea':
