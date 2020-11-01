@@ -31,7 +31,8 @@ export default function Options(config = {}) {
 			this.config.pending.hide();
 		}
 	};
-	let main = () => {
+
+	(() => {
 		this.config.changeRSS.addEventListener('click', async () => {
 			if (this.config.ajaxInProgress) {
 				e.preventDefault();
@@ -101,6 +102,5 @@ export default function Options(config = {}) {
 				timer = setTimeout(() => update(updateOptions), 1000);
 			});
 		});
-	};
-	main();
+	})();
 }
