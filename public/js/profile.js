@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -3151,495 +3151,278 @@ module.exports = Pending;
 
 /***/ }),
 
-/***/ "./resources/js/components/TypeList.js":
-/*!*********************************************!*\
-  !*** ./resources/js/components/TypeList.js ***!
-  \*********************************************/
+/***/ "./resources/js/components/profile/Card.js":
+/*!*************************************************!*\
+  !*** ./resources/js/components/profile/Card.js ***!
+  \*************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return TypeList; });
-function _toConsumableArray(arr) {
-  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
-}
-
-function _nonIterableSpread() {
-  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-}
-
-function _unsupportedIterableToArray(o, minLen) {
-  if (!o) return;
-  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
-  var n = Object.prototype.toString.call(o).slice(8, -1);
-  if (n === "Object" && o.constructor) n = o.constructor.name;
-  if (n === "Map" || n === "Set") return Array.from(o);
-  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
-}
-
-function _iterableToArray(iter) {
-  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
-}
-
-function _arrayWithoutHoles(arr) {
-  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
-}
-
-function _arrayLikeToArray(arr, len) {
-  if (len == null || len > arr.length) len = arr.length;
-
-  for (var i = 0, arr2 = new Array(len); i < len; i++) {
-    arr2[i] = arr[i];
-  }
-
-  return arr2;
-}
-
-function TypeList() {
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Card; });
+function Card() {
   var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-  if (!(this instanceof TypeList)) {
-    return new TypeList(config);
+  if (!(this instanceof Card)) {
+    return new Card(config);
   }
 
-  this.container = config.container;
-  this.emptyContainer = config.emptyContainer;
-  /**this.types = [
-  	{
-  		"id": 1,
-  		"name": "Test",
-  		"ident_1": "Test1",
-  		"ident_2": "Test1",
-  		"sort": 1,
-  		"display": 1
-  	}
-  ];*/
-
-  this.types = config.types.slice(0);
-  this.template = config.template;
-  this.renderCallback = config.renderCallback;
-  this.dragndropCallback = config.dragndropCallback;
-  this.updateTypeCallback = config.updateTypeCallback;
-  this.render();
+  this.config = {
+    parent: config.parent,
+    ajax: config.ajax,
+    pending: config.pending,
+    entryTemplate: config.entryTemplate
+  };
+  this.data = Object.assign({}, config.entry);
 }
-/**
- * Returns a type by a given index, wheras the index means the index of the position inside the types array.
- * Removing types will obviously change the index
- * 
- * @param 	integer	i	The index of the type to return.
- * @returns				The Type JSON literal representing the requested type, by value, not ref.	
- */
 
-TypeList.prototype.getByIndex = function (i) {
-  if (typeof this.types[i] === 'undefined') {
-    return undefined;
-  }
+Card.prototype.getElement = function () {
+  var _div = document.createElement('div');
 
-  return this.types.slice(i, i + 1)[0];
-};
-/**
- * Removes a Type by its id. Using id here is more secure than using the Type's index position.
- * Rerenders the type display after removal.
- * 
- * @param	integer	id	The id of the Type to remove.
- */
-
-
-TypeList.prototype.removeById = function (id) {
-  this.types = this.types.filter(function (type) {
-    return type.id !== id;
-  });
-  this.render();
-};
-/**
- * Adds a new Type to the list.
- * 
- * @param JSON	type	The JSON representation of the new Type.
- */
-
-
-TypeList.prototype.addType = function (type) {
-  this.types.push(type);
-  this.render();
+  var entry = this.config.entryTemplate.slice(0);
+  _div.innerHTML = entry;
+  entry = _div.firstElementChild;
+  entry.setAttribute('entry-id', this.data.id);
+  entry.querySelector('h4[bind-ident1]').innerHTML = this.data.ident_1;
+  entry.querySelector('div[bind-ident2]').innerHTML = this.data.ident_2;
+  entry.querySelector('div[bind-release]').innerHTML = this.data.release_at != null ? new Date(this.data.release_at).toLocaleDateString() : 'TBA';
+  var visibility = entry.querySelector('div[bind-visibility]');
+  visibility.classList.add('card-visibility--' + ['', 'green', 'orange', '', 'red'][this.data.visibility]);
+  visibility.setAttribute('title', ['', 'Hidden', 'Private', '', 'Public'][this.data.visibility]);
+  entry.querySelector('div[bind-edit]').setAttribute('card-id', this.data.id);
+  entry.querySelector('div[bind-remove]').setAttribute('card-id', this.data.id);
+  return entry;
 };
 
-TypeList.prototype.render = function () {
-  var _this = this;
-
-  this.container.innerHTML = '<div class="h-6 drag-target" data-target="-1">&nbsp;</div>';
-
-  if (this.types.length > 0) {
-    this.emptyContainer.classList.add('hidden');
-    var events = {
-      selects: [],
-      inputs: [],
-      selectedIndex: {}
-    }; //! Setting innerHTML with '+=' resets events and the selectedIndex on previous selects
-
-    this.types.forEach(function (type, index) {
-      var element = _this.template.slice(0);
-
-      element = element.replace(/#type_id#/gim, type.id).replace(/#type_name#/gim, type.name).replace(/#type_ident1#/gim, type.ident_1).replace(/#type_ident2#/gim, type.ident_2).replace(/#type_index#/gim, index);
-      _this.container.innerHTML += element;
-      element = _this.container.querySelector("div[data-id=\"".concat(type.id, "\"]"));
-      events.selectedIndex[type.id] = type.display - 1;
-      events.selects.push([type.id, element.querySelector('.js-type-select')]);
-      events.inputs.push([type.id, [element.querySelector('.js-type-name'), element.querySelector('.js-type-ident1'), element.querySelector('.js-type-ident2')]]);
-    }); // No set events as needed
-
-    this.types.forEach(function (type, index) {
-      var typeElement = _this.container.querySelector("div[data-id=\"".concat(type.id, "\"]"));
-
-      var select = typeElement.querySelector('.js-type-select');
-      select.selectedIndex = events.selectedIndex[type.id];
-      select.addEventListener('change', function (e) {
-        _this.update(type, select.name, parseInt(select.options[select.selectedIndex].value));
-      });
-      [typeElement.querySelector('.js-type-name'), typeElement.querySelector('.js-type-ident1'), typeElement.querySelector('.js-type-ident2')].forEach(function (el) {
-        el.addEventListener('change', function (e) {
-          _this.update(type, el.name, el.value);
-        });
-      });
-    });
-    this.dragndrop();
-  } else {
-    this.emptyContainer.classList.remove('hidden');
-
-    if (!!this.renderCallback) {
-      this.renderCallback(false);
-    }
-  }
-};
-/**
- * Adds event listeners for drag and drop.
- * Deals with changing position of a Type within the list.
- * Calls render() when necessary and a custom callback function on drop.
- */
-
-
-TypeList.prototype.dragndrop = function () {
-  // Create Drag'n'Drop features
-  var draggable = Array.from(document.querySelectorAll('.draggable-item .js-btn-drag'));
-  var draggedItemIndex;
-  draggable.forEach(function (el) {
-    var parent = el.closest('.draggable-item');
-    el.addEventListener('dragstart', function (e) {
-      draggedItemIndex = parseInt(parent.querySelector('.drag-target').getAttribute('data-target'), 10);
-      parent.classList.add('dragging');
-    });
-    el.addEventListener('dragend', function (e) {
-      parent.classList.remove('dragging');
-    });
-  });
-  var that = this;
-  Array.from(document.querySelectorAll('.drag-target')).forEach(function (el) {
-    var draggedItemTargetIndex = parseInt(el.getAttribute('data-target'));
-    el.addEventListener('dragover', function (e) {
-      // auto fires every 350ms-ish
-      e.preventDefault();
-    });
-    el.addEventListener('drop', function (e) {
-      if (draggedItemTargetIndex > draggedItemIndex) {
-        var _that$types; // = is excluded below
-
-
-        (_that$types = that.types).splice.apply(_that$types, [draggedItemTargetIndex, 0].concat(_toConsumableArray(that.types.splice(draggedItemIndex, 1))));
-      } else {
-        var _that$types2; // if a type is moved upwards (lower index) we need to add 1 to target,
-        // or we move before the target, ie 2 upwards instead of 1
-
-
-        (_that$types2 = that.types).splice.apply(_that$types2, [draggedItemTargetIndex + 1, 0].concat(_toConsumableArray(that.types.splice(draggedItemIndex, 1))));
-      }
-
-      that.render();
-
-      if (!!that.dragndropCallback) {
-        that.dragndropCallback();
-      }
-    });
-    el.addEventListener('dragenter', function (e) {
-      // skip draggable-item's own drag-target and the target directly before that
-      if (draggedItemIndex === draggedItemTargetIndex || draggedItemIndex - 1 === draggedItemTargetIndex) {
-        return;
-      }
-
-      e.currentTarget.classList.add('drop');
-    });
-    el.addEventListener('dragleave', function (e) {
-      e.currentTarget.classList.remove('drop');
-    });
-  });
-
-  if (!!this.renderCallback) {
-    this.renderCallback(true);
-  }
+Card.prototype.getId = function () {
+  return this.data.id;
 };
 
-TypeList.prototype.update = function (type, attrName, value) {
-  var _this2 = this; // Name has a unique constraint for a user
+Card.prototype.getIdent1 = function () {
+  return this.data.ident_1;
+};
 
+Card.prototype.getIdent2 = function () {
+  return this.data.ident_2;
+};
 
-  if (attrName === 'name') {
-    var uniqueNameError = this.types.some(function (tp) {
-      return tp.name === value && tp.id !== type.id;
-    });
+Card.prototype.getRelease = function () {
+  return this.data.release_at;
+};
 
-    if (uniqueNameError) {
-      notify('Error', 'Name of Type must be unique!', 'danger');
-      return this.render(); // deletes duplicate name
-    }
-  }
-
-  if (!!this.updateTypeCallback) {
-    var copy = Object.assign({}, type);
-    copy[attrName] = value;
-    this.updateTypeCallback(copy).then(function (success) {
-      if (success) {
-        type[attrName] = value;
-      } // if error, success = false -> reset to old value
-
-
-      _this2.render();
-    });
-  }
+Card.prototype.getVisibility = function () {
+  return this.data.visibility;
 };
 
 /***/ }),
 
-/***/ "./resources/js/components/options/Options.js":
-/*!****************************************************!*\
-  !*** ./resources/js/components/options/Options.js ***!
-  \****************************************************/
+/***/ "./resources/js/components/profile/CardList.js":
+/*!*****************************************************!*\
+  !*** ./resources/js/components/profile/CardList.js ***!
+  \*****************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Options; });
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return CardList; });
+/* harmony import */ var _Card__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Card */ "./resources/js/components/profile/Card.js");
 
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
-  try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
-  }
-
-  if (info.done) {
-    resolve(value);
-  } else {
-    Promise.resolve(value).then(_next, _throw);
-  }
-}
-
-function _asyncToGenerator(fn) {
-  return function () {
-    var self = this,
-        args = arguments;
-    return new Promise(function (resolve, reject) {
-      var gen = fn.apply(self, args);
-
-      function _next(value) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
-      }
-
-      function _throw(err) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
-      }
-
-      _next(undefined);
-    });
-  };
-}
-
-function Options() {
+function CardList() {
   var _this = this;
 
   var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-  if (!(this instanceof Options)) {
-    return new Options(config);
+  if (!(this instanceof CardList)) {
+    return new CardList(config);
   }
-  /**
-   * privateProfile:	The private profile checkbox,
-   * colorblind:		color blind mode checkbox,
-   * hideReleased:	auto hide released checkbox,
-   * hideTBA:			auto hide TBA entries checkbox,
-   * rss:				The input for RSS token,
-   * changeRSS:		button to change RSS id
-   * ajax:			An instance of Ajax, implementing the functions put, post, get
-   */
 
-
-  this.config = Object.assign({
-    ajaxInProgress: false
-  }, config);
-  this.data = {
-    privateProfile: this.config.privateProfile.checked,
-    colorblind: this.config.colorblind.checked,
-    hideReleased: this.config.hideReleased.checked,
-    hideTBA: this.config.hideTBA.checked
+  this.config = {
+    ajax: config.ajax,
+    pending: config.pending,
+    entryTemplate: config.entryTemplate,
+    targetContainer: config.targetContainer,
+    sectionTemplate: config.sectionTemplate,
+    modalEntryRemove: config.modalEntryRemove,
+    sectionContainer: undefined
   };
-
-  var toggleInProgress = function toggleInProgress(inProgress) {
-    if (inProgress) {
-      _this.config.ajaxInProgress = true;
-
-      _this.config.pending.show();
-    } else {
-      _this.config.ajaxInProgress = false;
-
-      _this.config.pending.hide();
-    }
-  };
+  this.data = Object.assign({}, config.type);
+  this.entries = this.data.entries.map(function (entry) {
+    return new _Card__WEBPACK_IMPORTED_MODULE_0__["default"]({
+      parent: _this,
+      entry: entry,
+      ajax: _this.config.ajax,
+      pending: _this.config.pending,
+      entryTemplate: _this.config.entryTemplate
+    });
+  });
 
   (function () {
-    _this.config.changeRSS.addEventListener('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      var uri;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              if (!_this.config.ajaxInProgress) {
-                _context.next = 3;
-                break;
-              }
+    // Create the new section for this new card list
+    var _div = document.createElement('div');
 
-              e.preventDefault();
-              return _context.abrupt("return", false);
+    var section = _this.config.sectionTemplate.slice(0);
 
-            case 3:
-              try {
-                uri = _this.config.changeRSS.getAttribute('data-uri');
-                toggleInProgress(true);
+    _div.innerHTML = section;
+    section = _div.firstElementChild;
+    section.querySelector('h3[bind-section-title]').innerHTML = _this.data.name;
+    _this.config.sectionContainer = section; // Reserve place inside target container place inside 
 
-                _this.config.changeRSS.setAttribute('disabled', 'disabled');
+    _this.config.targetContainer.appendChild(_this.config.sectionContainer);
 
-                _this.config.ajax.get(uri).then(function (json) {
-                  if (!json.data.error) {
-                    _this.config.rss.value = json.data.data;
-                    notify('Success', 'Updated RSS token', 'success');
-                  } else {
-                    notify('Error', json.message, 'danger');
-                  }
-
-                  _this.config.changeRSS.removeAttribute('disabled', 'disabled');
-
-                  toggleInProgress(false);
-                })["catch"](function (json) {
-                  _this.config.changeRSS.removeAttribute('disabled', 'disabled');
-
-                  notify('Error', 'Failed to update RSS token', 'danger');
-                  toggleInProgress(false);
-                });
-              } catch (e) {
-                console.error(e);
-              }
-
-            case 4:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    })));
-
-    var update = function update(data) {
-      toggleInProgress(true);
-
-      _this.config.ajax.put(__ROUTES.options, data).then(function (json) {
-        if (!json.data.error) {
-          _this.data = Object.assign({}, data);
-          notify('Success', 'Updated Options', 'success');
-        } else {
-          notify('Error', json.message, 'danger');
-        }
-
-        toggleInProgress(false);
-      })["catch"](function (json) {
-        notify('Error', 'Failed to update options', 'danger');
-        toggleInProgress(false);
-      });
-    };
-
-    var timer = undefined;
-    var updateOptions = Object.assign({
-      _method: 'put'
-    }, _this.data);
-    ['privateProfile', 'colorblind', 'hideReleased', 'hideTBA'].forEach(function (key) {
-      _this.config[key].addEventListener('click', function (e) {
-        if (_this.config.ajaxInProgress) {
-          e.preventDefault();
-          return false;
-        }
-
-        updateOptions[key] = _this.config[key].checked;
-        clearTimeout(timer);
-        timer = setTimeout(function () {
-          return update(updateOptions);
-        }, 1000);
-      });
-    });
+    _this.render();
   })();
 }
 
+CardList.prototype.getId = function () {
+  return this.data.id;
+};
+
+CardList.prototype.addEntry = function (entry) {
+  this.entries.push(new _Card__WEBPACK_IMPORTED_MODULE_0__["default"]({
+    parent: this,
+    entry: entry,
+    ajax: this.config.ajax,
+    pending: this.config.pending,
+    entryTemplate: this.config.entryTemplate
+  }));
+  this.render();
+};
+
+CardList.prototype.getEntryById = function (id) {
+  return this.entries.filter(function (card) {
+    return card.getId() == id;
+  })[0];
+};
+
+CardList.prototype.removeEntryById = function (id) {
+  if (this.entries.length === 0) {
+    return;
+  }
+
+  this.entries = this.entries.filter(function (card) {
+    return card.getId() != id;
+  });
+  this.render();
+};
+
+CardList.prototype.render = function () {
+  var _this2 = this;
+
+  var cardsTarget = this.config.sectionContainer.querySelector('div[bind-cards]');
+  cardsTarget.innerHTML = '';
+
+  if (this.entries.length === 0) {
+    this.config.sectionContainer.classList.add('hidden');
+    return;
+  } else {
+    this.config.sectionContainer.classList.remove('hidden');
+  }
+
+  this.entries.forEach(function (card) {
+    cardsTarget.appendChild(card.getElement());
+  });
+  var removalBtn = Array.from(cardsTarget.querySelectorAll('div[bind-remove]'));
+  removalBtn.forEach(function (entryRemoval) {
+    entryRemoval.removeAttribute('bind-remove');
+    var id = entryRemoval.getAttribute('card-id');
+
+    var card = _this2.getEntryById(id);
+
+    entryRemoval.addEventListener('click', function (e) {
+      _this2.config.modalEntryRemove.bindValues({
+        '[bind-ident1]': card.getIdent1(),
+        '[bind-ident2]': card.getIdent2(),
+        '[bind-release]': card.getRelease(),
+        '[bind-entry-id]': id,
+        '[bind-entry-type]': 2
+      });
+
+      _this2.config.modalEntryRemove.show();
+    });
+  });
+};
+
 /***/ }),
 
-/***/ "./resources/js/funcs/types.js":
-/*!*************************************!*\
-  !*** ./resources/js/funcs/types.js ***!
-  \*************************************/
-/*! no exports provided */
+/***/ "./resources/js/components/profile/TableEntry.js":
+/*!*******************************************************!*\
+  !*** ./resources/js/components/profile/TableEntry.js ***!
+  \*******************************************************/
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _components_Ajax__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/Ajax */ "./resources/js/components/Ajax.js");
-/* harmony import */ var _components_Modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Modal */ "./resources/js/components/Modal.js");
-/* harmony import */ var _components_Modal__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_components_Modal__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/Pending */ "./resources/js/components/Pending.js");
-/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_components_Pending__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _components_TypeList__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/TypeList */ "./resources/js/components/TypeList.js");
-function ownKeys(object, enumerableOnly) {
-  var keys = Object.keys(object);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return TableEntry; });
+function TableEntry() {
+  var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-  if (Object.getOwnPropertySymbols) {
-    var symbols = Object.getOwnPropertySymbols(object);
-    if (enumerableOnly) symbols = symbols.filter(function (sym) {
-      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-    });
-    keys.push.apply(keys, symbols);
+  if (!(this instanceof TableEntry)) {
+    return new TableEntry(config);
   }
 
-  return keys;
+  this.config = {
+    parent: config.parent,
+    ajax: config.ajax,
+    pending: config.pending,
+    entryTemplate: config.entryTemplate
+  };
+  this.data = Object.assign({}, config.entry);
 }
 
-function _objectSpread(target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i] != null ? arguments[i] : {};
+TableEntry.prototype.getElement = function () {
+  var _div = document.createElement('div');
 
-    if (i % 2) {
-      ownKeys(Object(source), true).forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      });
-    } else if (Object.getOwnPropertyDescriptors) {
-      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-    } else {
-      ownKeys(Object(source)).forEach(function (key) {
-        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-      });
-    }
-  }
+  var entry = this.config.entryTemplate.slice(0);
+  _div.innerHTML = entry;
+  entry = _div.firstElementChild;
+  entry.setAttribute('entry-id', this.data.id);
+  entry.querySelector('div[bind-ident1]').innerHTML = this.data.ident_1;
+  entry.querySelector('div[bind-ident2]').innerHTML = this.data.ident_2;
+  entry.querySelector('div[bind-release]').innerHTML = this.data.release_at != null ? new Date(this.data.release_at).toLocaleDateString() : 'TBA';
+  entry.querySelector('div[bind-edit]').setAttribute('entry-id', this.data.id);
+  entry.querySelector('div[bind-remove]').setAttribute('entry-id', this.data.id);
+  var visibility = entry.querySelector('div[bind-visibility]');
+  visibility.classList.add('entry-visibility--' + ['', 'green', 'orange', '', 'red'][this.data.visibility]);
+  visibility.setAttribute('title', ['', 'Hidden', 'Private', '', 'Public'][this.data.visibility]);
+  return entry;
+};
 
-  return target;
-}
+TableEntry.prototype.getId = function () {
+  return this.data.id;
+};
 
+TableEntry.prototype.getIdent1 = function () {
+  return this.data.ident_1;
+};
+
+TableEntry.prototype.getIdent2 = function () {
+  return this.data.ident_2;
+};
+
+TableEntry.prototype.getRelease = function () {
+  return this.data.release_at;
+};
+
+TableEntry.prototype.getVisibility = function () {
+  return this.data.visibility;
+};
+
+/***/ }),
+
+/***/ "./resources/js/components/profile/TableList.js":
+/*!******************************************************!*\
+  !*** ./resources/js/components/profile/TableList.js ***!
+  \******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return TableList; });
+/* harmony import */ var _TableEntry__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TableEntry */ "./resources/js/components/profile/TableEntry.js");
 function _defineProperty(obj, key, value) {
   if (key in obj) {
     Object.defineProperty(obj, key, {
@@ -3656,217 +3439,134 @@ function _defineProperty(obj, key, value) {
 }
 
 
+function TableList() {
+  var _this$config,
+      _this = this;
 
+  var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
- // Create Modal for confirmation of type removal
-
-var removalConfirmModal = new _components_Modal__WEBPACK_IMPORTED_MODULE_1___default.a($('template#modal-remove-confirm').innerHTML); // Init Types
-
-var typeList = new _components_TypeList__WEBPACK_IMPORTED_MODULE_3__["default"]({
-  container: $('.js-types-container'),
-  emptyContainer: $('.js-types-empty'),
-  template: $('template#type-item').innerHTML,
-  types: __TYPES,
-  // Whenever a rendering was done, reset events
-  renderCallback: function renderCallback(listAvailable) {
-    var _this = this;
-
-    if (listAvailable) {
-      var btnRemove = $$('.js-remove-type');
-      btnRemove.forEach(function (btn) {
-        btn.addEventListener('click', function (e) {
-          var index = btn.getAttribute('data-index');
-
-          var type = _this.getByIndex(index);
-
-          var elName = removalConfirmModal.querySelector('[bind-name]');
-          var ident1 = removalConfirmModal.querySelector('[bind-ident1]');
-          var ident2 = removalConfirmModal.querySelector('[bind-ident2]');
-          var confirmBtn = removalConfirmModal.querySelector('[bind-type-id]');
-
-          try {
-            elName.innerHTML = type.name;
-            ident1.innerHTML = type.ident_1;
-            ident2.innerHTML = type.ident_2;
-            confirmBtn.setAttribute('type-id', type.id);
-          } catch (e) {
-            return;
-          }
-
-          removalConfirmModal.show();
-        });
-      });
-    }
-  },
-  // Updating order via dragndrop invokes this function
-  // if nothing was changed, this is not called
-  dragndropCallback: function dragndropCallback() {
-    var newOrder = this.types.reduce(function (prevV, curV) {
-      prevV.push(curV.id);
-      return prevV;
-    }, []);
-    _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"].post(__ROUTES.types.order, {
-      order: newOrder
-    }).then(function (resp) {
-      var json = resp.data;
-
-      if (!json.error) {
-        notify('Success', 'Order saved!', 'success');
-      } else {
-        notify('Error', json.message, 'danger');
-      }
-    })["catch"](function (err) {
-      notify('Error', err.message, 'danger');
-    })["finally"](function (resp) {
-      _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.hide();
-      return resp;
-    });
-  },
-  // If a type was chaned inline, this func is invoked
-  updateTypeCallback: function updateTypeCallback(type) {
-    _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.show();
-    return _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"].post(__ROUTES.types.update, _objectSpread({
-      _method: 'put'
-    }, type)).then(function (resp) {
-      var json = resp.data;
-
-      if (!json.error) {
-        notify('Success', 'Type updated', 'success');
-      } else {
-        notify('Error', json.message, 'danger');
-      }
-
-      return !json.error;
-    })["catch"](function (err) {
-      notify('Error', err.message, 'danger');
-      return false;
-    })["finally"](function (resp) {
-      _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.hide();
-      return resp;
-    });
+  if (!(this instanceof TableList)) {
+    return new TableList(config);
   }
-}); // Create modal for adding types
 
-var typeModal = new _components_Modal__WEBPACK_IMPORTED_MODULE_1___default.a($('template#modal-type').innerHTML);
-var typeModalForm = typeModal.querySelector('form');
-var btnCloseModal = typeModal.querySelector('.js-modal-close');
-
-if (btnCloseModal) {
-  btnCloseModal.addEventListener('click', function (e) {
-    typeModal.hide();
-
-    if (typeModalForm) {
-      typeModalForm.reset();
-    }
-  });
-} // Save a type
-
-
-var btnSaveType = typeModal.querySelector('.js-save-type');
-
-if (btnSaveType) {
-  btnSaveType.addEventListener('click', function (e) {
-    if (_components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.isPending()) {
-      notify('Warning', 'Another request is in progress, please wait a second!', 'warning');
-      return;
-    }
-
-    btnSaveType.setAttribute('disabled', 'disabled');
-    btnSaveType.classList.add('cursor-wait');
-    _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.show();
-    _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"].post(__ROUTES.types.store, {
-      name: typeModalForm.name.value,
-      ident_1: typeModalForm.ident_1.value,
-      ident_2: typeModalForm.ident_2.value,
-      display: typeModalForm.display.options[typeModalForm.display.selectedIndex].value
-    }).then(function (resp) {
-      var json = resp.data;
-
-      if (!json.error) {
-        typeModal.hide();
-        typeList.addType(json.data);
-
-        if (typeModalForm) {
-          typeModalForm.reset();
-        }
-
-        notify('Success', 'Type added', 'success');
-      } else {
-        notify('Error', json.message, 'danger');
-      }
-    })["catch"](function (err) {
-      notify('Error', err.message, 'danger');
-    })["finally"](function (resp) {
-      btnSaveType.removeAttribute('disabled');
-      btnSaveType.classList.remove('cursor-wait');
-      _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.hide();
+  this.config = (_this$config = {
+    ajax: config.ajax,
+    pending: config.pending,
+    entryTemplate: config.entryTemplate,
+    targetContainer: config.targetContainer,
+    sectionTemplate: config.sectionTemplate,
+    tableTemplate: config.tableTemplate
+  }, _defineProperty(_this$config, "entryTemplate", config.entryTemplate), _defineProperty(_this$config, "modalEntryRemove", config.modalEntryRemove), _defineProperty(_this$config, "sectionContainer", undefined), _this$config);
+  this.data = Object.assign({}, config.type);
+  this.entries = this.data.entries.map(function (entry) {
+    return new _TableEntry__WEBPACK_IMPORTED_MODULE_0__["default"]({
+      parent: _this,
+      entry: entry,
+      ajax: _this.config.ajax,
+      pending: _this.config.pending,
+      entryTemplate: _this.config.entryTemplate
     });
   });
-} // Open Form modal for new Type
 
+  (function () {
+    // Create the new section for this new card list
+    var _div = document.createElement('div');
 
-var btnAddType = $('.js-modal-add-type');
+    var section = _this.config.sectionTemplate.slice(0);
 
-if (btnAddType) {
-  btnAddType.addEventListener('click', function () {
-    typeModal.show();
-  });
-} // Create Modal to remove a type
+    _div.innerHTML = section;
+    section = _div.firstElementChild;
+    section.querySelector('h3[bind-section-title]').innerHTML = _this.data.name;
+    _this.config.sectionContainer = section; // Reserve place inside target container place inside 
 
+    _this.config.targetContainer.appendChild(_this.config.sectionContainer);
 
-var btnAbortRemoval = removalConfirmModal.querySelector('.js-modal-close');
-
-if (btnAbortRemoval) {
-  btnAbortRemoval.addEventListener('click', function (e) {
-    removalConfirmModal.hide();
-  });
-} // Remove type
-
-
-var btnConfirmRemoval = removalConfirmModal.querySelector('.js-modal-confirm');
-
-if (btnConfirmRemoval) {
-  btnConfirmRemoval.addEventListener('click', function (e) {
-    if (_components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.isPending()) {
-      notify('Warning', 'Another request is in progress, please wait a second!', 'warning');
-      return;
-    }
-
-    btnConfirmRemoval.setAttribute('disabled', 'disabled');
-    btnConfirmRemoval.classList.add('cursor-pointer');
-    var typeId = parseInt(btnConfirmRemoval.getAttribute('type-id'));
-
-    if (!!typeId) {
-      _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.show();
-      _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"].post(__ROUTES.types.remove, {
-        id: typeId,
-        _method: 'delete'
-      }).then(function (resp) {
-        var json = resp.data;
-
-        if (!json.error) {
-          typeList.removeById(typeId);
-          notify('Success', 'Type removed', 'success');
-        } else {
-          notify('Error', json.message, 'danger');
-        }
-      })["catch"](function (err) {
-        notify('Error', err.message, 'danger');
-      })["finally"](function (resp) {
-        btnConfirmRemoval.removeAttribute('disabled');
-        btnConfirmRemoval.classList.remove('cursor-wait');
-        removalConfirmModal.hide();
-        _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.hide();
-      });
-    }
-  });
+    _this.render();
+  })();
 }
+
+TableList.prototype.getId = function () {
+  return this.data.id;
+};
+
+TableList.prototype.addEntry = function (entry) {
+  this.entries.push(new _TableEntry__WEBPACK_IMPORTED_MODULE_0__["default"]({
+    parent: this,
+    entry: entry,
+    ajax: this.config.ajax,
+    pending: this.config.pending,
+    entryTemplate: this.config.entryTemplate
+  }));
+  this.render();
+};
+
+TableList.prototype.getEntryById = function (id) {
+  return this.entries.filter(function (entry) {
+    return entry.getId() == id;
+  })[0];
+};
+
+TableList.prototype.removeEntryById = function (id) {
+  if (this.entries.length === 0) {
+    return;
+  }
+
+  this.entries = this.entries.filter(function (entry) {
+    return entry.getId() != id;
+  });
+  this.render();
+};
+
+TableList.prototype.render = function () {
+  var _this2 = this;
+
+  var tableTarget = this.config.sectionContainer.querySelector('div[bind-table]');
+  tableTarget.innerHTML = '';
+
+  if (this.entries.length === 0) {
+    this.config.sectionContainer.classList.add('hidden');
+    return;
+  } else {
+    this.config.sectionContainer.classList.remove('hidden');
+  }
+
+  var _div = document.createElement('div');
+
+  var newTable = this.config.tableTemplate.slice(0);
+  _div.innerHTML = newTable;
+  newTable = _div.firstElementChild;
+  newTable.querySelector('div[bind-ident1]').innerHTML = this.data.ident_1;
+  newTable.querySelector('div[bind-ident2]').innerHTML = this.data.ident_2;
+  this.entries.forEach(function (tableEntry) {
+    newTable.appendChild(tableEntry.getElement());
+  });
+  tableTarget.appendChild(newTable);
+  var removalBtn = Array.from(tableTarget.querySelectorAll('div[bind-remove]'));
+  removalBtn.forEach(function (entryRemoval) {
+    entryRemoval.removeAttribute('bind-remove');
+    var id = entryRemoval.getAttribute('entry-id');
+
+    var entry = _this2.getEntryById(id);
+
+    entryRemoval.addEventListener('click', function (e) {
+      _this2.config.modalEntryRemove.bindValues({
+        '[bind-ident1]': entry.getIdent1(),
+        '[bind-ident2]': entry.getIdent2(),
+        '[bind-release]': entry.getRelease(),
+        '[bind-entry-id]': id,
+        '[bind-entry-type]': 1
+      });
+
+      _this2.config.modalEntryRemove.show();
+    });
+  });
+};
 
 /***/ }),
 
-/***/ "./resources/js/options.js":
+/***/ "./resources/js/profile.js":
 /*!*********************************!*\
-  !*** ./resources/js/options.js ***!
+  !*** ./resources/js/profile.js ***!
   \*********************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -3876,34 +3576,208 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Ajax__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/Ajax */ "./resources/js/components/Ajax.js");
 /* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/Pending */ "./resources/js/components/Pending.js");
 /* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_components_Pending__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _components_options_Options__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/options/Options */ "./resources/js/components/options/Options.js");
+/* harmony import */ var _components_Modal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/Modal */ "./resources/js/components/Modal.js");
+/* harmony import */ var _components_Modal__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_components_Modal__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _components_profile_CardList__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/profile/CardList */ "./resources/js/components/profile/CardList.js");
+/* harmony import */ var _components_profile_TableList__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/profile/TableList */ "./resources/js/components/profile/TableList.js");
 
 
- // Init Options
 
-var options = new _components_options_Options__WEBPACK_IMPORTED_MODULE_2__["default"]({
-  privateProfile: $('.js-options-privateProfile'),
-  colorblind: $('.js-options-colorblind'),
-  hideReleased: $('.js-options-hideReleased'),
-  hideTBA: $('.js-options-hideTBA'),
-  rss: $('.js-options-rss'),
-  changeRSS: $('.js-btn-rss'),
-  ajax: _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"],
-  pending: _components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a
-});
 
-__webpack_require__(/*! ./funcs/types */ "./resources/js/funcs/types.js");
+
+var modalEntryRemove = new _components_Modal__WEBPACK_IMPORTED_MODULE_2___default.a($('template#modal-remove-confirm').innerHTML);
+
+var listing = __TYPES.map(function (type) {
+  if (type.display == 2) {
+    return new _components_profile_CardList__WEBPACK_IMPORTED_MODULE_3__["default"]({
+      ajax: _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"],
+      pending: _components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a,
+      type: type,
+      targetContainer: $('.section-container'),
+      sectionTemplate: $('template#skeleton-card-section').innerHTML,
+      entryTemplate: $('template#skeleton-card-entry').innerHTML,
+      modalEntryRemove: modalEntryRemove
+    });
+  } else {
+    return new _components_profile_TableList__WEBPACK_IMPORTED_MODULE_4__["default"]({
+      ajax: _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"],
+      pending: _components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a,
+      type: type,
+      targetContainer: $('.section-container'),
+      sectionTemplate: $('template#skeleton-table-section').innerHTML,
+      tableTemplate: $('template#skeleton-table').innerHTML,
+      entryTemplate: $('template#skeleton-table-entry').innerHTML,
+      modalEntryRemove: modalEntryRemove
+    });
+  }
+}); // Abort Removal Modal
+
+
+var btnCloseEntryRemoveModal = modalEntryRemove.querySelector('.js-modal-close');
+
+if (btnCloseEntryRemoveModal) {
+  btnCloseEntryRemoveModal.addEventListener('click', function (e) {
+    modalEntryRemove.hide();
+  });
+} // Confirm Removal Modal
+
+
+var btnConfirmEntryRemoveModal = modalEntryRemove.querySelector('.js-modal-confirm');
+
+if (btnConfirmEntryRemoveModal) {
+  btnConfirmEntryRemoveModal.addEventListener('click', function (e) {
+    if (_components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a.isPending()) {
+      notify('Warning', 'Another request is in progress, please wait a second!', 'warning');
+      return;
+    }
+
+    btnConfirmEntryRemoveModal.setAttribute('disabled', 'disabled');
+    btnConfirmEntryRemoveModal.classList.add('cursor-pointer');
+    var entryId = parseInt(btnConfirmEntryRemoveModal.getAttribute('entry-id'));
+
+    if (!!entryId) {
+      _components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a.show();
+      _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"].post(__ROUTES.entries.remove, {
+        id: entryId,
+        _method: 'delete'
+      }).then(function (resp) {
+        var json = resp.data;
+
+        if (!json.error) {
+          listing.forEach(function (list) {
+            list.removeEntryById(entryId);
+          });
+          notify('Success', 'Entry removed', 'success');
+        } else {
+          notify('Error', json.message, 'danger');
+        }
+      })["catch"](function (err) {
+        notify('Error', err.message, 'danger');
+      })["finally"](function (resp) {
+        btnConfirmEntryRemoveModal.removeAttribute('disabled');
+        btnConfirmEntryRemoveModal.classList.remove('cursor-wait');
+        modalEntryRemove.hide();
+        _components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a.hide();
+      });
+    }
+  });
+} // Add Entry modal
+
+
+var addEntryModal = new _components_Modal__WEBPACK_IMPORTED_MODULE_2___default.a($('template#modal-entry').innerHTML);
+var entryModalForm = addEntryModal.querySelector('form'); // Setup modal
+
+if (addEntryModal) {
+  var selectType = addEntryModal.querySelector('[bind-types]');
+
+  if (selectType) {
+    __TYPES.forEach(function (type, i) {
+      var option = document.createElement('option');
+      option.value = type.id;
+      option.text = type.name;
+      option.setAttribute('data-ident1', type.ident_1);
+      option.setAttribute('data-ident2', type.ident_2);
+      selectType.appendChild(option);
+    }); // Update input fields to reflect selected type
+
+
+    selectType.addEventListener('change', function (e) {
+      var selOption = selectType.options[selectType.selectedIndex];
+      var ident1 = selOption.getAttribute('data-ident1');
+      var ident2 = selOption.getAttribute('data-ident2');
+      addEntryModal.querySelector('[bind-ident1]').innerText = ident1;
+      addEntryModal.querySelector('[name=ident_1]').setAttribute('placeholder', ident1);
+      addEntryModal.querySelector('[bind-ident2]').innerText = ident2;
+      addEntryModal.querySelector('[name=ident_2]').setAttribute('placeholder', ident2);
+    }); // make first element in options auto-select and fill in idents
+
+    selectType.dispatchEvent(new Event('change'));
+  }
+} // Save entered entry
+
+
+var btnSaveEntry = addEntryModal.querySelector('.js-modal-confirm');
+
+if (btnSaveEntry) {
+  btnSaveEntry.addEventListener('click', function (e) {
+    if (_components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a.isPending()) {
+      notify('Warning', 'Another request is in progress, please wait a second!', 'warning');
+      return;
+    }
+
+    btnSaveEntry.setAttribute('disabled', 'disabled');
+    btnSaveEntry.classList.add('cursor-wait');
+    _components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a.show();
+    _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"].post(__ROUTES.entries.store, {
+      type: entryModalForm.type.options[entryModalForm.type.selectedIndex].value,
+      ident_1: entryModalForm.ident_1.value,
+      ident_2: entryModalForm.ident_2.value,
+      release: entryModalForm.release.value,
+      visibility: entryModalForm.visibility.value
+    }).then(function (resp) {
+      var json = resp.data;
+
+      if (!json.error) {
+        addEntryModal.hide();
+
+        if (entryModalForm) {
+          entryModalForm.reset();
+        }
+
+        listing.some(function (type) {
+          if (type.getId() == json.data.entry.type_id) {
+            type.addEntry(json.data.entry);
+            return true;
+          }
+
+          return false;
+        });
+        notify('Success', 'Entry added', 'success');
+      } else {
+        notify('Error', json.message, 'danger');
+      }
+    })["catch"](function (err) {
+      notify('Error', err.message, 'danger');
+    })["finally"](function (resp) {
+      btnSaveEntry.removeAttribute('disabled');
+      btnSaveEntry.classList.remove('cursor-wait');
+      _components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a.hide();
+    });
+  });
+} // Close Add Entry modal and reset form
+
+
+var btnCloseEntryModal = addEntryModal.querySelector('.js-modal-close');
+
+if (btnCloseEntryModal) {
+  btnCloseEntryModal.addEventListener('click', function (e) {
+    addEntryModal.hide();
+
+    if (entryModalForm) {
+      entryModalForm.reset();
+    }
+  });
+} // Navbar button to trigger Add Entry modal
+
+
+var navbarBtn = $('.js-navbar-add-entry');
+
+if (navbarBtn) {
+  navbarBtn.addEventListener('click', function (e) {
+    addEntryModal.show();
+  });
+}
 
 /***/ }),
 
-/***/ 1:
+/***/ 2:
 /*!***************************************!*\
-  !*** multi ./resources/js/options.js ***!
+  !*** multi ./resources/js/profile.js ***!
   \***************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/ds/projects/Gajo2/resources/js/options.js */"./resources/js/options.js");
+module.exports = __webpack_require__(/*! /home/ds/projects/Gajo2/resources/js/profile.js */"./resources/js/profile.js");
 
 
 /***/ })

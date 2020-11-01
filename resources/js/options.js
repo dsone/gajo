@@ -1,7 +1,6 @@
 import Ajax from './components/Ajax';
-
-import Options from './components/Options';
 import Pending from './components/Pending';
+import Options from './components/options/Options';
 
 // Init Options
 let options = new Options({
