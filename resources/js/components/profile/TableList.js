@@ -74,8 +74,8 @@ TableList.prototype.removeEntryById = function(id) {
 };
 TableList.prototype.modifyEntry = function(id, update) {
 	if (this.entries.some((entry, index) => {
-		if (entry.id == id) {
-			this.entries[index] = Object.assign({}, this.entries[index], update);
+		if (entry.getId() == id) {
+			entry.update(update);
 
 			return true;
 		}
@@ -138,9 +138,9 @@ TableList.prototype.render = function() {
 			entryEdit.addEventListener('click', e => {
 				this.config.modalEntryEdit.bindValues({
 					'select[name=type]': this.data.id,
-					'[bind-ident1]': entry.getIdent1(),
+					'[bind-ident1]': this.data.ident_1,
 					'input[name=ident_1]': entry.getIdent1(),
-					'[bind-ident2]': entry.getIdent2(),
+					'[bind-ident2]': this.data.ident_2,
 					'input[name=ident_2]': entry.getIdent2(),
 					'input[name=release]': (entry.getRelease() || '').substr(0, 10),  // date input only accept yyyy-mm-dd values
 					'[bind-entry-id]': id,

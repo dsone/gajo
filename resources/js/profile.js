@@ -265,7 +265,6 @@ if (btnEditEntry) {
 						editEntryModalForm.reset();
 					}
 
-					console.log(json.data.entry.type_id != oldEntryType);
 					let typeChanged = json.data.entry.type_id != oldEntryType;
 					listing.some(type => {
 						// Remove from current type if it has changed

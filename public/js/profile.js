@@ -3190,6 +3190,10 @@ Card.prototype.getElement = function () {
   return entry;
 };
 
+Card.prototype.update = function (update) {
+  this.data = Object.assign({}, this.data, update);
+};
+
 Card.prototype.getId = function () {
   return this.data.id;
 };
@@ -3308,11 +3312,9 @@ CardList.prototype.removeEntryById = function (id) {
 };
 
 CardList.prototype.modifyEntry = function (id, update) {
-  var _this2 = this;
-
   if (this.entries.some(function (entry, index) {
-    if (entry.id == id) {
-      _this2.entries[index] = Object.assign({}, _this2.entries[index], update);
+    if (entry.getId() == id) {
+      entry.update(update);
       return true;
     }
 
@@ -3327,7 +3329,7 @@ CardList.prototype.getEntries = function () {
 };
 
 CardList.prototype.render = function () {
-  var _this3 = this;
+  var _this2 = this;
 
   var cardsTarget = this.config.sectionContainer.querySelector('div[bind-cards]');
   cardsTarget.innerHTML = '';
@@ -3347,10 +3349,10 @@ CardList.prototype.render = function () {
     entryRemoval.removeAttribute('bind-remove');
     var id = entryRemoval.getAttribute('entry-id');
 
-    var card = _this3.getEntryById(id);
+    var card = _this2.getEntryById(id);
 
     entryRemoval.addEventListener('click', function (e) {
-      _this3.config.modalEntryRemove.bindValues({
+      _this2.config.modalEntryRemove.bindValues({
         '[bind-ident1]': card.getIdent1(),
         '[bind-ident2]': card.getIdent2(),
         '[bind-release]': card.getRelease(),
@@ -3358,7 +3360,7 @@ CardList.prototype.render = function () {
         '[bind-entry-type]': 2
       });
 
-      _this3.config.modalEntryRemove.show();
+      _this2.config.modalEntryRemove.show();
     });
   });
   var editBtn = Array.from(cardsTarget.querySelectorAll('div[bind-edit]'));
@@ -3366,22 +3368,22 @@ CardList.prototype.render = function () {
     entryEdit.removeAttribute('bind-edit');
     var id = entryEdit.getAttribute('entry-id');
 
-    var entry = _this3.getEntryById(id);
+    var entry = _this2.getEntryById(id);
 
     entryEdit.addEventListener('click', function (e) {
-      _this3.config.modalEntryEdit.bindValues({
-        'select[name=type]': _this3.data.id,
-        '[bind-ident1]': entry.getIdent1(),
+      _this2.config.modalEntryEdit.bindValues({
+        'select[name=type]': _this2.data.id,
+        '[bind-ident1]': _this2.data.ident_1,
         'input[name=ident_1]': entry.getIdent1(),
-        '[bind-ident2]': entry.getIdent2(),
+        '[bind-ident2]': _this2.data.ident_2,
         'input[name=ident_2]': entry.getIdent2(),
         'input[name=release]': (entry.getRelease() || '').substr(0, 10),
         // date input only accept yyyy-mm-dd values
         '[bind-entry-id]': id,
-        '[bind-entry-type]': _this3.data.id
+        '[bind-entry-type]': _this2.data.id
       });
 
-      _this3.config.modalEntryEdit.show();
+      _this2.config.modalEntryEdit.show();
     });
   });
 };
@@ -3430,6 +3432,10 @@ TableEntry.prototype.getElement = function () {
   entry.querySelector('div[bind-edit]').setAttribute('entry-id', this.data.id);
   entry.querySelector('div[bind-remove]').setAttribute('entry-id', this.data.id);
   return entry;
+};
+
+TableEntry.prototype.update = function (update) {
+  this.data = Object.assign({}, this.data, update);
 };
 
 TableEntry.prototype.getId = function () {
@@ -3564,11 +3570,9 @@ TableList.prototype.removeEntryById = function (id) {
 };
 
 TableList.prototype.modifyEntry = function (id, update) {
-  var _this2 = this;
-
   if (this.entries.some(function (entry, index) {
-    if (entry.id == id) {
-      _this2.entries[index] = Object.assign({}, _this2.entries[index], update);
+    if (entry.getId() == id) {
+      entry.update(update);
       return true;
     }
 
@@ -3583,7 +3587,7 @@ TableList.prototype.getEntries = function () {
 };
 
 TableList.prototype.render = function () {
-  var _this3 = this;
+  var _this2 = this;
 
   var tableTarget = this.config.sectionContainer.querySelector('div[bind-table]');
   tableTarget.innerHTML = '';
@@ -3611,10 +3615,10 @@ TableList.prototype.render = function () {
     entryRemoval.removeAttribute('bind-remove');
     var id = entryRemoval.getAttribute('entry-id');
 
-    var entry = _this3.getEntryById(id);
+    var entry = _this2.getEntryById(id);
 
     entryRemoval.addEventListener('click', function (e) {
-      _this3.config.modalEntryRemove.bindValues({
+      _this2.config.modalEntryRemove.bindValues({
         '[bind-ident1]': entry.getIdent1(),
         '[bind-ident2]': entry.getIdent2(),
         '[bind-release]': entry.getRelease(),
@@ -3622,7 +3626,7 @@ TableList.prototype.render = function () {
         '[bind-entry-type]': 1
       });
 
-      _this3.config.modalEntryRemove.show();
+      _this2.config.modalEntryRemove.show();
     });
   });
   var editBtn = Array.from(tableTarget.querySelectorAll('div[bind-edit]'));
@@ -3630,22 +3634,22 @@ TableList.prototype.render = function () {
     entryEdit.removeAttribute('bind-edit');
     var id = entryEdit.getAttribute('entry-id');
 
-    var entry = _this3.getEntryById(id);
+    var entry = _this2.getEntryById(id);
 
     entryEdit.addEventListener('click', function (e) {
-      _this3.config.modalEntryEdit.bindValues({
-        'select[name=type]': _this3.data.id,
-        '[bind-ident1]': entry.getIdent1(),
+      _this2.config.modalEntryEdit.bindValues({
+        'select[name=type]': _this2.data.id,
+        '[bind-ident1]': _this2.data.ident_1,
         'input[name=ident_1]': entry.getIdent1(),
-        '[bind-ident2]': entry.getIdent2(),
+        '[bind-ident2]': _this2.data.ident_2,
         'input[name=ident_2]': entry.getIdent2(),
         'input[name=release]': (entry.getRelease() || '').substr(0, 10),
         // date input only accept yyyy-mm-dd values
         '[bind-entry-id]': id,
-        '[bind-entry-type]': _this3.data.id
+        '[bind-entry-type]': _this2.data.id
       });
 
-      _this3.config.modalEntryEdit.show();
+      _this2.config.modalEntryEdit.show();
     });
   });
 };
@@ -3941,7 +3945,6 @@ if (btnEditEntry) {
           editEntryModalForm.reset();
         }
 
-        console.log(json.data.entry.type_id != oldEntryType);
         var typeChanged = json.data.entry.type_id != oldEntryType;
         listing.some(function (type) {
           // Remove from current type if it has changed

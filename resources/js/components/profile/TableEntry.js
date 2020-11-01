@@ -32,6 +32,9 @@ TableEntry.prototype.getElement = function() {
 
 	return entry;
 };
+TableEntry.prototype.update = function(update) {
+	this.data = Object.assign({}, this.data, update);
+};
 TableEntry.prototype.getId = function() {
 	return this.data.id;
 };
