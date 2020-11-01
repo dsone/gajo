@@ -72,6 +72,18 @@ TableList.prototype.removeEntryById = function(id) {
 	this.entries = this.entries.filter(entry => entry.getId() != id);
 	this.render();
 };
+TableList.prototype.modifyEntry = function(id, update) {
+	if (this.entries.some((entry, index) => {
+		if (entry.id == id) {
+			this.entries[index] = Object.assign({}, this.entries[index], update);
+
+			return true;
+		}
+		return false;
+	})) {
+		this.render();
+	}
+};
 TableList.prototype.getEntries = function() {
 	return this.entries;
 };
@@ -124,7 +136,6 @@ TableList.prototype.render = function() {
 			let entry = this.getEntryById(id);
 
 			entryEdit.addEventListener('click', e => {
-				console.log(this.data.id);
 				this.config.modalEntryEdit.bindValues({
 					'select[name=type]': this.data.id,
 					'[bind-ident1]': entry.getIdent1(),
@@ -133,7 +144,7 @@ TableList.prototype.render = function() {
 					'input[name=ident_2]': entry.getIdent2(),
 					'input[name=release]': (entry.getRelease() || '').substr(0, 10),  // date input only accept yyyy-mm-dd values
 					'[bind-entry-id]': id,
-					'[bind-entry-type]': 1,
+					'[bind-entry-type]': this.data.id,
 				});
 				this.config.modalEntryEdit.show();
 			});

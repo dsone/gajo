@@ -231,7 +231,7 @@ if (editEntryModal) {
 		selectType.dispatchEvent(new Event('change'));
 	}
 }
-// Save entered entry
+// Save edited entry
 let btnEditEntry = editEntryModal.querySelector('.js-modal-confirm');
 if (btnEditEntry) {
 	btnEditEntry.addEventListener('click', e => {
@@ -243,13 +243,18 @@ if (btnEditEntry) {
 		btnEditEntry.setAttribute('disabled', 'disabled');
 		btnEditEntry.classList.add('cursor-wait');
 		Pending.show();
+		let entryId = btnEditEntry.getAttribute('entry-id');
+		let oldEntryType = btnEditEntry.getAttribute('entry-type');
 		Ajax.post(
 				__ROUTES.entries.update, {
-					type: editEntryModalForm.type.options[editEntryModalForm.type.selectedIndex].value,
-					ident_1: editEntryModalForm.ident_1.value,
-					ident_2: editEntryModalForm.ident_2.value,
-					release: editEntryModalForm.release.value,
-					visibility: editEntryModalForm.visibility.value
+					id:			entryId,
+					// fetch type "freshly" since it may have changed to the previous type inside oldEntryType
+					type:		editEntryModalForm.type.options[editEntryModalForm.type.selectedIndex].value,
+					ident_1:	editEntryModalForm.ident_1.value,
+					ident_2:	editEntryModalForm.ident_2.value,
+					release:	editEntryModalForm.release.value,
+					visibility: editEntryModalForm.visibility.value,
+					_method:	'put',
 				}
 			).then(resp => {
 				let json = resp.data;
@@ -260,20 +265,34 @@ if (btnEditEntry) {
 						editEntryModalForm.reset();
 					}
 
+					console.log(json.data.entry.type_id != oldEntryType);
+					let typeChanged = json.data.entry.type_id != oldEntryType;
 					listing.some(type => {
-						if (type.getId() == json.data.entry.type_id) {
-							let entry = type.getEntryById(json.data.id);
-								entry = Object.assign({}, json.data.entry);  // overwriting reference with copy of response
-							type.render();
-
-							startContainer.classList.add('hidden');
-							return true;
+						// Remove from current type if it has changed
+						if (typeChanged) {
+							if (type.getId() == oldEntryType) {
+								type.removeEntryById(entryId);
+							}
 						}
 
+						// target type found
+						if (type.getId() == json.data.entry.type_id) {
+							if (typeChanged) {
+								type.addEntry(json.data.entry);
+							} else {
+								type.modifyEntry(json.data.entry.id, json.data.entry);
+							}
+
+							if (!typeChanged) {
+								return true;
+							}
+						}
+
+						// if type changed, list is looped entirely
 						return false;
 					});
 
-					notify('Success', 'Entry added', 'success');
+					notify('Success', 'Entry updated', 'success');
 				} else {
 					notify('Error', json.message, 'danger');
 				}

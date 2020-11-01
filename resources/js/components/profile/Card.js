@@ -47,3 +47,6 @@ Card.prototype.getRelease = function() {
 Card.prototype.getVisibility = function() {
 	return this.data.visibility;
 };
+Card.prototype.getTypeId = function() {
+	return this.data.type_id;
+};

@@ -47,3 +47,6 @@ TableEntry.prototype.getRelease = function() {
 TableEntry.prototype.getVisibility = function() {
 	return this.data.visibility;
 };
+TableEntry.prototype.getTypeId = function() {
+	return this.data.type_id;
+};

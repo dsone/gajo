@@ -61,13 +61,25 @@ CardList.prototype.addEntry = function(entry) {
 	this.render();
 };
 CardList.prototype.getEntryById = function(id) {
-	return this.entries.filter(card => card.getId() == id)[0];
+	return this.entries.filter(entry => entry.getId() == id)[0];
 };
 CardList.prototype.removeEntryById = function(id) {
 	if (this.entries.length === 0) { return; }
 
-	this.entries = this.entries.filter(card => card.getId() != id);
+	this.entries = this.entries.filter(entry => entry.getId() != id);
 	this.render();
+};
+CardList.prototype.modifyEntry = function(id, update) {
+	if (this.entries.some((entry, index) => {
+		if (entry.id == id) {
+			this.entries[index] = Object.assign({}, this.entries[index], update);
+
+			return true;
+		}
+		return false;
+	})) {
+		this.render();
+	}
 };
 CardList.prototype.getEntries = function() {
 	return this.entries;
@@ -119,7 +131,7 @@ CardList.prototype.render = function() {
 					'input[name=ident_2]': entry.getIdent2(),
 					'input[name=release]': (entry.getRelease() || '').substr(0, 10),  // date input only accept yyyy-mm-dd values
 					'[bind-entry-id]': id,
-					'[bind-entry-type]': 1,
+					'[bind-entry-type]': this.data.id,
 				});
 				this.config.modalEntryEdit.show();
 			});

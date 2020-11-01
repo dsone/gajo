@@ -3210,6 +3210,10 @@ Card.prototype.getVisibility = function () {
   return this.data.visibility;
 };
 
+Card.prototype.getTypeId = function () {
+  return this.data.type_id;
+};
+
 /***/ }),
 
 /***/ "./resources/js/components/profile/CardList.js":
@@ -3287,8 +3291,8 @@ CardList.prototype.addEntry = function (entry) {
 };
 
 CardList.prototype.getEntryById = function (id) {
-  return this.entries.filter(function (card) {
-    return card.getId() == id;
+  return this.entries.filter(function (entry) {
+    return entry.getId() == id;
   })[0];
 };
 
@@ -3297,10 +3301,25 @@ CardList.prototype.removeEntryById = function (id) {
     return;
   }
 
-  this.entries = this.entries.filter(function (card) {
-    return card.getId() != id;
+  this.entries = this.entries.filter(function (entry) {
+    return entry.getId() != id;
   });
   this.render();
+};
+
+CardList.prototype.modifyEntry = function (id, update) {
+  var _this2 = this;
+
+  if (this.entries.some(function (entry, index) {
+    if (entry.id == id) {
+      _this2.entries[index] = Object.assign({}, _this2.entries[index], update);
+      return true;
+    }
+
+    return false;
+  })) {
+    this.render();
+  }
 };
 
 CardList.prototype.getEntries = function () {
@@ -3308,7 +3327,7 @@ CardList.prototype.getEntries = function () {
 };
 
 CardList.prototype.render = function () {
-  var _this2 = this;
+  var _this3 = this;
 
   var cardsTarget = this.config.sectionContainer.querySelector('div[bind-cards]');
   cardsTarget.innerHTML = '';
@@ -3328,10 +3347,10 @@ CardList.prototype.render = function () {
     entryRemoval.removeAttribute('bind-remove');
     var id = entryRemoval.getAttribute('entry-id');
 
-    var card = _this2.getEntryById(id);
+    var card = _this3.getEntryById(id);
 
     entryRemoval.addEventListener('click', function (e) {
-      _this2.config.modalEntryRemove.bindValues({
+      _this3.config.modalEntryRemove.bindValues({
         '[bind-ident1]': card.getIdent1(),
         '[bind-ident2]': card.getIdent2(),
         '[bind-release]': card.getRelease(),
@@ -3339,7 +3358,7 @@ CardList.prototype.render = function () {
         '[bind-entry-type]': 2
       });
 
-      _this2.config.modalEntryRemove.show();
+      _this3.config.modalEntryRemove.show();
     });
   });
   var editBtn = Array.from(cardsTarget.querySelectorAll('div[bind-edit]'));
@@ -3347,11 +3366,11 @@ CardList.prototype.render = function () {
     entryEdit.removeAttribute('bind-edit');
     var id = entryEdit.getAttribute('entry-id');
 
-    var entry = _this2.getEntryById(id);
+    var entry = _this3.getEntryById(id);
 
     entryEdit.addEventListener('click', function (e) {
-      _this2.config.modalEntryEdit.bindValues({
-        'select[name=type]': _this2.data.id,
+      _this3.config.modalEntryEdit.bindValues({
+        'select[name=type]': _this3.data.id,
         '[bind-ident1]': entry.getIdent1(),
         'input[name=ident_1]': entry.getIdent1(),
         '[bind-ident2]': entry.getIdent2(),
@@ -3359,10 +3378,10 @@ CardList.prototype.render = function () {
         'input[name=release]': (entry.getRelease() || '').substr(0, 10),
         // date input only accept yyyy-mm-dd values
         '[bind-entry-id]': id,
-        '[bind-entry-type]': 1
+        '[bind-entry-type]': _this3.data.id
       });
 
-      _this2.config.modalEntryEdit.show();
+      _this3.config.modalEntryEdit.show();
     });
   });
 };
@@ -3431,6 +3450,10 @@ TableEntry.prototype.getRelease = function () {
 
 TableEntry.prototype.getVisibility = function () {
   return this.data.visibility;
+};
+
+TableEntry.prototype.getTypeId = function () {
+  return this.data.type_id;
 };
 
 /***/ }),
@@ -3540,12 +3563,27 @@ TableList.prototype.removeEntryById = function (id) {
   this.render();
 };
 
+TableList.prototype.modifyEntry = function (id, update) {
+  var _this2 = this;
+
+  if (this.entries.some(function (entry, index) {
+    if (entry.id == id) {
+      _this2.entries[index] = Object.assign({}, _this2.entries[index], update);
+      return true;
+    }
+
+    return false;
+  })) {
+    this.render();
+  }
+};
+
 TableList.prototype.getEntries = function () {
   return this.entries;
 };
 
 TableList.prototype.render = function () {
-  var _this2 = this;
+  var _this3 = this;
 
   var tableTarget = this.config.sectionContainer.querySelector('div[bind-table]');
   tableTarget.innerHTML = '';
@@ -3573,10 +3611,10 @@ TableList.prototype.render = function () {
     entryRemoval.removeAttribute('bind-remove');
     var id = entryRemoval.getAttribute('entry-id');
 
-    var entry = _this2.getEntryById(id);
+    var entry = _this3.getEntryById(id);
 
     entryRemoval.addEventListener('click', function (e) {
-      _this2.config.modalEntryRemove.bindValues({
+      _this3.config.modalEntryRemove.bindValues({
         '[bind-ident1]': entry.getIdent1(),
         '[bind-ident2]': entry.getIdent2(),
         '[bind-release]': entry.getRelease(),
@@ -3584,7 +3622,7 @@ TableList.prototype.render = function () {
         '[bind-entry-type]': 1
       });
 
-      _this2.config.modalEntryRemove.show();
+      _this3.config.modalEntryRemove.show();
     });
   });
   var editBtn = Array.from(tableTarget.querySelectorAll('div[bind-edit]'));
@@ -3592,13 +3630,11 @@ TableList.prototype.render = function () {
     entryEdit.removeAttribute('bind-edit');
     var id = entryEdit.getAttribute('entry-id');
 
-    var entry = _this2.getEntryById(id);
+    var entry = _this3.getEntryById(id);
 
     entryEdit.addEventListener('click', function (e) {
-      console.log(_this2.data.id);
-
-      _this2.config.modalEntryEdit.bindValues({
-        'select[name=type]': _this2.data.id,
+      _this3.config.modalEntryEdit.bindValues({
+        'select[name=type]': _this3.data.id,
         '[bind-ident1]': entry.getIdent1(),
         'input[name=ident_1]': entry.getIdent1(),
         '[bind-ident2]': entry.getIdent2(),
@@ -3606,10 +3642,10 @@ TableList.prototype.render = function () {
         'input[name=release]': (entry.getRelease() || '').substr(0, 10),
         // date input only accept yyyy-mm-dd values
         '[bind-entry-id]': id,
-        '[bind-entry-type]': 1
+        '[bind-entry-type]': _this3.data.id
       });
 
-      _this2.config.modalEntryEdit.show();
+      _this3.config.modalEntryEdit.show();
     });
   });
 };
@@ -3869,7 +3905,7 @@ if (editEntryModal) {
 
     _selectType.dispatchEvent(new Event('change'));
   }
-} // Save entered entry
+} // Save edited entry
 
 
 var btnEditEntry = editEntryModal.querySelector('.js-modal-confirm');
@@ -3884,12 +3920,17 @@ if (btnEditEntry) {
     btnEditEntry.setAttribute('disabled', 'disabled');
     btnEditEntry.classList.add('cursor-wait');
     _components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a.show();
+    var entryId = btnEditEntry.getAttribute('entry-id');
+    var oldEntryType = btnEditEntry.getAttribute('entry-type');
     _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"].post(__ROUTES.entries.update, {
+      id: entryId,
+      // fetch type "freshly" since it may have changed to the previous type inside oldEntryType
       type: editEntryModalForm.type.options[editEntryModalForm.type.selectedIndex].value,
       ident_1: editEntryModalForm.ident_1.value,
       ident_2: editEntryModalForm.ident_2.value,
       release: editEntryModalForm.release.value,
-      visibility: editEntryModalForm.visibility.value
+      visibility: editEntryModalForm.visibility.value,
+      _method: 'put'
     }).then(function (resp) {
       var json = resp.data;
 
@@ -3900,19 +3941,33 @@ if (btnEditEntry) {
           editEntryModalForm.reset();
         }
 
+        console.log(json.data.entry.type_id != oldEntryType);
+        var typeChanged = json.data.entry.type_id != oldEntryType;
         listing.some(function (type) {
-          if (type.getId() == json.data.entry.type_id) {
-            var entry = type.getEntryById(json.data.id);
-            entry = Object.assign({}, json.data.entry); // overwriting reference with copy of response
+          // Remove from current type if it has changed
+          if (typeChanged) {
+            if (type.getId() == oldEntryType) {
+              type.removeEntryById(entryId);
+            }
+          } // target type found
 
-            type.render();
-            startContainer.classList.add('hidden');
-            return true;
-          }
+
+          if (type.getId() == json.data.entry.type_id) {
+            if (typeChanged) {
+              type.addEntry(json.data.entry);
+            } else {
+              type.modifyEntry(json.data.entry.id, json.data.entry);
+            }
+
+            if (!typeChanged) {
+              return true;
+            }
+          } // if type changed, list is looped entirely
+
 
           return false;
         });
-        notify('Success', 'Entry added', 'success');
+        notify('Success', 'Entry updated', 'success');
       } else {
         notify('Error', json.message, 'danger');
       }
