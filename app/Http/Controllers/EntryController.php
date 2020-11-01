@@ -99,12 +99,29 @@ class EntryController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Entry  $entry
+	 * 
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Entry $entry)
+    public function destroy(Request $request)
     {
-        //
+        $this->validate($request, [
+			'id'		=> 'required|integer',
+        ]);
+		$entry = Auth::user()->entries()->find($request->id);
+
+		if ($entry) {
+			$entry->delete();
+
+			return response()->json([
+					'error' => false,
+					'message' => 'Entry removed',
+					'data' => []
+				]);
+		}
+
+		return response()->json([
+			'error' => true, 'message' => 'Entry not found!'
+		]);
     }
 }
