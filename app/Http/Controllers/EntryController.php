@@ -31,7 +31,7 @@ class EntryController extends Controller
 		$validated = $this->validate($request, [
 						'type'			=> 'required|integer',
 						'ident_1'		=> 'required|string',
-						'ident_2'		=> 'required|string',
+						'ident_2'		=> 'nullable|string',
 						'release'		=> 'nullable|date_format:"Y-m-d"',
 						'visibility'	=> 'required|integer|min:1|max:4',
 					]);
@@ -44,16 +44,14 @@ class EntryController extends Controller
 				'data' => []
 			]);
 		}
-		
-		$release = null;
-        $release = strlen($validated['release']) == 0 ? '1970-01-01T00:00:00.000Z' : $validated['release'];
-        $release = Carbon::instance(new \DateTime($release));
+
+        $release = strlen($validated['release']) == 0 ? null : Carbon::instance(new \DateTime($validated['release']));
 
 		$entry = null;
 		try {
 			$entry = Entry::create([
                 'ident_1'		=> e($validated['ident_1']),
-                'ident_2'		=> e($validated['ident_2']),
+                'ident_2'		=> strlen($validated['ident_2']) === 0 ? 'TBA' : e($validated['ident_2']),
                 'release_at'	=> $release,
                 'visibility'	=> $validated['visibility'],
                 'type_id'		=> $validated['type'],
