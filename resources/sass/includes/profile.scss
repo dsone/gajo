@@ -8,7 +8,7 @@
 
 
 		.table-headline {
-			@apply p-3 font-sans text-lg text-white transition-shadow duration-100 rounded-sm shadow-md bg-primary-500;
+			@apply py-3 px-4 font-sans text-lg text-white transition-shadow duration-100 rounded-sm shadow-md bg-primary-500;
 
 			&:hover {
 				@apply shadow-sm;
@@ -16,7 +16,7 @@
 		}
 
 		.table-entry {
-			@apply p-3 mt-4 text-black transition-shadow duration-100 bg-white rounded-sm shadow-md overflow-hidden relative;
+			@apply py-3 px-4 mt-4 text-black transition-shadow duration-100 bg-white rounded-sm shadow-md overflow-hidden relative;
 
 			.svg-icon {
 				@apply h-6 mx-auto opacity-0 transition-opacity duration-200 cursor-pointer;
