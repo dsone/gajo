@@ -8,6 +8,7 @@ export default function TableList(config = {}) {
 	this.config = {
 		ajax:				config.ajax,
 		pending:			config.pending,
+		editable:			config.editable,
 		entryTemplate:		config.entryTemplate,
 
 		targetContainer:	config.targetContainer,
@@ -24,6 +25,7 @@ export default function TableList(config = {}) {
 	this.entries = this.data.entries.map(entry => {
 		return new TableEntry({
 				parent: this,
+				editable: config.editable,
 				entry,
 				ajax: this.config.ajax,
 				pending: this.config.pending,
@@ -108,8 +110,14 @@ TableList.prototype.render = function() {
 	this.entries.forEach(tableEntry => {
 		newTable.appendChild(tableEntry.getElement());
 	});
+
+	if (!this.config.editable) {
+		Array.from(newTable.querySelectorAll('[private]')).forEach(el => el.remove());
+	}
+
 	tableTarget.appendChild(newTable);
 
+	if (!this.config.editable) { return; }
 	let removalBtn = Array.from(tableTarget.querySelectorAll('div[bind-remove]'));
 		removalBtn.forEach(entryRemoval => {
 			entryRemoval.removeAttribute('bind-remove');

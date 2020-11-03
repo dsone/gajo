@@ -3165,6 +3165,7 @@ function Card() {
 
   this.config = {
     parent: config.parent,
+    editable: config.editable,
     ajax: config.ajax,
     pending: config.pending,
     entryTemplate: config.entryTemplate
@@ -3182,11 +3183,19 @@ Card.prototype.getElement = function () {
   entry.querySelector('h4[bind-ident1]').innerHTML = this.data.ident_1;
   entry.querySelector('div[bind-ident2]').innerHTML = this.data.ident_2;
   entry.querySelector('div[bind-release]').innerHTML = this.data.release_at != null ? new Date(this.data.release_at).toLocaleDateString() : 'TBA';
-  var visibility = entry.querySelector('div[bind-visibility]');
-  visibility.classList.add('card-visibility--' + ['', 'green', 'orange', '', 'red'][this.data.visibility]);
-  visibility.setAttribute('title', ['', 'Hidden', 'Private', '', 'Public'][this.data.visibility]);
-  entry.querySelector('div[bind-edit]').setAttribute('entry-id', this.data.id);
-  entry.querySelector('div[bind-remove]').setAttribute('entry-id', this.data.id);
+
+  if (this.config.editable) {
+    var visibility = entry.querySelector('div[bind-visibility]');
+    visibility.classList.add('card-visibility--' + ['', 'green', 'orange', '', 'red'][this.data.visibility]);
+    visibility.setAttribute('title', ['', 'Hidden', 'Private', '', 'Public'][this.data.visibility]);
+    entry.querySelector('div[bind-edit]').setAttribute('entry-id', this.data.id);
+    entry.querySelector('div[bind-remove]').setAttribute('entry-id', this.data.id);
+  } else {
+    Array.from(entry.querySelectorAll('[private]')).forEach(function (el) {
+      return el.remove();
+    });
+  }
+
   return entry;
 };
 
@@ -3244,6 +3253,7 @@ function CardList() {
   this.config = {
     ajax: config.ajax,
     pending: config.pending,
+    editable: config.editable,
     entryTemplate: config.entryTemplate,
     targetContainer: config.targetContainer,
     sectionTemplate: config.sectionTemplate,
@@ -3255,6 +3265,7 @@ function CardList() {
   this.entries = this.data.entries.map(function (entry) {
     return new _Card__WEBPACK_IMPORTED_MODULE_0__["default"]({
       parent: _this,
+      editable: config.editable,
       entry: entry,
       ajax: _this.config.ajax,
       pending: _this.config.pending,
@@ -3344,6 +3355,11 @@ CardList.prototype.render = function () {
   this.entries.forEach(function (card) {
     cardsTarget.appendChild(card.getElement());
   });
+
+  if (!this.config.editable) {
+    return;
+  }
+
   var removalBtn = Array.from(cardsTarget.querySelectorAll('div[bind-remove]'));
   removalBtn.forEach(function (entryRemoval) {
     entryRemoval.removeAttribute('bind-remove');
@@ -3409,6 +3425,7 @@ function TableEntry() {
 
   this.config = {
     parent: config.parent,
+    editable: config.editable,
     ajax: config.ajax,
     pending: config.pending,
     entryTemplate: config.entryTemplate
@@ -3426,11 +3443,19 @@ TableEntry.prototype.getElement = function () {
   entry.querySelector('div[bind-ident1]').innerHTML = this.data.ident_1;
   entry.querySelector('div[bind-ident2]').innerHTML = this.data.ident_2;
   entry.querySelector('div[bind-release]').innerHTML = this.data.release_at != null ? new Date(this.data.release_at).toLocaleDateString() : 'TBA';
-  var visibility = entry.querySelector('div[bind-visibility]');
-  visibility.classList.add('entry-visibility--' + ['', 'green', 'orange', '', 'red'][this.data.visibility]);
-  visibility.setAttribute('title', ['', 'Hidden', 'Private', '', 'Public'][this.data.visibility]);
-  entry.querySelector('div[bind-edit]').setAttribute('entry-id', this.data.id);
-  entry.querySelector('div[bind-remove]').setAttribute('entry-id', this.data.id);
+
+  if (this.config.editable) {
+    var visibility = entry.querySelector('div[bind-visibility]');
+    visibility.classList.add('entry-visibility--' + ['', 'green', 'orange', '', 'red'][this.data.visibility]);
+    visibility.setAttribute('title', ['', 'Hidden', 'Private', '', 'Public'][this.data.visibility]);
+    entry.querySelector('div[bind-edit]').setAttribute('entry-id', this.data.id);
+    entry.querySelector('div[bind-remove]').setAttribute('entry-id', this.data.id);
+  } else {
+    Array.from(entry.querySelectorAll('[private]')).forEach(function (el) {
+      return el.remove();
+    });
+  }
+
   return entry;
 };
 
@@ -3504,6 +3529,7 @@ function TableList() {
   this.config = (_this$config = {
     ajax: config.ajax,
     pending: config.pending,
+    editable: config.editable,
     entryTemplate: config.entryTemplate,
     targetContainer: config.targetContainer,
     sectionTemplate: config.sectionTemplate,
@@ -3513,6 +3539,7 @@ function TableList() {
   this.entries = this.data.entries.map(function (entry) {
     return new _TableEntry__WEBPACK_IMPORTED_MODULE_0__["default"]({
       parent: _this,
+      editable: config.editable,
       entry: entry,
       ajax: _this.config.ajax,
       pending: _this.config.pending,
@@ -3609,7 +3636,19 @@ TableList.prototype.render = function () {
   this.entries.forEach(function (tableEntry) {
     newTable.appendChild(tableEntry.getElement());
   });
+
+  if (!this.config.editable) {
+    Array.from(newTable.querySelectorAll('[private]')).forEach(function (el) {
+      return el.remove();
+    });
+  }
+
   tableTarget.appendChild(newTable);
+
+  if (!this.config.editable) {
+    return;
+  }
+
   var removalBtn = Array.from(tableTarget.querySelectorAll('div[bind-remove]'));
   removalBtn.forEach(function (entryRemoval) {
     entryRemoval.removeAttribute('bind-remove');
@@ -3691,7 +3730,8 @@ var listing = __TYPES.map(function (type) {
       sectionTemplate: $('template#skeleton-card-section').innerHTML,
       entryTemplate: $('template#skeleton-card-entry').innerHTML,
       modalEntryRemove: modalEntryRemove,
-      modalEntryEdit: editEntryModal
+      modalEntryEdit: editEntryModal,
+      editable: __EDITMODE
     });
   } else {
     return new _components_profile_TableList__WEBPACK_IMPORTED_MODULE_4__["default"]({
@@ -3703,7 +3743,8 @@ var listing = __TYPES.map(function (type) {
       tableTemplate: $('template#skeleton-table').innerHTML,
       entryTemplate: $('template#skeleton-table-entry').innerHTML,
       modalEntryRemove: modalEntryRemove,
-      modalEntryEdit: editEntryModal
+      modalEntryEdit: editEntryModal,
+      editable: __EDITMODE
     });
   }
 });
@@ -3711,7 +3752,7 @@ var listing = __TYPES.map(function (type) {
 if (!listing.some(function (list) {
   return list.getEntries().length > 0;
 })) {
-  startContainer.classList.remove('hidden');
+  startContainer.classList.rmeove('hidden');
 } // Abort Removal Modal
 
 

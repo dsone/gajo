@@ -8,6 +8,7 @@ export default function CardList(config = {}) {
 	this.config = {
 		ajax:				config.ajax,
 		pending:			config.pending,
+		editable:			config.editable,
 		entryTemplate:		config.entryTemplate,
 
 		targetContainer:	config.targetContainer,
@@ -21,6 +22,7 @@ export default function CardList(config = {}) {
 	this.entries = this.data.entries.map(entry => {
 		return new Card({
 				parent: this,
+				editable: config.editable,
 				entry,
 				ajax: this.config.ajax,
 				pending: this.config.pending,
@@ -97,7 +99,8 @@ CardList.prototype.render = function() {
 	this.entries.forEach(card => {
 		cardsTarget.appendChild(card.getElement());
 	});
-
+	
+	if (!this.config.editable) { return; }
 	let removalBtn = Array.from(cardsTarget.querySelectorAll('div[bind-remove]'));
 		removalBtn.forEach(entryRemoval => {
 			entryRemoval.removeAttribute('bind-remove');
@@ -136,5 +139,4 @@ CardList.prototype.render = function() {
 				this.config.modalEntryEdit.show();
 			});
 		});
-
 };

@@ -13,7 +13,7 @@
         <title>{{ config('app.name', '') }}@hasSection('title') | @yield('title', '')@endif</title>
 		<link href="{{ mix('/css/app.css') }}" rel="stylesheet">
     </head>
-    <body class="{{ \Auth::user() ? ' is-user' : ' is-visitor' }}">
+    <body class="{{ Auth::user() ? ' is-user' : ' is-visitor' }}{{ Request::routeIs('user-profile') && $ownProfile ? ' is-owner' : '' }}">
 		@include('layouts._navbar')
 
         <main>

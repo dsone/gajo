@@ -5,6 +5,7 @@ export default function TableEntry(config = {}) {
 
 	this.config = {
 		parent:			config.parent,
+		editable:		config.editable,
 		ajax:			config.ajax,
 		pending:		config.pending,
 		entryTemplate:	config.entryTemplate,
@@ -23,12 +24,16 @@ TableEntry.prototype.getElement = function() {
 	entry.querySelector('div[bind-ident2]').innerHTML = this.data.ident_2;
 	entry.querySelector('div[bind-release]').innerHTML = this.data.release_at != null ? new Date(this.data.release_at).toLocaleDateString(): 'TBA';
 
-	let visibility = entry.querySelector('div[bind-visibility]');
-		visibility.classList.add('entry-visibility--' + ['', 'green', 'orange', '', 'red'][this.data.visibility]);
-		visibility.setAttribute('title', ['', 'Hidden', 'Private', '', 'Public'][this.data.visibility]);
+	if (this.config.editable) {
+		let visibility = entry.querySelector('div[bind-visibility]');
+			visibility.classList.add('entry-visibility--' + ['', 'green', 'orange', '', 'red'][this.data.visibility]);
+			visibility.setAttribute('title', ['', 'Hidden', 'Private', '', 'Public'][this.data.visibility]);
 
-	entry.querySelector('div[bind-edit]').setAttribute('entry-id', this.data.id);
-	entry.querySelector('div[bind-remove]').setAttribute('entry-id', this.data.id);
+		entry.querySelector('div[bind-edit]').setAttribute('entry-id', this.data.id);
+		entry.querySelector('div[bind-remove]').setAttribute('entry-id', this.data.id);
+	} else {
+		Array.from(entry.querySelectorAll('[private]')).forEach(el => el.remove());
+	}
 
 	return entry;
 };

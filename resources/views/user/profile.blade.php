@@ -22,7 +22,7 @@
 			@endif
 		</div>
 		@else
-		<div class="w-1/2 p-10 mx-auto duration-200 bg-white shadow-md hover:shadow-sm">
+		<div class="hidden w-1/2 p-10 mx-auto duration-200 bg-white shadow-md hover:shadow-sm" bind-start>
 			This user has no entries yet!
 		</div>
 		@endif
@@ -39,12 +39,12 @@
 	<script>
 		var __ROUTES = {
 			entries: {
-				store: '{{ route('api-entry-store') }}',
-				update: '{{ route('api-entry-update') }}',
-				remove: '{{ route('api-entry-destroy') }}',
+				store: '{{ $ownProfile ? route('api-entry-store') : '' }}',
+				update: '{{ $ownProfile ? route('api-entry-update') : '' }}',
+				remove: '{{ $ownProfile ? route('api-entry-destroy') : '' }}',
 			}
 		};
-		var __EDITMODE = {{ $ownProfile }};
+		var __EDITMODE = {{ $ownProfile == true ? 'true' : 'false' }};
 		var __TYPES = @json($types);
     </script>
 	<script src="{{ mix('/js/profile.js') }}"></script>

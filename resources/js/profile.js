@@ -19,6 +19,7 @@ let listing = __TYPES.map(type => {
 
 			modalEntryRemove:	modalEntryRemove,
 			modalEntryEdit:		editEntryModal,
+			editable:			__EDITMODE,
 		});
 	} else {
 		return new TableList({
@@ -32,11 +33,12 @@ let listing = __TYPES.map(type => {
 
 			modalEntryRemove:	modalEntryRemove,
 			modalEntryEdit:		editEntryModal,
+			editable:			__EDITMODE,
 		});
 	}
 });
 if (!listing.some(list => list.getEntries().length > 0)) {
-	startContainer.classList.remove('hidden');
+	startContainer.classList.rmeove('hidden');
 }
 
 // Abort Removal Modal
