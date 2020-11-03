@@ -1514,6 +1514,27 @@ body.is-owner .section-card-entries .card-inner:hover .card-meta {
   top: 0px;
 }
 
+#edit_v1:checked + label,
+#add_v1:checked + label {
+  --bg-opacity: 1;
+  background-color: #48bb78;
+  background-color: rgba(72, 187, 120, var(--bg-opacity));
+}
+
+#edit_v2:checked + label,
+#add_v2:checked + label {
+  --bg-opacity: 1;
+  background-color: #ed8936;
+  background-color: rgba(237, 137, 54, var(--bg-opacity));
+}
+
+#edit_v4:checked + label,
+#add_v4:checked + label {
+  --bg-opacity: 1;
+  background-color: #f56565;
+  background-color: rgba(245, 101, 101, var(--bg-opacity));
+}
+
 html, body {
   min-height: 100%;
   --bg-opacity: 1;

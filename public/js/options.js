@@ -3048,6 +3048,22 @@ var Modal = function () {
             break;
 
           case 'input':
+            switch (element.type) {
+              case 'radio':
+                // radios share a name, hence no else
+                if (element.value == mapping[selector]) {
+                  element.checked = true;
+                }
+
+                break;
+
+              default:
+                element.value = mapping[selector];
+                break;
+            }
+
+            break;
+
           case 'textarea':
             element.value = mapping[selector];
             break;

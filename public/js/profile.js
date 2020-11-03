@@ -3048,6 +3048,22 @@ var Modal = function () {
             break;
 
           case 'input':
+            switch (element.type) {
+              case 'radio':
+                // radios share a name, hence no else
+                if (element.value == mapping[selector]) {
+                  element.checked = true;
+                }
+
+                break;
+
+              default:
+                element.value = mapping[selector];
+                break;
+            }
+
+            break;
+
           case 'textarea':
             element.value = mapping[selector];
             break;
@@ -3183,7 +3199,6 @@ Card.prototype.getElement = function () {
   entry.querySelector('h4[bind-ident1]').innerHTML = this.data.ident_1;
   entry.querySelector('div[bind-ident2]').innerHTML = this.data.ident_2;
   entry.querySelector('div[bind-release]').innerHTML = this.data.release_at != null ? new Date(this.data.release_at).toLocaleDateString() : 'TBA';
-  console.log(this.config.editable);
 
   if (this.config.editable) {
     var visibility = entry.querySelector('div[bind-visibility]');
@@ -3398,6 +3413,7 @@ CardList.prototype.render = function () {
         'input[name=ident_2]': entry.getIdent2(),
         'input[name=release]': (entry.getRelease() || '').substr(0, 10),
         // date input only accept yyyy-mm-dd values
+        'input[name=visibility]': entry.getVisibility(),
         '[bind-entry-id]': id,
         '[bind-entry-type]': _this2.data.id
       });
@@ -3437,6 +3453,8 @@ function TableEntry() {
 }
 
 TableEntry.prototype.getElement = function () {
+  var _this = this;
+
   var _div = document.createElement('div');
 
   var entry = this.config.entryTemplate.slice(0);
@@ -3451,8 +3469,12 @@ TableEntry.prototype.getElement = function () {
     var visibility = entry.querySelector('div[bind-visibility]');
     visibility.classList.add('entry-visibility--' + ['', 'green', 'orange', '', 'red'][this.data.visibility]);
     visibility.setAttribute('title', ['', 'Hidden', 'Private', '', 'Public'][this.data.visibility]);
-    entry.querySelector('div[bind-edit]').setAttribute('entry-id', this.data.id);
-    entry.querySelector('div[bind-remove]').setAttribute('entry-id', this.data.id);
+    Array.from(entry.querySelectorAll('div[bind-edit]')).map(function (el) {
+      return el.setAttribute('entry-id', _this.data.id);
+    });
+    Array.from(entry.querySelectorAll('div[bind-remove]')).map(function (el) {
+      return el.setAttribute('entry-id', _this.data.id);
+    });
   } else {
     Array.from(entry.querySelectorAll('[private]')).forEach(function (el) {
       return el.remove();
@@ -3689,6 +3711,7 @@ TableList.prototype.render = function () {
         'input[name=ident_2]': entry.getIdent2(),
         'input[name=release]': (entry.getRelease() || '').substr(0, 10),
         // date input only accept yyyy-mm-dd values
+        'input[name=visibility]': entry.getVisibility(),
         '[bind-entry-id]': id,
         '[bind-entry-type]': _this2.data.id
       });
