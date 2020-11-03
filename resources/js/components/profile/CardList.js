@@ -53,6 +53,7 @@ CardList.prototype.addEntry = function(entry) {
 	this.entries.push(
 		new Card({
 			parent: this,
+			editable: this.config.editable,
 			entry,
 			ajax: this.config.ajax,
 			pending: this.config.pending,

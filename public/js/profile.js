@@ -3183,6 +3183,7 @@ Card.prototype.getElement = function () {
   entry.querySelector('h4[bind-ident1]').innerHTML = this.data.ident_1;
   entry.querySelector('div[bind-ident2]').innerHTML = this.data.ident_2;
   entry.querySelector('div[bind-release]').innerHTML = this.data.release_at != null ? new Date(this.data.release_at).toLocaleDateString() : 'TBA';
+  console.log(this.config.editable);
 
   if (this.config.editable) {
     var visibility = entry.querySelector('div[bind-visibility]');
@@ -3297,6 +3298,7 @@ CardList.prototype.getId = function () {
 CardList.prototype.addEntry = function (entry) {
   this.entries.push(new _Card__WEBPACK_IMPORTED_MODULE_0__["default"]({
     parent: this,
+    editable: this.config.editable,
     entry: entry,
     ajax: this.config.ajax,
     pending: this.config.pending,
@@ -3572,6 +3574,7 @@ TableList.prototype.getId = function () {
 TableList.prototype.addEntry = function (entry) {
   this.entries.push(new _TableEntry__WEBPACK_IMPORTED_MODULE_0__["default"]({
     parent: this,
+    editable: this.config.editable,
     entry: entry,
     ajax: this.config.ajax,
     pending: this.config.pending,
