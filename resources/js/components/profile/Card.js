@@ -24,7 +24,6 @@ Card.prototype.getElement = function() {
 	entry.querySelector('div[bind-ident2]').innerHTML = this.data.ident_2;
 	entry.querySelector('div[bind-release]').innerHTML = this.data.release_at != null ? new Date(this.data.release_at).toLocaleDateString(): 'TBA';
 
-	console.log(this.config.editable);
 	if (this.config.editable) {
 		let visibility = entry.querySelector('div[bind-visibility]');
 			visibility.classList.add('card-visibility--' + ['', 'green', 'orange', '', 'red'][this.data.visibility]);
