@@ -50,16 +50,18 @@
 				<div class="mt-4">
 					<span class="block mb-1 font-bold">Visibility</span>
 					<div class="flex flex-row w-full">
-						<label class="w-1/3 p-1 mr-1 text-center bg-green-300 rounded cursor-pointer">
-							<input class="invisible form-radio" name="visibility" type="radio" value="1" checked>
+						<input id="edit_v1" class="invisible w-0 form-radio" name="visibility" type="radio" value="1" checked>
+						<label for="edit_v1" class="w-1/3 p-1 mr-1 text-center bg-green-300 rounded cursor-pointer">
 							Hidden
 						</label>
-						<label class="w-1/3 p-1 mr-1 text-center bg-orange-300 rounded cursor-pointer">
-							<input class="invisible form-radio" name="visibility" type="radio" value="2">
+						
+						<input id="edit_v2" class="invisible w-0 form-radio" name="visibility" type="radio" value="2">
+						<label for="edit_v2" class="w-1/3 p-1 mr-1 text-center bg-orange-300 rounded cursor-pointer">
 							Private
 						</label>
-						<label class="w-1/3 p-1 mr-1 text-center bg-red-300 rounded cursor-pointer">
-							<input class="invisible form-radio" name="visibility" type="radio" value="4">
+
+						<input id="edit_v4" class="invisible w-0 form-radio" name="visibility" type="radio" value="4">
+						<label for="edit_v4" class="w-1/3 p-1 mr-1 text-center bg-red-300 rounded cursor-pointer">
 							Public
 						</label>
 					</div>

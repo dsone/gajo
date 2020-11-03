@@ -187,3 +187,16 @@ body.is-owner {
 		}
 	}
 }
+
+#edit_v1:checked + label,
+#add_v1:checked + label {
+	@apply bg-green-500;
+}
+#edit_v2:checked + label,
+#add_v2:checked + label {
+	@apply bg-orange-500;
+}
+#edit_v4:checked + label,
+#add_v4:checked + label {
+	@apply bg-red-500;
+}
