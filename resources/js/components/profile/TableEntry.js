@@ -29,8 +29,8 @@ TableEntry.prototype.getElement = function() {
 			visibility.classList.add('entry-visibility--' + ['', 'green', 'orange', '', 'red'][this.data.visibility]);
 			visibility.setAttribute('title', ['', 'Hidden', 'Private', '', 'Public'][this.data.visibility]);
 
-		entry.querySelector('div[bind-edit]').setAttribute('entry-id', this.data.id);
-		entry.querySelector('div[bind-remove]').setAttribute('entry-id', this.data.id);
+		Array.from(entry.querySelectorAll('div[bind-edit]')).map(el => el.setAttribute('entry-id', this.data.id));
+		Array.from(entry.querySelectorAll('div[bind-remove]')).map(el => el.setAttribute('entry-id', this.data.id));
 	} else {
 		Array.from(entry.querySelectorAll('[private]')).forEach(el => el.remove());
 	}
