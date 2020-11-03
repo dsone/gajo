@@ -29,6 +29,6 @@ class Type extends Model
     }
 
     public function entries() {
-        return $this->hasMany('App\Models\Entry');
+        return $this->hasMany('App\Models\Entry')->orderBy('ident_1');
     }
 }
