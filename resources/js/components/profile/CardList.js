@@ -135,6 +135,7 @@ CardList.prototype.render = function() {
 					'[bind-ident2]': this.data.ident_2,
 					'input[name=ident_2]': entry.getIdent2(),
 					'input[name=release]': (entry.getRelease() || '').substr(0, 10),  // date input only accept yyyy-mm-dd values
+					'input[name=visibility]': entry.getVisibility(),
 					'[bind-entry-id]': id,
 					'[bind-entry-type]': this.data.id,
 				});
