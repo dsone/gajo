@@ -138,12 +138,13 @@ TableList.prototype.render = function() {
 
 	let editBtn = Array.from(tableTarget.querySelectorAll('div[bind-edit]'));
 		editBtn.forEach(entryEdit => {
+			let event = entryEdit.getAttribute('bind-edit');
 			entryEdit.removeAttribute('bind-edit');
 
 			let id = entryEdit.getAttribute('entry-id');
 			let entry = this.getEntryById(id);
 
-			entryEdit.addEventListener('click', e => {
+			entryEdit.addEventListener(event, e => {
 				this.config.modalEntryEdit.bindValues({
 					'select[name=type]': this.data.id,
 					'[bind-ident1]': this.data.ident_1,

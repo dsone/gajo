@@ -1249,10 +1249,6 @@ video {
 }
 
 .section-table-entries .table-entries .table-entry {
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
   margin-top: 1rem;
   --text-opacity: 1;
   color: #000;
@@ -1266,6 +1262,13 @@ video {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   overflow: hidden;
   position: relative;
+}
+
+.section-table-entries .table-entries .table-entry > div {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .section-table-entries .table-entries .table-entry .svg-icon {

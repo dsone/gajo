@@ -16,7 +16,11 @@
 		}
 
 		.table-entry {
-			@apply py-3 px-4 mt-4 text-black transition-shadow duration-100 bg-white rounded-sm shadow-md overflow-hidden relative;
+			@apply mt-4 text-black transition-shadow duration-100 bg-white rounded-sm shadow-md overflow-hidden relative;
+
+			& > div {
+				@apply py-3 px-4;
+			}
 
 			.svg-icon {
 				@apply h-6 mx-auto opacity-0 transition-opacity duration-200 cursor-pointer;

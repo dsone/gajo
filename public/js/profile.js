@@ -3381,12 +3381,13 @@ CardList.prototype.render = function () {
   });
   var editBtn = Array.from(cardsTarget.querySelectorAll('div[bind-edit]'));
   editBtn.forEach(function (entryEdit) {
+    var event = entryEdit.getAttribute('bind-edit');
     entryEdit.removeAttribute('bind-edit');
     var id = entryEdit.getAttribute('entry-id');
 
     var entry = _this2.getEntryById(id);
 
-    entryEdit.addEventListener('click', function (e) {
+    entryEdit.addEventListener(event, function (e) {
       _this2.config.modalEntryEdit.bindValues({
         'select[name=type]': _this2.data.id,
         '[bind-ident1]': _this2.data.ident_1,
@@ -3670,12 +3671,13 @@ TableList.prototype.render = function () {
   });
   var editBtn = Array.from(tableTarget.querySelectorAll('div[bind-edit]'));
   editBtn.forEach(function (entryEdit) {
+    var event = entryEdit.getAttribute('bind-edit');
     entryEdit.removeAttribute('bind-edit');
     var id = entryEdit.getAttribute('entry-id');
 
     var entry = _this2.getEntryById(id);
 
-    entryEdit.addEventListener('click', function (e) {
+    entryEdit.addEventListener(event, function (e) {
       _this2.config.modalEntryEdit.bindValues({
         'select[name=type]': _this2.data.id,
         '[bind-ident1]': _this2.data.ident_1,
