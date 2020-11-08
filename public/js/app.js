@@ -268,7 +268,7 @@ function Notify() {
   var cfg = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
   var status = NotificationStatus.getInstance();
 
-  if (status.last(cfg.message)) {
+  if (status.last(text)) {
     return;
   }
 
@@ -350,6 +350,10 @@ function Notify() {
 
     el && (el.innerHTML = config[key]);
   });
+
+  var icon = _div.querySelector("[n-type-".concat(config.type, "]"));
+
+  icon && icon.classList.remove('hidden');
   !!config.notificationsContainer && config.notificationsContainer.prepend(_div);
   timerFadeIn = setTimeout(function () {
     _div.classList.remove(config.openingAnimationClass);

@@ -8,7 +8,7 @@
 	width: 400px;
 
 	.notification-item {
-		@apply w-full p-3 mt-4 text-base leading-snug transition-all border-l-4 rounded shadow-md cursor-pointer opacity-80;
+		@apply w-full p-3 mt-4 text-base leading-snug transition-all border-l-4 rounded shadow-lg cursor-pointer opacity-80;
 		pointer-events: all;
 
 		.n-title {
@@ -20,7 +20,7 @@
 		}
 
 		.n-text {
-			@apply px-4 pt-4 overflow-y-auto text-sm;
+			@apply pt-2 overflow-y-auto text-sm;
 		}
 
 		&:first-child {
@@ -28,7 +28,7 @@
 		}
 
 		&:hover {
-			@apply shadow-2xl opacity-100;
+			@apply shadow-md opacity-100;
 		}
 
 		&.is-danger {

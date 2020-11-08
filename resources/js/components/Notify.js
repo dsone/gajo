@@ -46,7 +46,7 @@ let NotificationStatus = (function () {
 
 export default function Notify(title = 'title', text = 'text', cfg = {}) {
     let status = NotificationStatus.getInstance();
-    if (status.last(cfg.message)) { return; }
+    if (status.last(text)) { return; }
 
 	let config = {
 		...{
@@ -125,7 +125,10 @@ export default function Notify(title = 'title', text = 'text', cfg = {}) {
 	[ 'title', 'text' ].forEach(key => {
 		let el = _div.querySelector(`[n-${ key }]`);
 		el && (el.innerHTML = config[key]);
-	})
+	});
+
+	let icon = _div.querySelector(`[n-type-${ config.type }]`);
+	icon && icon.classList.remove('hidden');
 
 	!!config.notificationsContainer && config.notificationsContainer.prepend(_div);
 
