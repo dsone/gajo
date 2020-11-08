@@ -17,6 +17,8 @@ let Modal = (() => {
 
 		if (!this.disableBackdrop) {
 			this.element.addEventListener('mousedown', e => {
+				if (e.which != 1) { return; }
+
 				if (e.target.closest('.modal-content')) {
 					return;
 				}
@@ -101,7 +103,8 @@ let Modal = (() => {
 		if (key === 27) {
 			var openModal = document.querySelector('.modal-overlay:not(.hidden)');
 			if (openModal) {
-				openModal.click();
+				let closeBtn = openModal.querySelector('[bind-close]');
+				closeBtn && closeBtn.click();
 			}
 		} else if (key === 13) {
 			var openModal = document.querySelector('.modal-overlay:not(.hidden)');

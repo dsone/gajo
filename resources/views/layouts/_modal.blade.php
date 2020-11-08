@@ -5,7 +5,7 @@
 			<div class="flex flex-col items-center p-4 mx-auto mt-4 lg:mt-16">
 				<div class="absolute top-0 right-0 mt-6 mr-6">
 					<span class="float-right">
-						<button title="Close" class="text-4xl font-bold leading-none text-white text-secondary-200 focus:outline-none hover:text-secondary-100">×</button>
+						<button title="Close" class="text-4xl font-bold leading-none text-white text-secondary-200 focus:outline-none hover:text-secondary-100" bind-close>×</button>
 					</span>
 				</div>
 				<div class="w-full mx-auto mt-16 bg-white rounded md:w-2/3 lg:w-1/2 xl:w-1/3">
