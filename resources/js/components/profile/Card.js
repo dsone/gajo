@@ -25,9 +25,13 @@ Card.prototype.getElement = function() {
 	entry.querySelector('div[bind-release]').innerHTML = this.data.release_at != null ? new Date(this.data.release_at).toLocaleDateString(): 'TBA';
 
 	if (this.config.editable) {
+		let color = ['', 'green', 'orange', '', 'red'][this.data.visibility];
 		let visibility = entry.querySelector('div[bind-visibility]');
-			visibility.classList.add('card-visibility--' + ['', 'green', 'orange', '', 'red'][this.data.visibility]);
+			visibility.classList.add(`card-visibility--${ color }`);
 			visibility.setAttribute('title', ['', 'Hidden', 'Private', '', 'Public'][this.data.visibility]);
+
+		let icon = visibility.querySelector(`[icon-${ color }]`);
+			icon && icon.classList.remove('hidden');
 
 		entry.querySelector('div[bind-edit]').setAttribute('entry-id', this.data.id);
 		entry.querySelector('div[bind-remove]').setAttribute('entry-id', this.data.id);

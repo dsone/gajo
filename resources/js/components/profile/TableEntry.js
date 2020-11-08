@@ -25,9 +25,14 @@ TableEntry.prototype.getElement = function() {
 	entry.querySelector('div[bind-release]').innerHTML = this.data.release_at != null ? new Date(this.data.release_at).toLocaleDateString(): 'TBA';
 
 	if (this.config.editable) {
+		let color = ['', 'green', 'orange', '', 'red'][this.data.visibility];
+
 		let visibility = entry.querySelector('div[bind-visibility]');
-			visibility.classList.add('entry-visibility--' + ['', 'green', 'orange', '', 'red'][this.data.visibility]);
+			visibility.classList.add(`entry-visibility--${ color }`);
 			visibility.setAttribute('title', ['', 'Hidden', 'Private', '', 'Public'][this.data.visibility]);
+
+		let icon = visibility.querySelector(`[icon-${ color }]`);
+			icon && icon.classList.remove('hidden');
 
 		Array.from(entry.querySelectorAll('div[bind-edit]')).map(el => el.setAttribute('entry-id', this.data.id));
 		Array.from(entry.querySelectorAll('div[bind-remove]')).map(el => el.setAttribute('entry-id', this.data.id));
