@@ -28,11 +28,11 @@
 		@endif
 	</div>
 
-	@include('templates.profile-cards')
-	@include('templates.profile-tables')
-	@include('templates.modal-entry-confirm')
-	@include('templates.modal-entry-add')
-	@include('templates.modal-entry-edit')
+	@include('templates.profile.cards')
+	@include('templates.profile.tables')
+	@include('templates.profile.modal-entry-confirm')
+	@include('templates.profile.modal-entry-add')
+	@include('templates.profile.modal-entry-edit')
 @endsection
 
 @section('footerJS')
