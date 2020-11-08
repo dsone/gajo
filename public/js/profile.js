@@ -3003,7 +3003,7 @@ var Modal = function () {
     }
 
     this.btnClose.addEventListener('click', function (e) {
-      _this.element.click();
+      _this.hide();
     });
   };
 

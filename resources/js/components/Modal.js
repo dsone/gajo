@@ -25,7 +25,7 @@ let Modal = (() => {
 			});
 		}
 		this.btnClose.addEventListener('click', e => {
-			this.element.click();
+			this.hide();
 		});
 	};
 
