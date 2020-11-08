@@ -1,5 +1,5 @@
 <template id="modal-remove-confirm">
-	<div>
+	<div disable-backdrop>
 		<h2 class="mb-4 text-xl font-bold text-center">Do you want to remove this entry?</h2>
 		<div class="w-full">
 			<div class="mt-4 text-xl">
