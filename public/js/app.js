@@ -127,12 +127,97 @@ window.$$ = function (sel, context) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Notify; });
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+    arr2[i] = arr[i];
+  }
+
+  return arr2;
+}
+
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    if (enumerableOnly) symbols = symbols.filter(function (sym) {
+      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+    });
+    keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(Object(source), true).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
 /**
  * Helper class to keep track on the last displayed notification.
  * Preventing duplicates being displayed for a certain amount of time.
  * Unless another notification was displayed in the meantime.
  * Implemented with a Singleton pattern since Notify is not instantiated.
  */
+
+
 var NotificationStatus = function () {
   var instance;
 
@@ -177,20 +262,53 @@ var NotificationStatus = function () {
   };
 }();
 
-function Notify(title, message, type, duration) {
+function Notify() {
+  var title = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'title';
+  var text = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'text';
+  var cfg = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
   var status = NotificationStatus.getInstance();
 
-  if (status.last(message)) {
+  if (status.last(cfg.message)) {
     return;
   }
 
-  duration = Math.max(900, duration || 3000); // <900 might be problematic due to the animations
+  var config = _objectSpread(_objectSpread({}, {
+    // Title of the notification
+    title: title,
+    // Message content
+    text: text,
+    // Type of notifcation, info, warning, danger, success
+    type: 'info',
+    // the container holding all notification items
+    notificationsContainer: document.querySelector('.notifications'),
+    // Auto removing notification after this, in ms
+    autoRemoveDuration: 3000,
+    // fadein/-out animation time
+    animationDuration: 800,
+    // the template for notifications to use
+    templateHTML: document.querySelector('#notification-item').innerHTML,
+    // class for opening animation
+    openingAnimationClass: 'fadeInDown',
+    // class for closing animation
+    closingAnimationClass: 'fadeOutRight',
+    // close btn hover:color for info and warning
+    warningInfoCloseColor: 'text-gray-500',
+    // close bnt hover:color for danger and success
+    dangerSuccessCloseColor: 'text-gray-200'
+  }), cfg);
 
-  var timerClose = undefined; // notification container, holding all elements
+  var timerClose = undefined;
+  var timerFadeIn = undefined;
 
-  var tile = document.createElement('div');
-  tile.classList.add('notification', 'notification-item', 'is-' + type, 'animated', 'fast', 'fadeInDown', 'group');
-  tile.addEventListener('click', function (e) {
+  var _div = document.createElement('div');
+
+  var tmpl = config.templateHTML.slice(0);
+  _div.innerHTML = tmpl;
+  _div = _div.firstElementChild;
+
+  _div.classList.add('is-' + config.type, config.openingAnimationClass);
+
+  _div.addEventListener('click', function (e) {
     if (timerClose !== undefined) {
       timerClose = clearTimeout(timerClose);
     }
@@ -199,47 +317,45 @@ function Notify(title, message, type, duration) {
       timerFadeIn = clearTimeout(timerFadeIn);
     }
 
-    tile.classList.add('fadeOutRight');
+    _div.classList.add(config.closingAnimationClass);
+
     setTimeout(function () {
-      tile.remove();
-    }, 900);
+      _div.remove();
+    }, config.animationDuration + 50);
   });
-  tile.addEventListener('mouseover', function (e) {
+
+  _div.addEventListener('mouseover', function (e) {
     if (timerClose !== undefined) {
       timerClose = clearTimeout(timerClose);
     }
   });
-  tile.addEventListener('mouseleave', function (e) {
+
+  _div.addEventListener('mouseleave', function (e) {
     timerClose = setTimeout(function () {
-      tile.click();
-    }, duration);
-  }); // The button to prematurely close the notification;
-
-  var btn = document.createElement('button');
-  btn.classList.add('n-remove', type === 'warning' || type === 'info' ? 'group-hover:text-gray-500' : 'group-hover:text-gray-200');
-  btn.innerHTML = 'x';
-  btn.addEventListener('click', function (e) {
-    tile.click();
+      _div.click();
+    }, config.autoRemoveDuration);
   });
-  tile.appendChild(btn); // Title for the notification
 
-  var header = document.createElement('h3');
-  header.classList.add('n-title');
-  header.innerText = title;
-  tile.appendChild(header); // Text node, aka message
+  var closeBtn = _toConsumableArray(_div.querySelectorAll('[n-close]'));
 
-  var text = document.createElement('div');
-  text.classList.add('n-text');
-  text.innerHTML = message;
-  tile.appendChild(text); // Add it to global notification container
+  closeBtn.forEach(function (btn) {
+    btn.innerHTML = 'x';
+    btn.classList.add(config.type === 'warning' || config.type === 'info' ? "group-hover:".concat(config.warningInfoCloseColor) : "group-hover:".concat(config.dangerSuccessCloseColor));
+    btn.addEventListener('click', function (e) {
+      _div.click();
+    });
+  });
+  ['title', 'text'].forEach(function (key) {
+    var el = _div.querySelector("[n-".concat(key, "]"));
 
-  document.querySelector('.notifications').prepend(tile);
-  var timerFadeIn = setTimeout(function () {
-    tile.classList.remove('fadeInDown');
-  }, 900); // animation runs for 800ms (due to .fast), but rendering might need a ms more to prevent "jumping" of element
-  // start timer to close automatically after 5s by triggering mouseleave event
+    el && (el.innerHTML = config[key]);
+  });
+  !!config.notificationsContainer && config.notificationsContainer.prepend(_div);
+  timerFadeIn = setTimeout(function () {
+    _div.classList.remove(config.openingAnimationClass);
+  }, config.animationDuration + 50); // start timer to close automatically after 5s
 
-  tile.dispatchEvent(new Event('mouseleave'));
+  _div.dispatchEvent(new Event('mouseleave'));
 }
 
 /***/ }),
