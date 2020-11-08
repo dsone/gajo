@@ -139,15 +139,16 @@ if (btnSaveType) {
 			return;
 		}
 		[ [ 'name', errName ], [ 'ident_1', err1 ], [ 'ident_2', err2] ].forEach((check, index) => {
-			if (typeModalForm[check[0]].value === '') {
-				check[1] && check[1].classList.remove('hidden'), typeModalForm[check[0]].classList.add('border-red-700');
+			if (check[1] && typeModalForm[check[0]].value === '') {
+				check[1].classList.remove('hidden');
+				typeModalForm[check[0]].classList.add('border-red-700');
 				setTimeout(() => {
-					check[1] && check[1].classList.add('hidden');
+					check[1].classList.add('hidden');
 					typeModalForm[check[0]].classList.remove('border-red-700');
 				}, 4000);
 				errorFound = true;
-			} else {
-				check[1] && check[1].classList.add('hidden');
+			} else if (check[1]) {
+				check[1].classList.add('hidden');
 				typeModalForm[check[0]].classList.remove('border-red-700');
 			}
 		});

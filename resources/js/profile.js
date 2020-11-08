@@ -287,14 +287,17 @@ if (btnEditEntry) {
 	btnEditEntry.addEventListener('click', e => {
 		let err1 = editEntryModal.querySelector('[error-ident1]');
 		let err2 = editEntryModal.querySelector('[error-ident2]');
-		if (editEntryModalForm.ident_1.value === '') {
-			err1 && err1.classList.remove('hidden');
+		if (err1 && editEntryModalForm.ident_1.value === '') {
+			err1.classList.remove('hidden');
+			editEntryModalForm.ident_1.classList.add('border-red-700');
 			setTimeout(() => {
-				err1 && err1.classList.add('hidden');
-			}, 3000);
+				err1.classList.add('hidden');
+				editEntryModalForm.ident_1.classList.remove('border-red-700');
+			}, 4000);
 			return;
-		} else {
-			err1 && err1.classList.add('hidden');
+		} else if (err1) {
+			err1.classList.add('hidden');
+			editEntryModalForm.ident_1.classList.remove('border-red-700');
 		}
 		
 		// Prevent duplicates
@@ -314,14 +317,22 @@ if (btnEditEntry) {
 
 			return false;
 		});
-		if (duplicateFound) {
-			err2 && err2.classList.remove('hidden');
+
+		if (duplicateFound && err2) {
+			err2.classList.remove('hidden');
+			editEntryModalForm.ident_1.classList.add('border-red-700');
+			editEntryModalForm.ident_2.classList.add('border-red-700');
 			setTimeout(() => {
-				err2 && err2.classList.add('hidden');
-			}, 3000);
+				err2.classList.add('hidden');
+				editEntryModalForm.ident_1.classList.remove('border-red-700');
+				editEntryModalForm.ident_2.classList.remove('border-red-700');
+			}, 4000);
+
 			return;
-		} else {
-			err2 && err2.classList.add('hidden');
+		} else if (err2) {
+			err2.classList.add('hidden');
+			editEntryModalForm.ident_1.classList.remove('border-red-700');
+			editEntryModalForm.ident_2.classList.remove('border-red-700');
 		}
 
 		if (Pending.isPending()) {
