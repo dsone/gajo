@@ -38,6 +38,10 @@ TypeList.prototype.getByIndex = function(i) {
 	return this.types.slice(i, i+1)[0];
 };
 
+TypeList.prototype.getTypes = function() {
+	return this.types;
+};
+
 /**
  * Removes a Type by its id. Using id here is more secure than using the Type's index position.
  * Rerenders the type display after removal.

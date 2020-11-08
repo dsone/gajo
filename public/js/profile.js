@@ -3889,17 +3889,20 @@ var btnSaveEntry = addEntryModal.querySelector('.js-modal-confirm');
 
 if (btnSaveEntry) {
   btnSaveEntry.addEventListener('click', function (e) {
-    var err1 = entryModalForm.querySelector('[ident1-error]');
-    var err2 = entryModalForm.querySelector('[ident2-error]');
+    var err1 = entryModalForm.querySelector('[error-ident1]');
+    var err2 = entryModalForm.querySelector('[error-ident2]');
 
-    if (entryModalForm.ident_1.value === '') {
-      err1 && err1.classList.remove('hidden');
+    if (err1 && entryModalForm.ident_1.value === '') {
+      err1.classList.remove('hidden');
+      entryModalForm.ident_1.classList.add('border-red-700');
       setTimeout(function () {
-        err1 && err1.classList.add('hidden');
-      }, 3000);
+        err1.classList.add('hidden');
+        entryModalForm.ident_1.classList.remove('border-red-700');
+      }, 4000);
       return;
-    } else {
-      err1 && err1.classList.add('hidden');
+    } else if (err1) {
+      err1.classList.add('hidden');
+      entryModalForm.ident_1.classList.remove('border-red-700');
     } // Prevent duplicates
 
 
@@ -3918,14 +3921,20 @@ if (btnSaveEntry) {
       return false;
     });
 
-    if (duplicateFound) {
-      err2 && err2.classList.remove('hidden');
+    if (duplicateFound && err2) {
+      err2.classList.remove('hidden');
+      entryModalForm.ident_1.classList.add('border-red-700');
+      entryModalForm.ident_2.classList.add('border-red-700');
       setTimeout(function () {
-        err2 && err2.classList.add('hidden');
-      }, 3000);
+        err2.classList.add('hidden');
+        entryModalForm.ident_1.classList.remove('border-red-700');
+        entryModalForm.ident_2.classList.remove('border-red-700');
+      }, 4000);
       return;
-    } else {
-      err2 && err2.classList.add('hidden');
+    } else if (err2) {
+      err2.classList.add('hidden');
+      entryModalForm.ident_1.classList.remove('border-red-700');
+      entryModalForm.ident_2.classList.remove('border-red-700');
     }
 
     if (_components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a.isPending()) {
@@ -4035,8 +4044,8 @@ var btnEditEntry = editEntryModal.querySelector('.js-modal-confirm');
 
 if (btnEditEntry) {
   btnEditEntry.addEventListener('click', function (e) {
-    var err1 = editEntryModal.querySelector('[ident1-error]');
-    var err2 = editEntryModal.querySelector('[ident2-error]');
+    var err1 = editEntryModal.querySelector('[error-ident1]');
+    var err2 = editEntryModal.querySelector('[error-ident2]');
 
     if (editEntryModalForm.ident_1.value === '') {
       err1 && err1.classList.remove('hidden');

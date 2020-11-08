@@ -126,6 +126,35 @@ if (btnCloseModal) {
 let btnSaveType = typeModal.querySelector('.js-save-type');
 if (btnSaveType) {
 	btnSaveType.addEventListener('click', function(e) {
+		let errName = typeModal.querySelector('[error-name]');
+		let err1 = typeModal.querySelector('[error-ident1]');
+		let err2 = typeModal.querySelector('[error-ident2]');
+		let errorFound = false;
+		if (typeList.getTypes().some(type => type.name === typeModalForm.name.value)) {
+			errName && errName.classList.remove('hidden'), typeModalForm.name.classList.remove('border-red-700');
+			setTimeout(() => {
+				errName && errName.classList.add('hidden');
+			}, 4000);
+
+			return;
+		}
+		[ [ 'name', errName ], [ 'ident_1', err1 ], [ 'ident_2', err2] ].forEach((check, index) => {
+			if (typeModalForm[check[0]].value === '') {
+				check[1] && check[1].classList.remove('hidden'), typeModalForm[check[0]].classList.add('border-red-700');
+				setTimeout(() => {
+					check[1] && check[1].classList.add('hidden');
+					typeModalForm[check[0]].classList.remove('border-red-700');
+				}, 4000);
+				errorFound = true;
+			} else {
+				check[1] && check[1].classList.add('hidden');
+				typeModalForm[check[0]].classList.remove('border-red-700');
+			}
+		});
+		if (errorFound) {
+			return;
+		}
+
 		if (Pending.isPending()) {
 			notify.warning('Warning', 'Another request is in progress, please wait a second!');
 			return;

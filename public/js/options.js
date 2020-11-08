@@ -3254,6 +3254,10 @@ TypeList.prototype.getByIndex = function (i) {
 
   return this.types.slice(i, i + 1)[0];
 };
+
+TypeList.prototype.getTypes = function () {
+  return this.types;
+};
 /**
  * Removes a Type by its id. Using id here is more secure than using the Type's index position.
  * Rerenders the type display after removal.
@@ -3795,6 +3799,39 @@ var btnSaveType = typeModal.querySelector('.js-save-type');
 
 if (btnSaveType) {
   btnSaveType.addEventListener('click', function (e) {
+    var errName = typeModal.querySelector('[error-name]');
+    var err1 = typeModal.querySelector('[error-ident1]');
+    var err2 = typeModal.querySelector('[error-ident2]');
+    var errorFound = false;
+
+    if (typeList.getTypes().some(function (type) {
+      return type.name === typeModalForm.name.value;
+    })) {
+      errName && errName.classList.remove('hidden'), typeModalForm.name.classList.remove('border-red-700');
+      setTimeout(function () {
+        errName && errName.classList.add('hidden');
+      }, 4000);
+      return;
+    }
+
+    [['name', errName], ['ident_1', err1], ['ident_2', err2]].forEach(function (check, index) {
+      if (typeModalForm[check[0]].value === '') {
+        check[1] && check[1].classList.remove('hidden'), typeModalForm[check[0]].classList.add('border-red-700');
+        setTimeout(function () {
+          check[1] && check[1].classList.add('hidden');
+          typeModalForm[check[0]].classList.remove('border-red-700');
+        }, 4000);
+        errorFound = true;
+      } else {
+        check[1] && check[1].classList.add('hidden');
+        typeModalForm[check[0]].classList.remove('border-red-700');
+      }
+    });
+
+    if (errorFound) {
+      return;
+    }
+
     if (_components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.isPending()) {
       notify.warning('Warning', 'Another request is in progress, please wait a second!');
       return;

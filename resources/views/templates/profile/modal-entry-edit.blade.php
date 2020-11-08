@@ -21,11 +21,11 @@
 						<input class="block w-full form-input" name="ident_1" type="text" placeholder="" value="" autocomplete="off" required>
 					</label>
 
-					<span class="block mt-1 text-sm">
-						Usually the name of an author, or an artist, the title for a book or similar.
-					</span>
-					<div class="hidden mt-1 text-sm font-semibold text-red-700" ident1-error>
+					<div class="hidden mt-1 text-sm font-semibold text-red-700" error-ident1>
 						This field cannot be empty!
+					</div>
+					<div class="mt-1 text-sm">
+						Usually the name of an author, or an artist, the title for a book or similar.
 					</div>
 				</div>
 				<div class="mt-4">
@@ -34,11 +34,11 @@
 						<input class="block w-full form-input" name="ident_2" type="text" value="" placeholder="" autocomplete="off">
 					</label>
 
-					<span class="block mt-1 text-sm">
-						Something describing the new entry a bit more. Like album/book title, or season number. If empty, it will be set to "TBA".
-					</span>
-					<div class="hidden mt-1 text-sm font-semibold text-red-700" ident2-error>
+					<div class="hidden mt-1 text-sm font-semibold text-red-700" error-ident2>
 						Duplicate detected, the above inputs exists as an entry already!
+					</div>
+					<div class="mt-1 text-sm">
+						Something describing the new entry a bit more. Like album/book title, or season number. If empty, it will be set to "TBA".
 					</div>
 				</div>
 
@@ -49,7 +49,7 @@
 					</label>
 
 					<span class="block mt-1 text-sm">
-						The date of the entry. If unknown and kept blank, TBA will be set.
+						The date of the entry. If unknown and kept blank, TBA will be used.
 					</span>
 				</div>
 				
