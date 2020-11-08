@@ -192,7 +192,7 @@ TypeList.prototype.update = function(type, attrName, value) {
 		});
 
 		if (uniqueNameError) {
-			notify('Error', 'Name of Type must be unique!', 'danger');
+			notify.danger('Error', 'Name of Type must be unique!');
 			return this.render();  // deletes duplicate name
 		}
 	}

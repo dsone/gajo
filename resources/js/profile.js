@@ -53,7 +53,7 @@ let btnConfirmEntryRemoveModal = modalEntryRemove.querySelector('.js-modal-confi
 if (btnConfirmEntryRemoveModal) {
 	btnConfirmEntryRemoveModal.addEventListener('click', function(e) {
 		if (Pending.isPending()) {
-			notify('Warning', 'Another request is in progress, please wait a second!', 'warning');
+			notify.warning('Warning', 'Another request is in progress, please wait a second!');
 			return;
 		}
 
@@ -72,9 +72,9 @@ if (btnConfirmEntryRemoveModal) {
 							list.removeEntryById(entryId);
 						})
 
-						notify('Success', 'Entry removed', 'success');
+						notify.success('Success', 'Entry removed');
 					} else {
-						notify('Error', json.message, 'danger');
+						notify.danger('Error', json.message);
 					}
 
 					// Check if all listings are empty
@@ -82,7 +82,7 @@ if (btnConfirmEntryRemoveModal) {
 						startContainer.classList.remove('hidden');
 					}
 				}).catch(err => {
-					notify('Error', err.message, 'danger');
+					notify.danger('Error', err.message);
 				}).finally(resp => {
 					btnConfirmEntryRemoveModal.removeAttribute('disabled');
 					btnConfirmEntryRemoveModal.classList.remove('cursor-wait');
@@ -132,7 +132,7 @@ let btnSaveEntry = addEntryModal.querySelector('.js-modal-confirm');
 if (btnSaveEntry) {
 	btnSaveEntry.addEventListener('click', e => {
 		if (Pending.isPending()) {
-			notify('Warning', 'Another request is in progress, please wait a second!', 'warning');
+			notify.warning('Warning', 'Another request is in progress, please wait a second!');
 			return;
 		}
 
@@ -166,12 +166,12 @@ if (btnSaveEntry) {
 						return false;
 					});
 
-					notify('Success', 'Entry added', 'success');
+					notify.success('Success', 'Entry added');
 				} else {
-					notify('Error', json.message, 'danger');
+					notify.danger('Error', json.message);
 				}
 			}).catch(err => {
-				notify('Error', err.message, 'danger');
+				notify.danger('Error', err.message);
 			}).finally(resp => {
 				btnSaveEntry.removeAttribute('disabled');
 				btnSaveEntry.classList.remove('cursor-wait');
@@ -238,7 +238,7 @@ let btnEditEntry = editEntryModal.querySelector('.js-modal-confirm');
 if (btnEditEntry) {
 	btnEditEntry.addEventListener('click', e => {
 		if (Pending.isPending()) {
-			notify('Warning', 'Another request is in progress, please wait a second!', 'warning');
+			notify.warning('Warning', 'Another request is in progress, please wait a second!');
 			return;
 		}
 
@@ -293,12 +293,12 @@ if (btnEditEntry) {
 						return false;
 					});
 
-					notify('Success', 'Entry updated', 'success');
+					notify.success('Success', 'Entry updated');
 				} else {
-					notify('Error', json.message, 'danger');
+					notify.danger('Error', json.message);
 				}
 			}).catch(err => {
-				notify('Error', err.message, 'danger');
+				notify.danger('Error', err.message);
 			}).finally(resp => {
 				btnEditEntry.removeAttribute('disabled');
 				btnEditEntry.classList.remove('cursor-wait');

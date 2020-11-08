@@ -1100,9 +1100,15 @@ video {
 }
 
 .notifications .notification-item .n-text {
-  padding-top: 0.5rem;
+  padding-top: 0.25rem;
   overflow-y: auto;
   font-size: 0.875rem;
+}
+
+.notifications .notification-item .n-icon {
+  width: 16.666667%;
+  height: 1.5rem;
+  margin-left: -0.75rem;
 }
 
 .notifications .notification-item:first-child {
@@ -1117,11 +1123,17 @@ video {
 
 .notifications .notification-item.is-danger {
   --bg-opacity: 1;
-  background-color: #feb2b2;
-  background-color: rgba(254, 178, 178, var(--bg-opacity));
+  background-color: #fed7d7;
+  background-color: rgba(254, 215, 215, var(--bg-opacity));
   --border-opacity: 1;
   border-color: #e53e3e;
   border-color: rgba(229, 62, 62, var(--border-opacity));
+}
+
+.notifications .notification-item.is-danger .n-icon {
+  --text-opacity: 1;
+  color: #e53e3e;
+  color: rgba(229, 62, 62, var(--text-opacity));
 }
 
 .notifications .notification-item.is-warning {
@@ -1133,13 +1145,25 @@ video {
   border-color: rgba(183, 121, 31, var(--border-opacity));
 }
 
+.notifications .notification-item.is-warning .n-icon {
+  --text-opacity: 1;
+  color: #b7791f;
+  color: rgba(183, 121, 31, var(--text-opacity));
+}
+
 .notifications .notification-item.is-info {
-  --border-opacity: 1;
-  border-color: #71808E;
-  border-color: rgba(113, 128, 142, var(--border-opacity));
   --bg-opacity: 1;
   background-color: #EBEDEF;
   background-color: rgba(235, 237, 239, var(--bg-opacity));
+  --border-opacity: 1;
+  border-color: #71808E;
+  border-color: rgba(113, 128, 142, var(--border-opacity));
+}
+
+.notifications .notification-item.is-info .n-icon {
+  --text-opacity: 1;
+  color: #71808E;
+  color: rgba(113, 128, 142, var(--text-opacity));
 }
 
 .notifications .notification-item.is-success {
@@ -1149,6 +1173,12 @@ video {
   --border-opacity: 1;
   border-color: #22543d;
   border-color: rgba(34, 84, 61, var(--border-opacity));
+}
+
+.notifications .notification-item.is-success .n-icon {
+  --text-opacity: 1;
+  color: #22543d;
+  color: rgba(34, 84, 61, var(--text-opacity));
 }
 
 .switch {

@@ -52,12 +52,12 @@ let typeList = new TypeList({
 			).then(resp => {
 				let json = resp.data;
 				if (!json.error) {
-					notify('Success', 'Order saved!', 'success');
+					notify.success('Success', 'Order saved!');
 				} else {
-					notify('Error', json.message, 'danger');
+					notify.danger('Error', json.message);
 				}
 			}).catch(err => {
-				notify('Error', err.message, 'danger');
+				notify.danger('Error', err.message);
 			}).finally(resp => {
 				Pending.hide();
 
@@ -76,14 +76,14 @@ let typeList = new TypeList({
 			).then(resp => {
 				let json = resp.data;
 				if (!json.error) {
-					notify('Success', 'Type updated', 'success');
+					notify.success('Success', 'Type updated');
 				} else {
-					notify('Error', json.message, 'danger');
+					notify.danger('Error', json.message);
 				}
 
 				return !json.error;
 			}).catch(err => {
-				notify('Error', err.message, 'danger');
+				notify.danger('Error', err.message);
 
 				return false;
 			}).finally(resp => {
@@ -114,7 +114,7 @@ let btnSaveType = typeModal.querySelector('.js-save-type');
 if (btnSaveType) {
 	btnSaveType.addEventListener('click', function(e) {
 		if (Pending.isPending()) {
-			notify('Warning', 'Another request is in progress, please wait a second!', 'warning');
+			notify.warning('Warning', 'Another request is in progress, please wait a second!');
 			return;
 		}
 
@@ -138,12 +138,12 @@ if (btnSaveType) {
 						typeModalForm.reset();
 					}
 
-					notify('Success', 'Type added', 'success');
+					notify.success('Success', 'Type added');
 				} else {
-					notify('Error', json.message, 'danger');
+					notify.danger('Error', json.message);
 				}
 			}).catch(err => {
-				notify('Error', err.message, 'danger');
+				notify.danger('Error', err.message);
 			}).finally(resp => {
 				btnSaveType.removeAttribute('disabled');
 				btnSaveType.classList.remove('cursor-wait');
@@ -172,7 +172,7 @@ let btnConfirmRemoval = removalConfirmModal.querySelector('.js-modal-confirm');
 if (btnConfirmRemoval) {
 	btnConfirmRemoval.addEventListener('click', function(e) {
 		if (Pending.isPending()) {
-			notify('Warning', 'Another request is in progress, please wait a second!', 'warning');
+			notify.warning('Warning', 'Another request is in progress, please wait a second!');
 			return;
 		}
 
@@ -189,12 +189,12 @@ if (btnConfirmRemoval) {
 					if (!json.error) {
 						typeList.removeById(typeId);
 
-						notify('Success', 'Type removed', 'success');
+						notify.success('Success', 'Type removed');
 					} else {
-						notify('Error', json.message, 'danger');
+						notify.danger('Error', json.message);
 					}
 				}).catch(err => {
-					notify('Error', err.message, 'danger');
+					notify.danger('Error', err.message);
 				}).finally(resp => {
 					btnConfirmRemoval.removeAttribute('disabled');
 					btnConfirmRemoval.classList.remove('cursor-wait');

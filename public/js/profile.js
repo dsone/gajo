@@ -3798,7 +3798,7 @@ var btnConfirmEntryRemoveModal = modalEntryRemove.querySelector('.js-modal-confi
 if (btnConfirmEntryRemoveModal) {
   btnConfirmEntryRemoveModal.addEventListener('click', function (e) {
     if (_components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a.isPending()) {
-      notify('Warning', 'Another request is in progress, please wait a second!', 'warning');
+      notify.warning('Warning', 'Another request is in progress, please wait a second!');
       return;
     }
 
@@ -3818,9 +3818,9 @@ if (btnConfirmEntryRemoveModal) {
           listing.forEach(function (list) {
             list.removeEntryById(entryId);
           });
-          notify('Success', 'Entry removed', 'success');
+          notify.success('Success', 'Entry removed');
         } else {
-          notify('Error', json.message, 'danger');
+          notify.danger('Error', json.message);
         } // Check if all listings are empty
 
 
@@ -3830,7 +3830,7 @@ if (btnConfirmEntryRemoveModal) {
           startContainer.classList.remove('hidden');
         }
       })["catch"](function (err) {
-        notify('Error', err.message, 'danger');
+        notify.danger('Error', err.message);
       })["finally"](function (resp) {
         btnConfirmEntryRemoveModal.removeAttribute('disabled');
         btnConfirmEntryRemoveModal.classList.remove('cursor-wait');
@@ -3879,7 +3879,7 @@ var btnSaveEntry = addEntryModal.querySelector('.js-modal-confirm');
 if (btnSaveEntry) {
   btnSaveEntry.addEventListener('click', function (e) {
     if (_components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a.isPending()) {
-      notify('Warning', 'Another request is in progress, please wait a second!', 'warning');
+      notify.warning('Warning', 'Another request is in progress, please wait a second!');
       return;
     }
 
@@ -3911,12 +3911,12 @@ if (btnSaveEntry) {
 
           return false;
         });
-        notify('Success', 'Entry added', 'success');
+        notify.success('Success', 'Entry added');
       } else {
-        notify('Error', json.message, 'danger');
+        notify.danger('Error', json.message);
       }
     })["catch"](function (err) {
-      notify('Error', err.message, 'danger');
+      notify.danger('Error', err.message);
     })["finally"](function (resp) {
       btnSaveEntry.removeAttribute('disabled');
       btnSaveEntry.classList.remove('cursor-wait');
@@ -3986,7 +3986,7 @@ var btnEditEntry = editEntryModal.querySelector('.js-modal-confirm');
 if (btnEditEntry) {
   btnEditEntry.addEventListener('click', function (e) {
     if (_components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a.isPending()) {
-      notify('Warning', 'Another request is in progress, please wait a second!', 'warning');
+      notify.warning('Warning', 'Another request is in progress, please wait a second!');
       return;
     }
 
@@ -4039,12 +4039,12 @@ if (btnEditEntry) {
 
           return false;
         });
-        notify('Success', 'Entry updated', 'success');
+        notify.success('Success', 'Entry updated');
       } else {
-        notify('Error', json.message, 'danger');
+        notify.danger('Error', json.message);
       }
     })["catch"](function (err) {
-      notify('Error', err.message, 'danger');
+      notify.danger('Error', err.message);
     })["finally"](function (resp) {
       btnEditEntry.removeAttribute('disabled');
       btnEditEntry.classList.remove('cursor-wait');

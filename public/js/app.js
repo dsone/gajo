@@ -126,7 +126,6 @@ window.$$ = function (sel, context) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Notify; });
 function _toConsumableArray(arr) {
   return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
 }
@@ -360,7 +359,50 @@ function Notify() {
   }, config.animationDuration + 50); // start timer to close automatically after 5s
 
   _div.dispatchEvent(new Event('mouseleave'));
-}
+} // Creating shorthands in a hacky way
+
+
+var wrappedNotify = function () {
+  Notify.danger = function () {
+    var title = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'title';
+    var text = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'text';
+    var cfg = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    return Notify(title, text, _objectSpread({
+      type: 'danger'
+    }, cfg));
+  };
+
+  Notify.info = function () {
+    var title = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'title';
+    var text = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'text';
+    var cfg = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    return Notify(title, text, _objectSpread({
+      type: 'info'
+    }, cfg));
+  };
+
+  Notify.success = function () {
+    var title = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'title';
+    var text = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'text';
+    var cfg = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    return Notify(title, text, _objectSpread({
+      type: 'success'
+    }, cfg));
+  };
+
+  Notify.warning = function () {
+    var title = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'title';
+    var text = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'text';
+    var cfg = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    return Notify(title, text, _objectSpread({
+      type: 'warning'
+    }, cfg));
+  };
+
+  return Notify;
+}();
+
+/* harmony default export */ __webpack_exports__["default"] = (wrappedNotify);
 
 /***/ }),
 

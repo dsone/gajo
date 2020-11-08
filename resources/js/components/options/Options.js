@@ -48,9 +48,9 @@ export default function Options(config = {}) {
 					.then(json => {
 						if (!json.data.error) {
 							this.config.rss.value = json.data.data;
-							notify('Success', 'Updated RSS token', 'success');
+							notify.success('Success', 'Updated RSS token');
 						} else {
-							notify('Error', json.message, 'danger');
+							notify.danger('Error', json.message);
 						}
 						this.config.changeRSS.removeAttribute('disabled', 'disabled');
 
@@ -58,7 +58,7 @@ export default function Options(config = {}) {
 					})
 					.catch(json => {
 						this.config.changeRSS.removeAttribute('disabled', 'disabled');
-						notify('Error', 'Failed to update RSS token', 'danger');
+						notify.danger('Error', 'Failed to update RSS token');
 
 						toggleInProgress(false);
 					});
@@ -74,15 +74,15 @@ export default function Options(config = {}) {
 				.then(json => {
 					if (!json.data.error) {
 						this.data = Object.assign({}, data);
-						notify('Success', 'Updated Options', 'success');
+						notify.success('Success', 'Updated Options');
 					} else {
-						notify('Error', json.message, 'danger');
+						notify.danger('Error', json.message);
 					}
 
 					toggleInProgress(false);
 				})
 				.catch(json => {
-					notify('Error', 'Failed to update options', 'danger');
+					notify.danger('Error', 'Failed to update options');
 
 					toggleInProgress(false);
 				});

@@ -20,7 +20,11 @@
 		}
 
 		.n-text {
-			@apply pt-2 overflow-y-auto text-sm;
+			@apply pt-1 overflow-y-auto text-sm;
+		}
+
+		.n-icon {
+			@apply w-1/6 h-6 -ml-3;
 		}
 
 		&:first-child {
@@ -32,19 +36,35 @@
 		}
 
 		&.is-danger {
-			@apply bg-red-300 border-red-600;
+			@apply bg-red-200 border-red-600;
+
+			.n-icon {
+				@apply text-red-600;
+			}
 		}
 
 		&.is-warning {
 			@apply bg-yellow-200 border-yellow-700;
+
+			.n-icon {
+				@apply text-yellow-700;
+			}
 		}
 
 		&.is-info {
-			@apply border-primary-400 bg-primary-100;
+			@apply bg-primary-100 border-primary-400;
+
+			.n-icon {
+				@apply text-primary-400;
+			}
 		}
 
 		&.is-success {
 			@apply bg-green-300 border-green-900;
+
+			.n-icon {
+				@apply text-green-900;
+			}
 		}
 	}
 }

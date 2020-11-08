@@ -3398,7 +3398,7 @@ TypeList.prototype.update = function (type, attrName, value) {
     });
 
     if (uniqueNameError) {
-      notify('Error', 'Name of Type must be unique!', 'danger');
+      notify.danger('Error', 'Name of Type must be unique!');
       return this.render(); // deletes duplicate name
     }
   }
@@ -3535,9 +3535,9 @@ function Options() {
                 _this.config.ajax.get(uri).then(function (json) {
                   if (!json.data.error) {
                     _this.config.rss.value = json.data.data;
-                    notify('Success', 'Updated RSS token', 'success');
+                    notify.success('Success', 'Updated RSS token');
                   } else {
-                    notify('Error', json.message, 'danger');
+                    notify.danger('Error', json.message);
                   }
 
                   _this.config.changeRSS.removeAttribute('disabled', 'disabled');
@@ -3546,7 +3546,7 @@ function Options() {
                 })["catch"](function (json) {
                   _this.config.changeRSS.removeAttribute('disabled', 'disabled');
 
-                  notify('Error', 'Failed to update RSS token', 'danger');
+                  notify.danger('Error', 'Failed to update RSS token');
                   toggleInProgress(false);
                 });
               } catch (e) {
@@ -3567,14 +3567,14 @@ function Options() {
       _this.config.ajax.put(__ROUTES.options, data).then(function (json) {
         if (!json.data.error) {
           _this.data = Object.assign({}, data);
-          notify('Success', 'Updated Options', 'success');
+          notify.success('Success', 'Updated Options');
         } else {
-          notify('Error', json.message, 'danger');
+          notify.danger('Error', json.message);
         }
 
         toggleInProgress(false);
       })["catch"](function (json) {
-        notify('Error', 'Failed to update options', 'danger');
+        notify.danger('Error', 'Failed to update options');
         toggleInProgress(false);
       });
     };
@@ -3722,12 +3722,12 @@ var typeList = new _components_TypeList__WEBPACK_IMPORTED_MODULE_3__["default"](
       var json = resp.data;
 
       if (!json.error) {
-        notify('Success', 'Order saved!', 'success');
+        notify.success('Success', 'Order saved!');
       } else {
-        notify('Error', json.message, 'danger');
+        notify.danger('Error', json.message);
       }
     })["catch"](function (err) {
-      notify('Error', err.message, 'danger');
+      notify.danger('Error', err.message);
     })["finally"](function (resp) {
       _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.hide();
       return resp;
@@ -3742,14 +3742,14 @@ var typeList = new _components_TypeList__WEBPACK_IMPORTED_MODULE_3__["default"](
       var json = resp.data;
 
       if (!json.error) {
-        notify('Success', 'Type updated', 'success');
+        notify.success('Success', 'Type updated');
       } else {
-        notify('Error', json.message, 'danger');
+        notify.danger('Error', json.message);
       }
 
       return !json.error;
     })["catch"](function (err) {
-      notify('Error', err.message, 'danger');
+      notify.danger('Error', err.message);
       return false;
     })["finally"](function (resp) {
       _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.hide();
@@ -3778,7 +3778,7 @@ var btnSaveType = typeModal.querySelector('.js-save-type');
 if (btnSaveType) {
   btnSaveType.addEventListener('click', function (e) {
     if (_components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.isPending()) {
-      notify('Warning', 'Another request is in progress, please wait a second!', 'warning');
+      notify.warning('Warning', 'Another request is in progress, please wait a second!');
       return;
     }
 
@@ -3801,12 +3801,12 @@ if (btnSaveType) {
           typeModalForm.reset();
         }
 
-        notify('Success', 'Type added', 'success');
+        notify.success('Success', 'Type added');
       } else {
-        notify('Error', json.message, 'danger');
+        notify.danger('Error', json.message);
       }
     })["catch"](function (err) {
-      notify('Error', err.message, 'danger');
+      notify.danger('Error', err.message);
     })["finally"](function (resp) {
       btnSaveType.removeAttribute('disabled');
       btnSaveType.classList.remove('cursor-wait');
@@ -3839,7 +3839,7 @@ var btnConfirmRemoval = removalConfirmModal.querySelector('.js-modal-confirm');
 if (btnConfirmRemoval) {
   btnConfirmRemoval.addEventListener('click', function (e) {
     if (_components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a.isPending()) {
-      notify('Warning', 'Another request is in progress, please wait a second!', 'warning');
+      notify.warning('Warning', 'Another request is in progress, please wait a second!');
       return;
     }
 
@@ -3857,12 +3857,12 @@ if (btnConfirmRemoval) {
 
         if (!json.error) {
           typeList.removeById(typeId);
-          notify('Success', 'Type removed', 'success');
+          notify.success('Success', 'Type removed');
         } else {
-          notify('Error', json.message, 'danger');
+          notify.danger('Error', json.message);
         }
       })["catch"](function (err) {
-        notify('Error', err.message, 'danger');
+        notify.danger('Error', err.message);
       })["finally"](function (resp) {
         btnConfirmRemoval.removeAttribute('disabled');
         btnConfirmRemoval.classList.remove('cursor-wait');

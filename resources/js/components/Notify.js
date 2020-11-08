@@ -44,7 +44,7 @@ let NotificationStatus = (function () {
     };
 })();
 
-export default function Notify(title = 'title', text = 'text', cfg = {}) {
+function Notify(title = 'title', text = 'text', cfg = {}) {
     let status = NotificationStatus.getInstance();
     if (status.last(text)) { return; }
 
@@ -139,3 +139,23 @@ export default function Notify(title = 'title', text = 'text', cfg = {}) {
 	// start timer to close automatically after 5s
 	_div.dispatchEvent(new Event('mouseleave'));
 }
+
+
+// Creating shorthands in a hacky way
+let wrappedNotify = (() => {
+	Notify.danger = function(title = 'title', text = 'text', cfg = {}) {
+		return Notify(title, text, { type: 'danger', ...cfg });
+	};
+	Notify.info = function(title = 'title', text = 'text', cfg = {}) {
+		return Notify(title, text, { type: 'info', ...cfg });
+	};
+	Notify.success = function(title = 'title', text = 'text', cfg = {}) {
+		return Notify(title, text, { type: 'success', ...cfg });
+	};
+	Notify.warning = function(title = 'title', text = 'text', cfg = {}) {
+		return Notify(title, text, { type: 'warning', ...cfg });
+	};
+
+	return Notify;
+})();
+export default wrappedNotify;
