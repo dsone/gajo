@@ -2990,13 +2990,18 @@ var Modal = function () {
     this.element = document.body.lastElementChild;
     this.btnClose = this.element.querySelector('button');
     this.scrollTop = 0;
-    this.element.addEventListener('click', function (e) {
-      if (e.target.closest('.modal-content')) {
-        return;
-      }
+    this.disableBackdrop = !!this.element.querySelector('[disable-backdrop]');
 
-      _this.hide();
-    });
+    if (!this.disableBackdrop) {
+      this.element.addEventListener('click', function (e) {
+        if (e.target.closest('.modal-content')) {
+          return;
+        }
+
+        _this.hide();
+      });
+    }
+
     this.btnClose.addEventListener('click', function (e) {
       _this.element.click();
     });

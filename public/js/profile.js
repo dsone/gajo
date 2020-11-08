@@ -2990,13 +2990,18 @@ var Modal = function () {
     this.element = document.body.lastElementChild;
     this.btnClose = this.element.querySelector('button');
     this.scrollTop = 0;
-    this.element.addEventListener('click', function (e) {
-      if (e.target.closest('.modal-content')) {
-        return;
-      }
+    this.disableBackdrop = !!this.element.querySelector('[disable-backdrop]');
 
-      _this.hide();
-    });
+    if (!this.disableBackdrop) {
+      this.element.addEventListener('click', function (e) {
+        if (e.target.closest('.modal-content')) {
+          return;
+        }
+
+        _this.hide();
+      });
+    }
+
     this.btnClose.addEventListener('click', function (e) {
       _this.element.click();
     });
@@ -3884,6 +3889,45 @@ var btnSaveEntry = addEntryModal.querySelector('.js-modal-confirm');
 
 if (btnSaveEntry) {
   btnSaveEntry.addEventListener('click', function (e) {
+    var err1 = entryModalForm.querySelector('[ident1-error]');
+    var err2 = entryModalForm.querySelector('[ident2-error]');
+
+    if (entryModalForm.ident_1.value === '') {
+      err1 && err1.classList.remove('hidden');
+      setTimeout(function () {
+        err1 && err1.classList.add('hidden');
+      }, 3000);
+      return;
+    } else {
+      err1 && err1.classList.add('hidden');
+    } // Prevent duplicates
+
+
+    var duplicateFound = false;
+    listing.some(function (type) {
+      // Find type to add entry to
+      if (type.getId() == entryModalForm.type.options[entryModalForm.type.selectedIndex].value) {
+        // Find duplicate
+        duplicateFound = type.getEntries().some(function (entry) {
+          var newIdent2 = entryModalForm.ident_2.value || 'TBA';
+          return entry.getIdent1() === entryModalForm.ident_1.value && entry.getIdent2() === newIdent2;
+        });
+        return true;
+      }
+
+      return false;
+    });
+
+    if (duplicateFound) {
+      err2 && err2.classList.remove('hidden');
+      setTimeout(function () {
+        err2 && err2.classList.add('hidden');
+      }, 3000);
+      return;
+    } else {
+      err2 && err2.classList.add('hidden');
+    }
+
     if (_components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a.isPending()) {
       notify.warning('Warning', 'Another request is in progress, please wait a second!');
       return;
@@ -3991,6 +4035,46 @@ var btnEditEntry = editEntryModal.querySelector('.js-modal-confirm');
 
 if (btnEditEntry) {
   btnEditEntry.addEventListener('click', function (e) {
+    var err1 = editEntryModal.querySelector('[ident1-error]');
+    var err2 = editEntryModal.querySelector('[ident2-error]');
+
+    if (editEntryModalForm.ident_1.value === '') {
+      err1 && err1.classList.remove('hidden');
+      setTimeout(function () {
+        err1 && err1.classList.add('hidden');
+      }, 3000);
+      return;
+    } else {
+      err1 && err1.classList.add('hidden');
+    } // Prevent duplicates
+
+
+    var entryId = btnEditEntry.getAttribute('entry-id');
+    var duplicateFound = false;
+    listing.some(function (type) {
+      // Find type to add entry to
+      if (type.getId() == editEntryModalForm.type.options[editEntryModalForm.type.selectedIndex].value) {
+        // Find duplicate
+        duplicateFound = type.getEntries().some(function (entry) {
+          var newIdent2 = editEntryModalForm.ident_2.value || 'TBA';
+          return entry.getId() != entryId && entry.getIdent1() === editEntryModalForm.ident_1.value && entry.getIdent2() === newIdent2;
+        });
+        return true;
+      }
+
+      return false;
+    });
+
+    if (duplicateFound) {
+      err2 && err2.classList.remove('hidden');
+      setTimeout(function () {
+        err2 && err2.classList.add('hidden');
+      }, 3000);
+      return;
+    } else {
+      err2 && err2.classList.add('hidden');
+    }
+
     if (_components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a.isPending()) {
       notify.warning('Warning', 'Another request is in progress, please wait a second!');
       return;
@@ -3999,7 +4083,6 @@ if (btnEditEntry) {
     btnEditEntry.setAttribute('disabled', 'disabled');
     btnEditEntry.classList.add('cursor-wait');
     _components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a.show();
-    var entryId = btnEditEntry.getAttribute('entry-id');
     var oldEntryType = btnEditEntry.getAttribute('entry-type');
     _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"].post(__ROUTES.entries.update, {
       id: entryId,
