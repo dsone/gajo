@@ -2993,7 +2993,7 @@ var Modal = function () {
     this.disableBackdrop = !!this.element.querySelector('[disable-backdrop]');
 
     if (!this.disableBackdrop) {
-      this.element.addEventListener('click', function (e) {
+      this.element.addEventListener('mousedown', function (e) {
         if (e.target.closest('.modal-content')) {
           return;
         }

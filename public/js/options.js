@@ -2993,7 +2993,7 @@ var Modal = function () {
     this.disableBackdrop = !!this.element.querySelector('[disable-backdrop]');
 
     if (!this.disableBackdrop) {
-      this.element.addEventListener('click', function (e) {
+      this.element.addEventListener('mousedown', function (e) {
         if (e.target.closest('.modal-content')) {
           return;
         }
@@ -3607,21 +3607,22 @@ function Options() {
 
 /***/ }),
 
-/***/ "./resources/js/funcs/types.js":
-/*!*************************************!*\
-  !*** ./resources/js/funcs/types.js ***!
-  \*************************************/
+/***/ "./resources/js/options.js":
+/*!*********************************!*\
+  !*** ./resources/js/options.js ***!
+  \*********************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _components_Ajax__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/Ajax */ "./resources/js/components/Ajax.js");
-/* harmony import */ var _components_Modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Modal */ "./resources/js/components/Modal.js");
+/* harmony import */ var _components_Ajax__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/Ajax */ "./resources/js/components/Ajax.js");
+/* harmony import */ var _components_Modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/Modal */ "./resources/js/components/Modal.js");
 /* harmony import */ var _components_Modal__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_components_Modal__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/Pending */ "./resources/js/components/Pending.js");
+/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/Pending */ "./resources/js/components/Pending.js");
 /* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_components_Pending__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _components_TypeList__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/TypeList */ "./resources/js/components/TypeList.js");
+/* harmony import */ var _components_TypeList__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/TypeList */ "./resources/js/components/TypeList.js");
+/* harmony import */ var _components_options_Options__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/options/Options */ "./resources/js/components/options/Options.js");
 function ownKeys(object, enumerableOnly) {
   var keys = Object.keys(object);
 
@@ -3674,7 +3675,19 @@ function _defineProperty(obj, key, value) {
 
 
 
- // Create Modal for confirmation of type removal
+
+ // Init Options
+
+var options = new _components_options_Options__WEBPACK_IMPORTED_MODULE_4__["default"]({
+  privateProfile: $('.js-options-privateProfile'),
+  colorblind: $('.js-options-colorblind'),
+  hideReleased: $('.js-options-hideReleased'),
+  hideTBA: $('.js-options-hideTBA'),
+  rss: $('.js-options-rss'),
+  changeRSS: $('.js-btn-rss'),
+  ajax: _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"],
+  pending: _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a
+}); // Create Modal for confirmation of type removal
 
 var removalConfirmModal = new _components_Modal__WEBPACK_IMPORTED_MODULE_1___default.a($('template#modal-remove-confirm').innerHTML); // Init Types
 
@@ -3877,38 +3890,6 @@ if (btnConfirmRemoval) {
     }
   });
 }
-
-/***/ }),
-
-/***/ "./resources/js/options.js":
-/*!*********************************!*\
-  !*** ./resources/js/options.js ***!
-  \*********************************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _components_Ajax__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/Ajax */ "./resources/js/components/Ajax.js");
-/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/Pending */ "./resources/js/components/Pending.js");
-/* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_components_Pending__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _components_options_Options__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/options/Options */ "./resources/js/components/options/Options.js");
-
-
- // Init Options
-
-var options = new _components_options_Options__WEBPACK_IMPORTED_MODULE_2__["default"]({
-  privateProfile: $('.js-options-privateProfile'),
-  colorblind: $('.js-options-colorblind'),
-  hideReleased: $('.js-options-hideReleased'),
-  hideTBA: $('.js-options-hideTBA'),
-  rss: $('.js-options-rss'),
-  changeRSS: $('.js-btn-rss'),
-  ajax: _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"],
-  pending: _components_Pending__WEBPACK_IMPORTED_MODULE_1___default.a
-});
-
-__webpack_require__(/*! ./funcs/types */ "./resources/js/funcs/types.js");
 
 /***/ }),
 
