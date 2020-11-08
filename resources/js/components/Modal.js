@@ -13,14 +13,17 @@ let Modal = (() => {
 		this.element = document.body.lastElementChild;
 		this.btnClose = this.element.querySelector('button');
 		this.scrollTop = 0;
+		this.disableBackdrop = !!this.element.querySelector('[disable-backdrop]');
 
-		this.element.addEventListener('click', e => {
-			if (e.target.closest('.modal-content')) {
-				return;
-			}
+		if (!this.disableBackdrop) {
+			this.element.addEventListener('click', e => {
+				if (e.target.closest('.modal-content')) {
+					return;
+				}
 
-			this.hide();
-		});
+				this.hide();
+			});
+		}
 		this.btnClose.addEventListener('click', e => {
 			this.element.click();
 		});
