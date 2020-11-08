@@ -16,7 +16,7 @@ let Modal = (() => {
 		this.disableBackdrop = !!this.element.querySelector('[disable-backdrop]');
 
 		if (!this.disableBackdrop) {
-			this.element.addEventListener('click', e => {
+			this.element.addEventListener('mousedown', e => {
 				if (e.target.closest('.modal-content')) {
 					return;
 				}
