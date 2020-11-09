@@ -18,7 +18,7 @@ class OptionsController extends Controller
 
         return view('user.options', [
 			'user' => $user,
-			'types' => $user->types,
+			'types' => $user->types()->withCount('entries')->get(),
 			'options' => $user->options,
 		]);
     }

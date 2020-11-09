@@ -3717,6 +3717,11 @@ var typeList = new _components_TypeList__WEBPACK_IMPORTED_MODULE_3__["default"](
 
           var type = _this.getByIndex(index);
 
+          if (parseInt(type.entries_count, 10) > 0) {
+            notify.warning('Non-Empty Type', "Only empty types can be deleted!<br>Remove its ".concat(type.entries_count + (type.entries_count > 1 ? ' entries' : ' entry'), " first."));
+            return;
+          }
+
           var elName = removalConfirmModal.querySelector('[bind-name]');
           var ident1 = removalConfirmModal.querySelector('[bind-ident1]');
           var ident2 = removalConfirmModal.querySelector('[bind-ident2]');

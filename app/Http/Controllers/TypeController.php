@@ -111,6 +111,12 @@ class TypeController extends Controller
 					]);
 		$type = Auth::user()->types()->find($validated['id']);
 
+		if ($type->entries->count() > 0) {
+			return response()->json([
+				'error' => true, 'message' => 'Type not empty!'
+			]);
+		}
+
 		if ($type) {
 			$type->delete();
 

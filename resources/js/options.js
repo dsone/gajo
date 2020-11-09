@@ -32,7 +32,14 @@ let typeList = new TypeList({
 				btn.addEventListener('click', e => {
 					let index = btn.getAttribute('data-index');
 					let type = this.getByIndex(index);
-					
+					if (parseInt(type.entries_count, 10) > 0) {
+						notify.warning(
+							'Non-Empty Type', 
+							`Only empty types can be deleted!<br>Remove its ${ type.entries_count + (type.entries_count > 1 ? ' entries' : ' entry') } first.`
+						);
+						return;
+					}
+
 					let elName = removalConfirmModal.querySelector('[bind-name]');
 					let ident1 = removalConfirmModal.querySelector('[bind-ident1]');
 					let ident2 = removalConfirmModal.querySelector('[bind-ident2]');
