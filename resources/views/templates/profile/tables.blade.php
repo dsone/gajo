@@ -1,3 +1,13 @@
+<template id="sortby-ascending-icon">
+	<svg class="inline h-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+		<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+	</svg>
+</template>
+<template id="sortby-descending-icon">
+	<svg class="inline h-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+		<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4" />
+	</svg>
+</template>
 <template id="skeleton-table-section">
 	<div class="w-full mt-10 md:mx-auto md:w-2/3 lg:w-1/2">
 		<section class="section-table-entries">
@@ -13,9 +23,15 @@
 	<ul class="table-entries">
 		<li class="table-headline">
 			<div class="flex flex-row thead">
-				<div class="w-4/12" bind-ident1></div>
-				<div class="w-4/12" bind-ident2></div>
-				<div class="w-2/12">Release</div>
+				<div class="w-4/12">
+					<span bind-ident1 sortby="ident_1"></span>
+				</div>
+				<div class="w-4/12">
+					<span bind-ident2 sortby="ident_2"></span>
+				</div>
+				<div class="w-2/12">
+					<span sortby="release_at">Release</span>
+				</div>
 				<div class="w-2/12" private>&nbsp;</div>
 			</div>
 		</li>

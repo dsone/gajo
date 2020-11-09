@@ -10,6 +10,8 @@ export default function TableList(config = {}) {
 		pending:			config.pending,
 		editable:			config.editable,
 		entryTemplate:		config.entryTemplate,
+		sortAscIcon:		config.sortAscIcon,
+		sortDescIcon:		config.sortDescIcon,
 
 		targetContainer:	config.targetContainer,
 		sectionTemplate:	config.sectionTemplate,
@@ -19,11 +21,20 @@ export default function TableList(config = {}) {
 		modalEntryEdit:		config.modalEntryEdit,
 
 		sectionContainer:	undefined,
+		sortby:				'ident_1',
+		sortAscending:			true,
 	};
 
 	this.data = Object.assign({}, config.type);
-	this.entries = this.data.entries.map(entry => {
-		return new TableEntry({
+	this.entries = this.data.entries.sort((a, b) => {
+			try {
+				return this.config.sortAscending ? a[this.config.sortby].toLocaleLowerCase().localeCompare(b[this.config.sortby]) : b[this.config.sortby].toLocaleLowerCase().localeCompare(a[this.config.sortby]);
+			} catch (e) {
+				console.error(e);
+				return false;
+			}
+		}).map(entry => {
+			return new TableEntry({
 				parent: this,
 				editable: config.editable,
 				entry,
@@ -90,6 +101,34 @@ TableList.prototype.modifyEntry = function(id, update) {
 TableList.prototype.getEntries = function() {
 	return this.entries;
 };
+TableList.prototype.sort = function() {
+	let mapFuncs = {
+		'ident_1': 'getIdent1',
+		'ident_2': 'getIdent2',
+	};
+	let compareDates = this.config.sortby === 'release_at';
+	this.entries.sort((a, b) => {
+		if (!compareDates) {
+			let cmpA = a[mapFuncs[this.config.sortby] ]().toLocaleLowerCase();
+			let cmpB = b[mapFuncs[this.config.sortby] ]().toLocaleLowerCase();
+
+			// push TBA always to the end
+			if (cmpA == 'tba' && cmpB == 'tba' || cmpB == 'tba') { return -1; }
+			if (cmpA == 'tba') { return 1; }
+
+			return this.config.sortAscending ? cmpA.localeCompare(cmpB) : cmpB.toLocaleLowerCase().localeCompare(cmpA);
+		} else {
+			let dateA = +new Date((a.getRelease() || 0));
+			let dateB = +new Date((b.getRelease() || 0));
+
+			// push nullable dates always to the end
+			if (!dateA && !dateB || !dateB) { return -1; }
+			if (!dateA) { return 1; }
+
+			return this.config.sortAscending ? dateA - dateB : dateB - dateA;
+		}
+	});
+};
 TableList.prototype.render = function() {
 	let tableTarget = this.config.sectionContainer.querySelector('div[bind-table]');
 	tableTarget.innerHTML = '';
@@ -105,8 +144,8 @@ TableList.prototype.render = function() {
 	let newTable = this.config.tableTemplate.slice(0);
 		_div.innerHTML = newTable;
 		newTable = _div.firstElementChild;
-		newTable.querySelector('div[bind-ident1]').innerHTML = this.data.ident_1;
-		newTable.querySelector('div[bind-ident2]').innerHTML = this.data.ident_2;
+		newTable.querySelector('[bind-ident1]').innerHTML = this.data.ident_1;
+		newTable.querySelector('[bind-ident2]').innerHTML = this.data.ident_2;
 
 	this.entries.forEach(tableEntry => {
 		newTable.appendChild(tableEntry.getElement());
@@ -118,8 +157,26 @@ TableList.prototype.render = function() {
 
 	tableTarget.appendChild(newTable);
 
+	[...tableTarget.querySelectorAll('[sortby]') ].forEach(head => {
+		head.classList.add('cursor-pointer');
+		if (head.getAttribute('sortby') === this.config.sortby) {
+			head.classList.add(`sorted-by-${ this.config.sortAscending ? 'asc' : 'desc' }`);
+			head.innerHTML += this.config.sortAscending ? this.config.sortAscIcon.slice(0) : this.config.sortDescIcon.slice(0);
+		}
+		head.addEventListener('click', e => {
+			if (this.config.sortby === head.getAttribute('sortby')) {
+				this.config.sortAscending = !this.config.sortAscending;
+			} else {
+				this.config.sortAscending = true;
+				this.config.sortby = head.getAttribute('sortby');
+			}
+			this.sort();
+			this.render();
+		});
+	});
+
 	if (!this.config.editable) { return; }
-	let removalBtn = Array.from(tableTarget.querySelectorAll('div[bind-remove]'));
+	let removalBtn = Array.from(tableTarget.querySelectorAll('[bind-remove]'));
 		removalBtn.forEach(entryRemoval => {
 			entryRemoval.removeAttribute('bind-remove');
 
@@ -137,7 +194,7 @@ TableList.prototype.render = function() {
 			});
 		});
 
-	let editBtn = Array.from(tableTarget.querySelectorAll('div[bind-edit]'));
+	let editBtn = Array.from(tableTarget.querySelectorAll('[bind-edit]'));
 		editBtn.forEach(entryEdit => {
 			let event = entryEdit.getAttribute('bind-edit');
 			entryEdit.removeAttribute('bind-edit');

@@ -30,6 +30,8 @@ let listing = __TYPES.map(type => {
 			sectionTemplate:	$('template#skeleton-table-section').innerHTML,
 			tableTemplate:		$('template#skeleton-table').innerHTML,
 			entryTemplate:		$('template#skeleton-table-entry').innerHTML,
+			sortAscIcon:		$('template#sortby-ascending-icon').innerHTML,
+			sortDescIcon:		$('template#sortby-descending-icon').innerHTML,
 
 			modalEntryRemove:	modalEntryRemove,
 			modalEntryEdit:		editEntryModal,

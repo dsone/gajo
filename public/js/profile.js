@@ -3474,21 +3474,21 @@ TableEntry.prototype.getElement = function () {
   _div.innerHTML = entry;
   entry = _div.firstElementChild;
   entry.setAttribute('entry-id', this.data.id);
-  entry.querySelector('div[bind-ident1]').innerHTML = this.data.ident_1;
-  entry.querySelector('div[bind-ident2]').innerHTML = this.data.ident_2;
-  entry.querySelector('div[bind-release]').innerHTML = this.data.release_at != null ? new Date(this.data.release_at).toLocaleDateString() : 'TBA';
+  entry.querySelector('[bind-ident1]').innerHTML = this.data.ident_1;
+  entry.querySelector('[bind-ident2]').innerHTML = this.data.ident_2;
+  entry.querySelector('[bind-release]').innerHTML = this.data.release_at != null ? new Date(this.data.release_at).toLocaleDateString() : 'TBA';
 
   if (this.config.editable) {
     var color = ['', 'green', 'orange', '', 'red'][this.data.visibility];
-    var visibility = entry.querySelector('div[bind-visibility]');
+    var visibility = entry.querySelector('[bind-visibility]');
     visibility.classList.add("entry-visibility--".concat(color));
     visibility.setAttribute('title', ['', 'Hidden', 'Private', '', 'Public'][this.data.visibility]);
     var icon = visibility.querySelector("[icon-".concat(color, "]"));
     icon && icon.classList.remove('hidden');
-    Array.from(entry.querySelectorAll('div[bind-edit]')).map(function (el) {
+    Array.from(entry.querySelectorAll('[bind-edit]')).map(function (el) {
       return el.setAttribute('entry-id', _this.data.id);
     });
-    Array.from(entry.querySelectorAll('div[bind-remove]')).map(function (el) {
+    Array.from(entry.querySelectorAll('[bind-remove]')).map(function (el) {
       return el.setAttribute('entry-id', _this.data.id);
     });
   } else {
@@ -3541,6 +3541,41 @@ TableEntry.prototype.getTypeId = function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return TableList; });
 /* harmony import */ var _TableEntry__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TableEntry */ "./resources/js/components/profile/TableEntry.js");
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+    arr2[i] = arr[i];
+  }
+
+  return arr2;
+}
+
 function _defineProperty(obj, key, value) {
   if (key in obj) {
     Object.defineProperty(obj, key, {
@@ -3572,12 +3607,21 @@ function TableList() {
     pending: config.pending,
     editable: config.editable,
     entryTemplate: config.entryTemplate,
+    sortAscIcon: config.sortAscIcon,
+    sortDescIcon: config.sortDescIcon,
     targetContainer: config.targetContainer,
     sectionTemplate: config.sectionTemplate,
     tableTemplate: config.tableTemplate
-  }, _defineProperty(_this$config, "entryTemplate", config.entryTemplate), _defineProperty(_this$config, "modalEntryRemove", config.modalEntryRemove), _defineProperty(_this$config, "modalEntryEdit", config.modalEntryEdit), _defineProperty(_this$config, "sectionContainer", undefined), _this$config);
+  }, _defineProperty(_this$config, "entryTemplate", config.entryTemplate), _defineProperty(_this$config, "modalEntryRemove", config.modalEntryRemove), _defineProperty(_this$config, "modalEntryEdit", config.modalEntryEdit), _defineProperty(_this$config, "sectionContainer", undefined), _defineProperty(_this$config, "sortby", 'ident_1'), _defineProperty(_this$config, "sortAscending", true), _this$config);
   this.data = Object.assign({}, config.type);
-  this.entries = this.data.entries.map(function (entry) {
+  this.entries = this.data.entries.sort(function (a, b) {
+    try {
+      return _this.config.sortAscending ? a[_this.config.sortby].toLocaleLowerCase().localeCompare(b[_this.config.sortby]) : b[_this.config.sortby].toLocaleLowerCase().localeCompare(a[_this.config.sortby]);
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+  }).map(function (entry) {
     return new _TableEntry__WEBPACK_IMPORTED_MODULE_0__["default"]({
       parent: _this,
       editable: config.editable,
@@ -3655,8 +3699,49 @@ TableList.prototype.getEntries = function () {
   return this.entries;
 };
 
-TableList.prototype.render = function () {
+TableList.prototype.sort = function () {
   var _this2 = this;
+
+  var mapFuncs = {
+    'ident_1': 'getIdent1',
+    'ident_2': 'getIdent2'
+  };
+  var compareDates = this.config.sortby === 'release_at';
+  this.entries.sort(function (a, b) {
+    if (!compareDates) {
+      var cmpA = a[mapFuncs[_this2.config.sortby]]().toLocaleLowerCase();
+
+      var cmpB = b[mapFuncs[_this2.config.sortby]]().toLocaleLowerCase(); // push TBA always to the end
+
+
+      if (cmpA == 'tba' && cmpB == 'tba' || cmpB == 'tba') {
+        return -1;
+      }
+
+      if (cmpA == 'tba') {
+        return 1;
+      }
+
+      return _this2.config.sortAscending ? cmpA.localeCompare(cmpB) : cmpB.toLocaleLowerCase().localeCompare(cmpA);
+    } else {
+      var dateA = +new Date(a.getRelease() || 0);
+      var dateB = +new Date(b.getRelease() || 0); // push nullable dates always to the end
+
+      if (!dateA && !dateB || !dateB) {
+        return -1;
+      }
+
+      if (!dateA) {
+        return 1;
+      }
+
+      return _this2.config.sortAscending ? dateA - dateB : dateB - dateA;
+    }
+  });
+};
+
+TableList.prototype.render = function () {
+  var _this3 = this;
 
   var tableTarget = this.config.sectionContainer.querySelector('div[bind-table]');
   tableTarget.innerHTML = '';
@@ -3673,8 +3758,8 @@ TableList.prototype.render = function () {
   var newTable = this.config.tableTemplate.slice(0);
   _div.innerHTML = newTable;
   newTable = _div.firstElementChild;
-  newTable.querySelector('div[bind-ident1]').innerHTML = this.data.ident_1;
-  newTable.querySelector('div[bind-ident2]').innerHTML = this.data.ident_2;
+  newTable.querySelector('[bind-ident1]').innerHTML = this.data.ident_1;
+  newTable.querySelector('[bind-ident2]').innerHTML = this.data.ident_2;
   this.entries.forEach(function (tableEntry) {
     newTable.appendChild(tableEntry.getElement());
   });
@@ -3687,19 +3772,41 @@ TableList.prototype.render = function () {
 
   tableTarget.appendChild(newTable);
 
+  _toConsumableArray(tableTarget.querySelectorAll('[sortby]')).forEach(function (head) {
+    head.classList.add('cursor-pointer');
+
+    if (head.getAttribute('sortby') === _this3.config.sortby) {
+      head.classList.add("sorted-by-".concat(_this3.config.sortAscending ? 'asc' : 'desc'));
+      head.innerHTML += _this3.config.sortAscending ? _this3.config.sortAscIcon.slice(0) : _this3.config.sortDescIcon.slice(0);
+    }
+
+    head.addEventListener('click', function (e) {
+      if (_this3.config.sortby === head.getAttribute('sortby')) {
+        _this3.config.sortAscending = !_this3.config.sortAscending;
+      } else {
+        _this3.config.sortAscending = true;
+        _this3.config.sortby = head.getAttribute('sortby');
+      }
+
+      _this3.sort();
+
+      _this3.render();
+    });
+  });
+
   if (!this.config.editable) {
     return;
   }
 
-  var removalBtn = Array.from(tableTarget.querySelectorAll('div[bind-remove]'));
+  var removalBtn = Array.from(tableTarget.querySelectorAll('[bind-remove]'));
   removalBtn.forEach(function (entryRemoval) {
     entryRemoval.removeAttribute('bind-remove');
     var id = entryRemoval.getAttribute('entry-id');
 
-    var entry = _this2.getEntryById(id);
+    var entry = _this3.getEntryById(id);
 
     entryRemoval.addEventListener('click', function (e) {
-      _this2.config.modalEntryRemove.bindValues({
+      _this3.config.modalEntryRemove.bindValues({
         '[bind-ident1]': entry.getIdent1(),
         '[bind-ident2]': entry.getIdent2(),
         '[bind-release]': entry.getRelease(),
@@ -3707,32 +3814,32 @@ TableList.prototype.render = function () {
         '[bind-entry-type]': 1
       });
 
-      _this2.config.modalEntryRemove.show();
+      _this3.config.modalEntryRemove.show();
     });
   });
-  var editBtn = Array.from(tableTarget.querySelectorAll('div[bind-edit]'));
+  var editBtn = Array.from(tableTarget.querySelectorAll('[bind-edit]'));
   editBtn.forEach(function (entryEdit) {
     var event = entryEdit.getAttribute('bind-edit');
     entryEdit.removeAttribute('bind-edit');
     var id = entryEdit.getAttribute('entry-id');
 
-    var entry = _this2.getEntryById(id);
+    var entry = _this3.getEntryById(id);
 
     entryEdit.addEventListener(event, function (e) {
-      _this2.config.modalEntryEdit.bindValues({
-        'select[name=type]': _this2.data.id,
-        '[bind-ident1]': _this2.data.ident_1,
+      _this3.config.modalEntryEdit.bindValues({
+        'select[name=type]': _this3.data.id,
+        '[bind-ident1]': _this3.data.ident_1,
         'input[name=ident_1]': entry.getIdent1(),
-        '[bind-ident2]': _this2.data.ident_2,
+        '[bind-ident2]': _this3.data.ident_2,
         'input[name=ident_2]': entry.getIdent2(),
         'input[name=release]': (entry.getRelease() || '').substr(0, 10),
         // date input only accept yyyy-mm-dd values
         'input[name=visibility]': entry.getVisibility(),
         '[bind-entry-id]': id,
-        '[bind-entry-type]': _this2.data.id
+        '[bind-entry-type]': _this3.data.id
       });
 
-      _this2.config.modalEntryEdit.show();
+      _this3.config.modalEntryEdit.show();
     });
   });
 };
@@ -3786,6 +3893,8 @@ var listing = __TYPES.map(function (type) {
       sectionTemplate: $('template#skeleton-table-section').innerHTML,
       tableTemplate: $('template#skeleton-table').innerHTML,
       entryTemplate: $('template#skeleton-table-entry').innerHTML,
+      sortAscIcon: $('template#sortby-ascending-icon').innerHTML,
+      sortDescIcon: $('template#sortby-descending-icon').innerHTML,
       modalEntryRemove: modalEntryRemove,
       modalEntryEdit: editEntryModal,
       editable: __EDITMODE

@@ -20,22 +20,22 @@ TableEntry.prototype.getElement = function() {
 	entry = _div.firstElementChild;
 
 	entry.setAttribute('entry-id', this.data.id);
-	entry.querySelector('div[bind-ident1]').innerHTML = this.data.ident_1;
-	entry.querySelector('div[bind-ident2]').innerHTML = this.data.ident_2;
-	entry.querySelector('div[bind-release]').innerHTML = this.data.release_at != null ? new Date(this.data.release_at).toLocaleDateString(): 'TBA';
+	entry.querySelector('[bind-ident1]').innerHTML = this.data.ident_1;
+	entry.querySelector('[bind-ident2]').innerHTML = this.data.ident_2;
+	entry.querySelector('[bind-release]').innerHTML = this.data.release_at != null ? new Date(this.data.release_at).toLocaleDateString(): 'TBA';
 
 	if (this.config.editable) {
 		let color = ['', 'green', 'orange', '', 'red'][this.data.visibility];
 
-		let visibility = entry.querySelector('div[bind-visibility]');
+		let visibility = entry.querySelector('[bind-visibility]');
 			visibility.classList.add(`entry-visibility--${ color }`);
 			visibility.setAttribute('title', ['', 'Hidden', 'Private', '', 'Public'][this.data.visibility]);
 
 		let icon = visibility.querySelector(`[icon-${ color }]`);
 			icon && icon.classList.remove('hidden');
 
-		Array.from(entry.querySelectorAll('div[bind-edit]')).map(el => el.setAttribute('entry-id', this.data.id));
-		Array.from(entry.querySelectorAll('div[bind-remove]')).map(el => el.setAttribute('entry-id', this.data.id));
+		Array.from(entry.querySelectorAll('[bind-edit]')).map(el => el.setAttribute('entry-id', this.data.id));
+		Array.from(entry.querySelectorAll('[bind-remove]')).map(el => el.setAttribute('entry-id', this.data.id));
 	} else {
 		Array.from(entry.querySelectorAll('[private]')).forEach(el => el.remove());
 	}
