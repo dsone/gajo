@@ -5,6 +5,11 @@ html, body {
 
 	.main-navbar {
 		@apply fixed top-0 left-0 right-0 z-10 shadow-md;
+
+		a:not(.app-name):hover,
+		button:hover {
+			@apply bg-primary-100 text-black;
+		}
 	}
 
 	main {

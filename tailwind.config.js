@@ -31,6 +31,10 @@ module.exports = {
 				'95': '0.95',
 				'100': '1',
 			},
+
+			boxShadow: {
+				outline: '0 0 0 3px rgba(113, 128, 142, 0.5)'
+			}
 		},
 	},
 	variants: {
