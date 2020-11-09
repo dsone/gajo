@@ -98,7 +98,13 @@
 					<div>
 						<div>
 							<div class="flex flex-row w-2/3">
-								<input class="flex-grow mr-1 form-input js-options-rss" type="text" name="rss" id="rss" value="{{ $options['rss'] }}" readonly>
+								<input class="flex-grow mr-1 cursor-pointer form-input js-options-rss hover:border-primary-200 hover:bg-primary-100" type="text" name="rss" id="rss" value="{{ $options['rss'] }}" readonly>
+
+								<a href="{{ route('user-rss', [ 'token' => $options['rss'] ]) }}" class="mr-2 text-black btn btn-icon js-btn-rss-link" target="_blank" type="button" data-uri="{{ route('user-rss', [ 'token' => '#rss#' ]) }}">
+									<svg class="w-6 h-6 pt-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+									</svg>
+								</a>
 
 								<button class="btn btn-default js-btn-rss" type="button" data-uri="{{ route('api-refresh-rss') }}">
 									<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
@@ -106,9 +112,8 @@
 							</div>
 						</div>
 						<div class="w-2/3 p-2 text-sm">
-							<label for="rss">
-								This is your RSS link for your list. Each user has a unique id to use. You can change your ID as often as you want. Remember to update your RSS feed reader to use the new ID.
-							</label>
+							This is your RSS token for your list. Each user has a unique ID to use. You can change your ID as often as you want. Remember to update your RSS feed reader to use the new ID.<br>
+							Click the input to copy the token, or the anchor button to open the RSS feed in your browser.
 						</div>
 					</div>
 				</div>

@@ -12,6 +12,8 @@ let options = new Options({
 	hideTBA:		$('.js-options-hideTBA'),
 	rss:			$('.js-options-rss'),
 	changeRSS:		$('.js-btn-rss'),
+	rssLink:		$('.js-btn-rss-link'),
+
 	ajax:			Ajax,
 	pending:		Pending,
 });

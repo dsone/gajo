@@ -3497,7 +3497,8 @@ function Options() {
    * hideReleased:	auto hide released checkbox,
    * hideTBA:			auto hide TBA entries checkbox,
    * rss:				The input for RSS token,
-   * changeRSS:		button to change RSS id
+   * changeRSS:		button to change RSS id,
+   * rssLink:			button with external link to RSS to copy,
    * ajax:			An instance of Ajax, implementing the functions put, post, get
    */
 
@@ -3525,6 +3526,20 @@ function Options() {
   };
 
   (function () {
+    _this.config.rss.addEventListener('click', function (e) {
+      _this.config.rss.select();
+
+      _this.config.rss.setSelectionRange(0, 99999);
+
+      document.execCommand("copy");
+
+      _this.config.rss.setSelectionRange(0, 0);
+
+      _this.config.rss.blur();
+
+      notify.success('Token copied!', 'RSS token copied!');
+    });
+
     _this.config.changeRSS.addEventListener('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
       var uri;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
@@ -3549,6 +3564,11 @@ function Options() {
                 _this.config.ajax.get(uri).then(function (json) {
                   if (!json.data.error) {
                     _this.config.rss.value = json.data.data;
+
+                    var newLink = _this.config.rssLink.getAttribute('data-uri');
+
+                    newLink = newLink.replace(/#rss#/i, _this.config.rss.value);
+                    _this.config.rssLink.href = newLink;
                     notify.success('Success', 'Updated RSS token');
                   } else {
                     notify.danger('Error', json.message);
@@ -3694,6 +3714,7 @@ var options = new _components_options_Options__WEBPACK_IMPORTED_MODULE_4__["defa
   hideTBA: $('.js-options-hideTBA'),
   rss: $('.js-options-rss'),
   changeRSS: $('.js-btn-rss'),
+  rssLink: $('.js-btn-rss-link'),
   ajax: _components_Ajax__WEBPACK_IMPORTED_MODULE_0__["default"],
   pending: _components_Pending__WEBPACK_IMPORTED_MODULE_2___default.a
 }); // Create Modal for confirmation of type removal
