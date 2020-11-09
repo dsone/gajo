@@ -44,5 +44,9 @@
 		svg {
 			@apply inline;
 		}
+
+		&:hover {
+			@apply bg-primary-100 border-primary-200 text-primary-500;
+		}
 	}
 }
