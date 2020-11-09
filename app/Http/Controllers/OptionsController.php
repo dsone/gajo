@@ -15,6 +15,10 @@ class OptionsController extends Controller
     public function index()
     {
 		$user = Auth::user();
+		// Auth'd non-verified user
+		if (!$user->hasVerifiedEmail()) {
+			return redirect()->route('verification.notice', 303);
+		}
 
         return view('user.options', [
 			'user' => $user,
