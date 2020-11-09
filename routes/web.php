@@ -24,6 +24,8 @@ Route::get('/', function() {
 	return view('welcome');
 })->name('index');
 
+Route::get('/rss/{token}', [ ProfileController::class, 'rss' ])->name('user-rss');
+
 Route::group([ 'prefix' => '/profile' ], function() {
 	Route::get('/{user}', [ ProfileController::class, 'index' ])->name('user-profile');
 
