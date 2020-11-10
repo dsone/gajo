@@ -71,7 +71,7 @@ Open your browser and visit APP_URL as entered inside .env.
 Register your account that you use to login.  
 Done.
 
-**Beware**: Set your _APP_ENV_ inside .env to "_production_" when yo use this on a live server.  
+**Beware**: Set your _APP_ENV_ inside .env to "_production_" when you use this on a live server.  
 That prevents crucial information from accidentally being leaked.
 
 ## Settings
