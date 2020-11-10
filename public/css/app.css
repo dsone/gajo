@@ -976,6 +976,7 @@ video {
   --border-opacity: 1;
   border-color: #34495E;
   border-color: rgba(52, 73, 94, var(--border-opacity));
+  padding-bottom: 0.5rem;
 }
 
 .btn.btn-default:focus {
@@ -1021,6 +1022,16 @@ video {
   --text-opacity: 1;
   color: #f56565;
   color: rgba(245, 101, 101, var(--text-opacity));
+}
+
+.btn.btn-logout {
+  border-style: none;
+}
+
+.btn.btn-logout:hover {
+  --bg-opacity: 1;
+  background-color: #f56565;
+  background-color: rgba(245, 101, 101, var(--bg-opacity));
 }
 
 .btn.btn-success {
@@ -1257,6 +1268,7 @@ video {
 .section-table-entries .section-title {
   margin-bottom: 0.75rem;
   font-size: 1.875rem;
+  font-weight: 600;
 }
 
 .section-table-entries .table-entries {
@@ -1459,6 +1471,7 @@ body:not(.is-owner) .section-table-entries .table-entry .tbody div:nth-child(3) 
 
 .section-card-entries .section-title {
   font-size: 1.875rem;
+  font-weight: 600;
 }
 
 .section-card-entries .card-container {
@@ -1674,8 +1687,8 @@ html .main-navbar, body .main-navbar {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-html .main-navbar a:not(.app-name):hover,
-html .main-navbar button:hover, body .main-navbar a:not(.app-name):hover,
+html .main-navbar a:not(.app-name):not(.btn-logout):hover,
+html .main-navbar button:hover, body .main-navbar a:not(.app-name):not(.btn-logout):hover,
 body .main-navbar button:hover {
   --bg-opacity: 1;
   background-color: #EBEDEF;
@@ -1683,6 +1696,12 @@ body .main-navbar button:hover {
   --text-opacity: 1;
   color: #000;
   color: rgba(0, 0, 0, var(--text-opacity));
+}
+
+html .main-navbar a:focus,
+html .main-navbar button:focus, body .main-navbar a:focus,
+body .main-navbar button:focus {
+  box-shadow: none;
 }
 
 html main, body main {

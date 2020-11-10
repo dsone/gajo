@@ -42,7 +42,7 @@
 							Options
 						</a>
 						@endif
-						<a class="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg md:mt-0 md:ml-4 focus:outline-none focus:shadow-outline" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+						<a class="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg btn btn-logout md:mt-0 md:ml-4 focus:outline-none focus:shadow-outline" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
 							Logout
 						</a>
 

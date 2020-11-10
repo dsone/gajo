@@ -21,7 +21,7 @@
 </template>
 <template id="skeleton-table">
 	<ul class="table-entries">
-		<li class="table-headline">
+		<li class="select-none table-headline">
 			<div class="flex flex-row thead">
 				<div class="w-4/12">
 					<span bind-ident1 sortby="ident_1"></span>

@@ -6,7 +6,7 @@
 	}
 
 	&.btn-default {
-		@apply bg-primary-500 border-primary-500;
+		@apply bg-primary-500 border-primary-500 pb-2;
 
 		&:focus {
 			@apply text-black bg-primary-100;
@@ -27,6 +27,14 @@
 			@apply bg-red-100 text-red-500;
 		}
 	}
+	&.btn-logout {
+		@apply border-none;
+
+		&:hover {
+			@apply bg-red-500;
+		}
+	}
+
 	&.btn-success {
 		@apply bg-green-500 border-green-500;
 

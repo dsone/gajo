@@ -1,6 +1,6 @@
 .section-table-entries {
 	.section-title {
-		@apply mb-3 text-3xl;
+		@apply mb-3 text-3xl font-semibold;
 	}
 
 	.table-entries {
@@ -132,7 +132,7 @@ body:not(.is-owner) {
 
 .section-card-entries {
 	.section-title {
-		@apply text-3xl;
+		@apply text-3xl font-semibold;
 	}
 
 	.card-container {
