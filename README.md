@@ -1,61 +1,84 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Gajo
+## About
+Gajo helps you remember any kind of releases in the future.  
+Your favourite band announced their world tour at the end of the year?  
+A new record in 6 months? That new fantasy movie trilogy's third part is coming out this christmas?  
+Add all of those neatly categorized to your Gajo lists.  
+Check your list frequently, add new releases, remove them, share your list with your friends.  
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+Main purpose for Gajo is to be used with a single user but it is possible to enable multi user registrations up to an optional limit of users.
 
-## About Laravel
+## Screenshots
+Everybody likes to see what they get.  
+Here's an example:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Profile view
+![Ideally here should be displayed /resources/screenshots/0_gajo_list.png](./resources/screenshots/0_gajo_list.png)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### List and/or card display for entries
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+![Ideally here should be displayed /resources/screenshots/3_gajo_alternative_display.png](./resources/screenshots/3_gajo_alternative_display.png)
 
-## Learning Laravel
+### More screenshots
+Take a look inside _[resources/screenshots](./resources/screenshots)_ for more examples!
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Philosophy
+This project uses a simple approach to give you the ability to create lists and display them in a simple yet visually appealing way. There are no _bloated_ frameworks, just the necessities to get up and running quickly.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Built upon Laravel, Axios, TailwindCSS, SVGs and plain JavaScript, saving data into an SQLite database.
 
-## Laravel Sponsors
+## Privacy
+By default, your list is only visible when you login to Gajo.  
+Your user profile is set to hidden by default and not visible from the outside. The same goes for things you put onto your list.  
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+But you can set your profile to public and only certain list entries as hidden.  
+Each list entry has three states:  
 
-### Premium Partners
+| State | Description |
+|---|---|
+| hidden | Only visible when you are logged in |
+| private | Visible only when logged in or through your personal RSS feed link |
+| public | Visible publicly |  
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[OP.GG](https://op.gg)**
+## RSS
+To be able to get notifications through any other service you can use a personal RSS Feed. Each RSS Feed has a random identifier that you can change whenever you want.  
+Upcoming entries with a release within the next two weeks will start to appear in that RSS Feed.
 
-## Contributing
+## Requirements
+PHP >=7.3, git, composer and support for SQLite.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Development requirements
+npm
 
-## Code of Conduct
+## Installation
+1. Clone the repository:  
+`git clone this repo`
+2. Install PHP dependencies:  
+`composer install`  
+3. Move the .env.example, generate an app key and enter your config:  
+`mv .env.example .env`  
+`php artisan key:generate`  
+4. Create a database file:  
+`touch database/database.sqlite`  
+5. Create the tables inside the database:  
+`php artisan migrate`  
+6. Install JS/CSS dependencies:  
+`npm install`  
+7. Production build css/js:  
+`gulp`  
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Open your browser and visit APP_URL as entered inside .env.  
+Register your account that you use to login.  
+Done.
 
-## Security Vulnerabilities
+**Beware**: Set your _APP_ENV_ inside .env to "_production_" when yo use this on a live server.  
+That prevents crucial information from accidentally being leaked.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Settings
+Most settings are inside .env. But to enable a multi user environment, you need to edit _config/app.php_ and the key _settings.multiUser_, set it to `true`.  
 
-## License
+If you run Gajo in multi user mode, perhaps change the database from SQLite to some DB system that supports parallel write access. 
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Attribution
+
+Favicon made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon" rel="noopener noreferrer"> www.flaticon.com</a>
