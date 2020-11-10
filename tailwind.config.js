@@ -34,6 +34,10 @@ module.exports = {
 
 			boxShadow: {
 				outline: '0 0 0 3px rgba(113, 128, 142, 0.5)'
+			},
+
+			cursor: {
+				help: 'help'
 			}
 		},
 	},

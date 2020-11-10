@@ -3181,6 +3181,19 @@ module.exports = Pending;
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Card; });
+var WEEK_IN_MILLISECONDS = 604800000;
+var HOURS_48_IN_MILLISECONDS = 172800000;
+
+var getReleaseColor = function getReleaseColor(ts) {
+  var now = +new Date();
+
+  var _1Week = now + WEEK_IN_MILLISECONDS;
+
+  var _48Hours = now + HOURS_48_IN_MILLISECONDS;
+
+  return ts < now ? 'release-available' : ts < _48Hours ? 'release-48-hours' : ts < _1Week ? 'release-1-week' : 'release-later';
+};
+
 function Card() {
   var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
@@ -3193,9 +3206,11 @@ function Card() {
     editable: config.editable,
     ajax: config.ajax,
     pending: config.pending,
-    entryTemplate: config.entryTemplate
+    entryTemplate: config.entryTemplate,
+    releaseColor: ''
   };
   this.data = Object.assign({}, config.entry);
+  this.config.releaseColor = getReleaseColor(this.data.release_at === null ? Infinity : +new Date(this.data.release_at));
 }
 
 Card.prototype.getElement = function () {
@@ -3205,6 +3220,9 @@ Card.prototype.getElement = function () {
   _div.innerHTML = entry;
   entry = _div.firstElementChild;
   entry.setAttribute('entry-id', this.data.id);
+  entry.classList.add(this.config.releaseColor);
+  var bav = entry.querySelector('[bind-availability]');
+  bav.setAttribute('title', bav.querySelector(".".concat(this.config.releaseColor)).getAttribute('title'));
   entry.querySelector('h4[bind-ident1]').innerHTML = this.data.ident_1;
   entry.querySelector('div[bind-ident2]').innerHTML = this.data.ident_2;
   entry.querySelector('div[bind-release]').innerHTML = this.data.release_at != null ? new Intl.DateTimeFormat(undefined, {
@@ -3233,6 +3251,7 @@ Card.prototype.getElement = function () {
 
 Card.prototype.update = function (update) {
   this.data = Object.assign({}, this.data, update);
+  this.config.releaseColor = getReleaseColor(this.data.release_at === null ? Infinity : +new Date(this.data.release_at));
 };
 
 Card.prototype.getId = function () {
@@ -3451,6 +3470,19 @@ CardList.prototype.render = function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return TableEntry; });
+var WEEK_IN_MILLISECONDS = 604800000;
+var HOURS_48_IN_MILLISECONDS = 172800000;
+
+var getReleaseColor = function getReleaseColor(ts) {
+  var now = +new Date();
+
+  var _1Week = now + WEEK_IN_MILLISECONDS;
+
+  var _48Hours = now + HOURS_48_IN_MILLISECONDS;
+
+  return ts < now ? 'release-available' : ts < _48Hours ? 'release-48-hours' : ts < _1Week ? 'release-1-week' : 'release-later';
+};
+
 function TableEntry() {
   var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
@@ -3463,9 +3495,11 @@ function TableEntry() {
     editable: config.editable,
     ajax: config.ajax,
     pending: config.pending,
-    entryTemplate: config.entryTemplate
+    entryTemplate: config.entryTemplate,
+    releaseColor: ''
   };
   this.data = Object.assign({}, config.entry);
+  this.config.releaseColor = getReleaseColor(this.data.release_at === null ? Infinity : +new Date(this.data.release_at));
 }
 
 TableEntry.prototype.getElement = function () {
@@ -3477,6 +3511,9 @@ TableEntry.prototype.getElement = function () {
   _div.innerHTML = entry;
   entry = _div.firstElementChild;
   entry.setAttribute('entry-id', this.data.id);
+  entry.classList.add(this.config.releaseColor);
+  var bav = entry.querySelector('[bind-availability]');
+  bav.setAttribute('title', bav.querySelector(".".concat(this.config.releaseColor)).getAttribute('title'));
   entry.querySelector('[bind-ident1]').innerHTML = this.data.ident_1;
   entry.querySelector('[bind-ident2]').innerHTML = this.data.ident_2;
   entry.querySelector('[bind-release]').innerHTML = this.data.release_at != null ? new Intl.DateTimeFormat(undefined, {
@@ -3509,6 +3546,7 @@ TableEntry.prototype.getElement = function () {
 
 TableEntry.prototype.update = function (update) {
   this.data = Object.assign({}, this.data, update);
+  this.config.releaseColor = getReleaseColor(this.data.release_at === null ? Infinity : +new Date(this.data.release_at));
 };
 
 TableEntry.prototype.getId = function () {
