@@ -67,7 +67,7 @@
 						</div>
 
 						<div class="mt-8 text-center">
-							<button class="btn btn-default" type="submit">Register</button>
+							<button class="pb-2 btn btn-default" type="submit">Register</button>
 						</div>
 					</form>
 				</div>
