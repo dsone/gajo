@@ -117,16 +117,16 @@ TableList.prototype.sort = function() {
 			if (cmpA == 'tba') { return 1; }
 
 			return this.config.sortAscending ? cmpA.localeCompare(cmpB) : cmpB.toLocaleLowerCase().localeCompare(cmpA);
-		} else {
-			let dateA = +new Date((a.getRelease() || 0));
-			let dateB = +new Date((b.getRelease() || 0));
-
-			// push nullable dates always to the end
-			if (!dateA && !dateB || !dateB) { return -1; }
-			if (!dateA) { return 1; }
-
-			return this.config.sortAscending ? dateA - dateB : dateB - dateA;
 		}
+
+		let dateA = +new Date((a.getRelease() || 0));
+		let dateB = +new Date((b.getRelease() || 0));
+
+		// push nullable dates always to the end
+		if (!dateA && !dateB || !dateB) { return -1; }
+		if (!dateA) { return 1; }
+
+		return this.config.sortAscending ? dateA - dateB : dateB - dateA;
 	});
 };
 TableList.prototype.render = function() {

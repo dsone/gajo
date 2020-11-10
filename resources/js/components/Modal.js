@@ -116,7 +116,6 @@ let Modal = (() => {
 			}
 		}
 	});
-	window.Modal = Modal;
 
 	return Modal;
 })();

@@ -22,7 +22,7 @@ Card.prototype.getElement = function() {
 	entry.setAttribute('entry-id', this.data.id);
 	entry.querySelector('h4[bind-ident1]').innerHTML = this.data.ident_1;
 	entry.querySelector('div[bind-ident2]').innerHTML = this.data.ident_2;
-	entry.querySelector('div[bind-release]').innerHTML = this.data.release_at != null ? new Date(this.data.release_at).toLocaleDateString(): 'TBA';
+	entry.querySelector('div[bind-release]').innerHTML = this.data.release_at != null ? new Intl.DateTimeFormat(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(this.data.release_at)) : 'TBA';
 
 	if (this.config.editable) {
 		let color = ['', 'green', 'orange', '', 'red'][this.data.visibility];

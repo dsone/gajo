@@ -3111,7 +3111,6 @@ var Modal = function () {
       }
     }
   });
-  window.Modal = Modal;
   return Modal;
 }();
 
@@ -3208,7 +3207,11 @@ Card.prototype.getElement = function () {
   entry.setAttribute('entry-id', this.data.id);
   entry.querySelector('h4[bind-ident1]').innerHTML = this.data.ident_1;
   entry.querySelector('div[bind-ident2]').innerHTML = this.data.ident_2;
-  entry.querySelector('div[bind-release]').innerHTML = this.data.release_at != null ? new Date(this.data.release_at).toLocaleDateString() : 'TBA';
+  entry.querySelector('div[bind-release]').innerHTML = this.data.release_at != null ? new Intl.DateTimeFormat(undefined, {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(new Date(this.data.release_at)) : 'TBA';
 
   if (this.config.editable) {
     var color = ['', 'green', 'orange', '', 'red'][this.data.visibility];
@@ -3476,7 +3479,11 @@ TableEntry.prototype.getElement = function () {
   entry.setAttribute('entry-id', this.data.id);
   entry.querySelector('[bind-ident1]').innerHTML = this.data.ident_1;
   entry.querySelector('[bind-ident2]').innerHTML = this.data.ident_2;
-  entry.querySelector('[bind-release]').innerHTML = this.data.release_at != null ? new Date(this.data.release_at).toLocaleDateString() : 'TBA';
+  entry.querySelector('[bind-release]').innerHTML = this.data.release_at != null ? new Intl.DateTimeFormat(undefined, {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(new Date(this.data.release_at)) : 'TBA';
 
   if (this.config.editable) {
     var color = ['', 'green', 'orange', '', 'red'][this.data.visibility];
@@ -3723,20 +3730,20 @@ TableList.prototype.sort = function () {
       }
 
       return _this2.config.sortAscending ? cmpA.localeCompare(cmpB) : cmpB.toLocaleLowerCase().localeCompare(cmpA);
-    } else {
-      var dateA = +new Date(a.getRelease() || 0);
-      var dateB = +new Date(b.getRelease() || 0); // push nullable dates always to the end
-
-      if (!dateA && !dateB || !dateB) {
-        return -1;
-      }
-
-      if (!dateA) {
-        return 1;
-      }
-
-      return _this2.config.sortAscending ? dateA - dateB : dateB - dateA;
     }
+
+    var dateA = +new Date(a.getRelease() || 0);
+    var dateB = +new Date(b.getRelease() || 0); // push nullable dates always to the end
+
+    if (!dateA && !dateB || !dateB) {
+      return -1;
+    }
+
+    if (!dateA) {
+      return 1;
+    }
+
+    return _this2.config.sortAscending ? dateA - dateB : dateB - dateA;
   });
 };
 

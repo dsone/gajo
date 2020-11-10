@@ -976,7 +976,6 @@ video {
   --border-opacity: 1;
   border-color: #34495E;
   border-color: rgba(52, 73, 94, var(--border-opacity));
-  padding-bottom: 0.5rem;
 }
 
 .btn.btn-default:focus {

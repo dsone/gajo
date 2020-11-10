@@ -26,7 +26,7 @@
 				<p>Put an end to that with Gajo!</p>
 				@registerable
 					<p class="pt-10">
-						<a class="btn btn-default" href="./register">Register now</a>
+						<a class="pb-2 btn btn-default" href="./register">Register now</a>
 					</p>
 				@endregisterable
 			</div>

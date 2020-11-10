@@ -3111,7 +3111,6 @@ var Modal = function () {
       }
     }
   });
-  window.Modal = Modal;
   return Modal;
 }();
 
