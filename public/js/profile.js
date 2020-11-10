@@ -3905,7 +3905,7 @@ var listing = __TYPES.map(function (type) {
 if (!listing.some(function (list) {
   return list.getEntries().length > 0;
 })) {
-  startContainer.classList.rmeove('hidden');
+  startContainer.classList.remove('hidden');
 } // Abort Removal Modal
 
 

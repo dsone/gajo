@@ -40,7 +40,7 @@ let listing = __TYPES.map(type => {
 	}
 });
 if (!listing.some(list => list.getEntries().length > 0)) {
-	startContainer.classList.rmeove('hidden');
+	startContainer.classList.remove('hidden');
 }
 
 // Abort Removal Modal
