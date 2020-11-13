@@ -3559,7 +3559,11 @@ TypeList.prototype.render = function () {
       var select = typeElement.querySelector('.js-type-select');
       select.selectedIndex = events.selectedIndex[type.id];
       select.addEventListener('change', function (e) {
-        _this.update(type, select.name, parseInt(select.options[select.selectedIndex].value));
+        var data = {
+          display: parseInt(select.options[select.selectedIndex].value)
+        };
+
+        _this.update(type, data);
       });
       var timerDelayUpdate = undefined;
       var startTimerOnBlur = false;

@@ -103,7 +103,8 @@ TypeList.prototype.render = function() {
 			let select = typeElement.querySelector('.js-type-select');
 				select.selectedIndex = events.selectedIndex[type.id];
 				select.addEventListener('change', e => {
-					this.update(type, select.name, parseInt(select.options[select.selectedIndex].value));
+					let data = { display: parseInt(select.options[select.selectedIndex].value) }
+					this.update(type, data);
 				});
 
 			let timerDelayUpdate = undefined;
