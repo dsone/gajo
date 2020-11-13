@@ -3231,7 +3231,6 @@ function Options() {
   }
   /**
    * privateProfile:	The private profile checkbox,
-   * colorblind:		color blind mode checkbox,
    * hideReleased:	auto hide released checkbox,
    * hideTBA:			auto hide TBA entries checkbox,
    * rss:				The input for RSS token,
@@ -3246,7 +3245,6 @@ function Options() {
   }, config);
   this.data = {
     privateProfile: this.config.privateProfile.checked,
-    colorblind: this.config.colorblind.checked,
     hideReleased: this.config.hideReleased.checked,
     hideTBA: this.config.hideTBA.checked
   };
@@ -3355,7 +3353,7 @@ function Options() {
     var updateOptions = Object.assign({
       _method: 'put'
     }, _this.data);
-    ['privateProfile', 'colorblind', 'hideReleased', 'hideTBA'].forEach(function (key) {
+    ['privateProfile', 'hideReleased', 'hideTBA'].forEach(function (key) {
       _this.config[key].addEventListener('click', function (e) {
         if (_this.config.ajaxInProgress) {
           e.preventDefault();
@@ -3813,7 +3811,6 @@ function _defineProperty(obj, key, value) {
 
 var options = new _components_options_Options__WEBPACK_IMPORTED_MODULE_4__["default"]({
   privateProfile: $('.js-options-privateProfile'),
-  colorblind: $('.js-options-colorblind'),
   hideReleased: $('.js-options-hideReleased'),
   hideTBA: $('.js-options-hideTBA'),
   rss: $('.js-options-rss'),

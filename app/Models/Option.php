@@ -11,11 +11,10 @@ class Option extends Model
 
 	protected $hidden = [ 'id', 'user_id' ];
     protected $fillable = [
-        'privateProfile', 'colorblind', 'hideReleased', 'hideTBA', 'rss'
+        'privateProfile', 'hideReleased', 'hideTBA', 'rss'
     ];
     protected $casts = [
         'privateProfile'	=> 'boolean',
-        'colorblind'		=> 'boolean',
         'hideReleased'		=> 'boolean',
         'hideTBA'			=> 'boolean',
     ];

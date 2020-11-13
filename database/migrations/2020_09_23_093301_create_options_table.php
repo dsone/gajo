@@ -16,7 +16,6 @@ class CreateOptionsTable extends Migration
         Schema::create('options', function (Blueprint $table) {
             $table->id();
             $table->boolean('privateProfile')->default(true);
-            $table->boolean('colorblind')->default(false);
             $table->boolean('hideReleased')->default(true);
             $table->boolean('hideTBA')->default(true);
             $table->string('rss')->unique();

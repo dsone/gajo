@@ -5,7 +5,6 @@ export default function Options(config = {}) {
 
 	/**
 	 * privateProfile:	The private profile checkbox,
-	 * colorblind:		color blind mode checkbox,
 	 * hideReleased:	auto hide released checkbox,
 	 * hideTBA:			auto hide TBA entries checkbox,
 	 * rss:				The input for RSS token,
@@ -18,7 +17,6 @@ export default function Options(config = {}) {
 	}, config);
 	this.data = {
 		privateProfile:	this.config.privateProfile.checked,
-		colorblind:		this.config.colorblind.checked,
 		hideReleased:	this.config.hideReleased.checked,
 		hideTBA:		this.config.hideTBA.checked,
 	};
@@ -104,7 +102,7 @@ export default function Options(config = {}) {
 
 		let timer = undefined;
 		let updateOptions = Object.assign({ _method: 'put'}, this.data);
-		[ 'privateProfile', 'colorblind', 'hideReleased', 'hideTBA' ].forEach(key => {
+		[ 'privateProfile', 'hideReleased', 'hideTBA' ].forEach(key => {
 			this.config[key].addEventListener('click', e => {
 				if (this.config.ajaxInProgress) {
 					e.preventDefault();

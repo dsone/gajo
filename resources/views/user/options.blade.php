@@ -25,21 +25,6 @@
 							If this is enabled, your profile is only visible to yourself when logged in, or via RSS links. Accessing your profile from outside will display a 404 page. <span class="whitespace-no-wrap">Default: on</span>.
 						</div>
 					</div>
-
-					<div class="mt-8">
-						<div>
-							<div class="inline-block align-middle switch">
-								<input type="checkbox" class="js-options-colorblind" name="colorblind" id="colorblind" @if($options['colorblind']) checked @endif>
-								<label for="colorblind" />
-							</div>
-							<label for="colorblind">
-								Enable color blind mode
-							</label>
-						</div>
-						<div class="w-2/3 p-2 text-sm">
-							Gajo uses color to differentiate released, soon-to-be and future release entries. Enabling this will make it easier for you to distinguish those states if you are colorblind. <span class="whitespace-no-wrap">Default: off</span>.
-						</div>
-					</div>
 				</div>
 			</div>
 		</div>

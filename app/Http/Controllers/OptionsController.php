@@ -50,7 +50,6 @@ class OptionsController extends Controller
 		try {
 			$data = $this->validate($request, [
 				'hideTBA'			=> 'required|boolean',
-				'colorblind'		=> 'required|boolean',
 				'hideReleased'		=> 'required|boolean',
 				'privateProfile'	=> 'required|boolean',
 			]);
@@ -59,7 +58,6 @@ class OptionsController extends Controller
 			$userOptions = $user->options;
 			$userOptions->update([
 				'hideTBA'			=> $data['hideTBA'],
-				'colorblind'		=> $data['colorblind'],
 				'hideReleased'		=> $data['hideReleased'],
 				'privateProfile'	=> $data['privateProfile'],
 			]);
