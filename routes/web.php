@@ -37,5 +37,5 @@ Route::group([ 'prefix' => '/page' ], function() {
 });
 
 Route::any('{catchall}', function($page) {
-	return redirect()->route('index', 302);
+	abort(404);
 })->where('catchall', '(.*)');

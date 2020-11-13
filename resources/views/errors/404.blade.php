@@ -20,7 +20,11 @@
 					<p>
 						The page you were looking for does not exist.
 					</p>
-					<p class="mt-4 text-lg">Go back <a class="font-semibold underline" href="/">home</a>.</p>
+					@auth
+						<p class="mt-4 text-lg">Go to your <a class="font-semibold underline" href="{{ route('user-profile', [ 'user' => Auth::user()->name ]) }}">profile</a>.</p>
+					@else
+						<p class="mt-4 text-lg">Go back <a class="font-semibold underline" href="/">home</a>.</p>
+					@endauth
 				</div>
 			</div>
 		</section>
