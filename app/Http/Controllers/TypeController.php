@@ -94,7 +94,7 @@ class TypeController extends Controller
 		}
 
 		return response()->json([
-			'error' => false, 'message' => 'Type updated!'
+			'error' => false, 'message' => 'Type updated!', 'data' => []
 		]);
     }
 
@@ -162,7 +162,7 @@ class TypeController extends Controller
 		}
 		
 		return response()->json([
-				'error' => false, 'message' => 'Types reorderd!'
+				'error' => false, 'message' => 'Types reorderd!', 'data' => []
 			]);
     }
 }

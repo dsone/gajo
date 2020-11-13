@@ -3171,267 +3171,6 @@ module.exports = Pending;
 
 /***/ }),
 
-/***/ "./resources/js/components/TypeList.js":
-/*!*********************************************!*\
-  !*** ./resources/js/components/TypeList.js ***!
-  \*********************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return TypeList; });
-function _toConsumableArray(arr) {
-  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
-}
-
-function _nonIterableSpread() {
-  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-}
-
-function _unsupportedIterableToArray(o, minLen) {
-  if (!o) return;
-  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
-  var n = Object.prototype.toString.call(o).slice(8, -1);
-  if (n === "Object" && o.constructor) n = o.constructor.name;
-  if (n === "Map" || n === "Set") return Array.from(o);
-  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
-}
-
-function _iterableToArray(iter) {
-  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
-}
-
-function _arrayWithoutHoles(arr) {
-  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
-}
-
-function _arrayLikeToArray(arr, len) {
-  if (len == null || len > arr.length) len = arr.length;
-
-  for (var i = 0, arr2 = new Array(len); i < len; i++) {
-    arr2[i] = arr[i];
-  }
-
-  return arr2;
-}
-
-function TypeList() {
-  var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-  if (!(this instanceof TypeList)) {
-    return new TypeList(config);
-  }
-
-  this.container = config.container;
-  this.emptyContainer = config.emptyContainer;
-  /**this.types = [
-  	{
-  		"id": 1,
-  		"name": "Test",
-  		"ident_1": "Test1",
-  		"ident_2": "Test1",
-  		"sort": 1,
-  		"display": 1
-  	}
-  ];*/
-
-  this.types = config.types.slice(0);
-  this.template = config.template;
-  this.renderCallback = config.renderCallback;
-  this.dragndropCallback = config.dragndropCallback;
-  this.updateTypeCallback = config.updateTypeCallback;
-  this.render();
-}
-/**
- * Returns a type by a given index, wheras the index means the index of the position inside the types array.
- * Removing types will obviously change the index
- * 
- * @param 	integer	i	The index of the type to return.
- * @returns				The Type JSON literal representing the requested type, by value, not ref.	
- */
-
-TypeList.prototype.getByIndex = function (i) {
-  if (typeof this.types[i] === 'undefined') {
-    return undefined;
-  }
-
-  return this.types.slice(i, i + 1)[0];
-};
-
-TypeList.prototype.getTypes = function () {
-  return this.types;
-};
-/**
- * Removes a Type by its id. Using id here is more secure than using the Type's index position.
- * Rerenders the type display after removal.
- * 
- * @param	integer	id	The id of the Type to remove.
- */
-
-
-TypeList.prototype.removeById = function (id) {
-  this.types = this.types.filter(function (type) {
-    return type.id !== id;
-  });
-  this.render();
-};
-/**
- * Adds a new Type to the list.
- * 
- * @param JSON	type	The JSON representation of the new Type.
- */
-
-
-TypeList.prototype.addType = function (type) {
-  this.types.push(type);
-  this.render();
-};
-
-TypeList.prototype.render = function () {
-  var _this = this;
-
-  this.container.innerHTML = '<div class="h-6 drag-target" data-target="-1">&nbsp;</div>';
-
-  if (this.types.length > 0) {
-    this.emptyContainer.classList.add('hidden');
-    var events = {
-      selects: [],
-      inputs: [],
-      selectedIndex: {}
-    }; //! Setting innerHTML with '+=' resets events and the selectedIndex on previous selects
-
-    this.types.forEach(function (type, index) {
-      var element = _this.template.slice(0);
-
-      element = element.replace(/#type_id#/gim, type.id).replace(/#type_name#/gim, type.name).replace(/#type_ident1#/gim, type.ident_1).replace(/#type_ident2#/gim, type.ident_2).replace(/#type_index#/gim, index);
-      _this.container.innerHTML += element;
-      element = _this.container.querySelector("div[data-id=\"".concat(type.id, "\"]"));
-      events.selectedIndex[type.id] = type.display - 1;
-      events.selects.push([type.id, element.querySelector('.js-type-select')]);
-      events.inputs.push([type.id, [element.querySelector('.js-type-name'), element.querySelector('.js-type-ident1'), element.querySelector('.js-type-ident2')]]);
-    }); // No set events as needed
-
-    this.types.forEach(function (type, index) {
-      var typeElement = _this.container.querySelector("div[data-id=\"".concat(type.id, "\"]"));
-
-      var select = typeElement.querySelector('.js-type-select');
-      select.selectedIndex = events.selectedIndex[type.id];
-      select.addEventListener('change', function (e) {
-        _this.update(type, select.name, parseInt(select.options[select.selectedIndex].value));
-      });
-      [typeElement.querySelector('.js-type-name'), typeElement.querySelector('.js-type-ident1'), typeElement.querySelector('.js-type-ident2')].forEach(function (el) {
-        el.addEventListener('change', function (e) {
-          _this.update(type, el.name, el.value);
-        });
-      });
-    });
-    this.dragndrop();
-  } else {
-    this.emptyContainer.classList.remove('hidden');
-
-    if (!!this.renderCallback) {
-      this.renderCallback(false);
-    }
-  }
-};
-/**
- * Adds event listeners for drag and drop.
- * Deals with changing position of a Type within the list.
- * Calls render() when necessary and a custom callback function on drop.
- */
-
-
-TypeList.prototype.dragndrop = function () {
-  // Create Drag'n'Drop features
-  var draggable = Array.from(document.querySelectorAll('.draggable-item .js-btn-drag'));
-  var draggedItemIndex;
-  draggable.forEach(function (el) {
-    var parent = el.closest('.draggable-item');
-    el.addEventListener('dragstart', function (e) {
-      draggedItemIndex = parseInt(parent.querySelector('.drag-target').getAttribute('data-target'), 10);
-      parent.classList.add('dragging');
-    });
-    el.addEventListener('dragend', function (e) {
-      parent.classList.remove('dragging');
-    });
-  });
-  var that = this;
-  Array.from(document.querySelectorAll('.drag-target')).forEach(function (el) {
-    var draggedItemTargetIndex = parseInt(el.getAttribute('data-target'));
-    el.addEventListener('dragover', function (e) {
-      // auto fires every 350ms-ish
-      e.preventDefault();
-    });
-    el.addEventListener('drop', function (e) {
-      if (draggedItemTargetIndex > draggedItemIndex) {
-        var _that$types; // = is excluded below
-
-
-        (_that$types = that.types).splice.apply(_that$types, [draggedItemTargetIndex, 0].concat(_toConsumableArray(that.types.splice(draggedItemIndex, 1))));
-      } else {
-        var _that$types2; // if a type is moved upwards (lower index) we need to add 1 to target,
-        // or we move before the target, ie 2 upwards instead of 1
-
-
-        (_that$types2 = that.types).splice.apply(_that$types2, [draggedItemTargetIndex + 1, 0].concat(_toConsumableArray(that.types.splice(draggedItemIndex, 1))));
-      }
-
-      that.render();
-
-      if (!!that.dragndropCallback) {
-        that.dragndropCallback();
-      }
-    });
-    el.addEventListener('dragenter', function (e) {
-      // skip draggable-item's own drag-target and the target directly before that
-      if (draggedItemIndex === draggedItemTargetIndex || draggedItemIndex - 1 === draggedItemTargetIndex) {
-        return;
-      }
-
-      e.currentTarget.classList.add('drop');
-    });
-    el.addEventListener('dragleave', function (e) {
-      e.currentTarget.classList.remove('drop');
-    });
-  });
-
-  if (!!this.renderCallback) {
-    this.renderCallback(true);
-  }
-};
-
-TypeList.prototype.update = function (type, attrName, value) {
-  var _this2 = this; // Name has a unique constraint for a user
-
-
-  if (attrName === 'name') {
-    var uniqueNameError = this.types.some(function (tp) {
-      return tp.name === value && tp.id !== type.id;
-    });
-
-    if (uniqueNameError) {
-      notify.danger('Error', 'Name of Type must be unique!');
-      return this.render(); // deletes duplicate name
-    }
-  }
-
-  if (!!this.updateTypeCallback) {
-    var copy = Object.assign({}, type);
-    copy[attrName] = value;
-    this.updateTypeCallback(copy).then(function (success) {
-      if (success) {
-        type[attrName] = value;
-      } // if error, success = false -> reset to old value
-
-
-      _this2.render();
-    });
-  }
-};
-
-/***/ }),
-
 /***/ "./resources/js/components/options/Options.js":
 /*!****************************************************!*\
   !*** ./resources/js/components/options/Options.js ***!
@@ -3635,6 +3374,372 @@ function Options() {
 
 /***/ }),
 
+/***/ "./resources/js/components/options/TypeList.js":
+/*!*****************************************************!*\
+  !*** ./resources/js/components/options/TypeList.js ***!
+  \*****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return TypeList; });
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+
+function _asyncToGenerator(fn) {
+  return function () {
+    var self = this,
+        args = arguments;
+    return new Promise(function (resolve, reject) {
+      var gen = fn.apply(self, args);
+
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+
+      _next(undefined);
+    });
+  };
+}
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+    arr2[i] = arr[i];
+  }
+
+  return arr2;
+}
+
+function TypeList() {
+  var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+  if (!(this instanceof TypeList)) {
+    return new TypeList(config);
+  }
+
+  this.container = config.container;
+  this.emptyContainer = config.emptyContainer;
+  /**this.types = [
+  	{
+  		"id": 1,
+  		"name": "Test",
+  		"ident_1": "Test1",
+  		"ident_2": "Test1",
+  		"sort": 1,
+  		"display": 1
+  	}
+  ];*/
+
+  this.types = config.types.slice(0);
+  this.template = config.template;
+  this.renderCallback = config.renderCallback;
+  this.dragndropCallback = config.dragndropCallback;
+  this.updateTypeCallback = config.updateTypeCallback;
+  this.render();
+}
+/**
+ * Returns a type by a given index, wheras the index means the index of the position inside the types array.
+ * Removing types will obviously change the index
+ * 
+ * @param 	integer	i	The index of the type to return.
+ * @returns				The Type JSON literal representing the requested type, by value, not ref.	
+ */
+
+TypeList.prototype.getByIndex = function (i) {
+  if (typeof this.types[i] === 'undefined') {
+    return undefined;
+  }
+
+  return this.types.slice(i, i + 1)[0];
+};
+
+TypeList.prototype.getTypes = function () {
+  return this.types;
+};
+/**
+ * Removes a Type by its id. Using id here is more secure than using the Type's index position.
+ * Rerenders the type display after removal.
+ * 
+ * @param	integer	id	The id of the Type to remove.
+ */
+
+
+TypeList.prototype.removeById = function (id) {
+  this.types = this.types.filter(function (type) {
+    return type.id !== id;
+  });
+  this.render();
+};
+/**
+ * Adds a new Type to the list.
+ * 
+ * @param JSON	type	The JSON representation of the new Type.
+ */
+
+
+TypeList.prototype.addType = function (type) {
+  this.types.push(type);
+  this.render();
+};
+
+TypeList.prototype.render = function () {
+  var _this = this;
+
+  this.container.innerHTML = '<div class="h-6 drag-target" data-target="-1">&nbsp;</div>';
+
+  if (this.types.length > 0) {
+    this.emptyContainer.classList.add('hidden');
+    var events = {
+      selects: [],
+      inputs: [],
+      selectedIndex: {}
+    }; //! Setting innerHTML with '+=' resets events and the selectedIndex on previous selects
+
+    this.types.forEach(function (type, index) {
+      var element = _this.template.slice(0);
+
+      element = element.replace(/#type_id#/gim, type.id).replace(/#type_name#/gim, type.name).replace(/#type_ident1#/gim, type.ident_1).replace(/#type_ident2#/gim, type.ident_2).replace(/#type_index#/gim, index);
+      _this.container.innerHTML += element;
+      element = _this.container.querySelector("div[data-id=\"".concat(type.id, "\"]"));
+      events.selectedIndex[type.id] = type.display - 1;
+      events.selects.push([type.id, element.querySelector('.js-type-select')]);
+      events.inputs.push([type.id, [element.querySelector('.js-type-name'), element.querySelector('.js-type-ident1'), element.querySelector('.js-type-ident2')]]);
+    }); // No set events as needed
+
+    this.types.forEach(function (type, index) {
+      var typeElement = _this.container.querySelector("div[data-id=\"".concat(type.id, "\"]"));
+
+      var select = typeElement.querySelector('.js-type-select');
+      select.selectedIndex = events.selectedIndex[type.id];
+      select.addEventListener('change', function (e) {
+        _this.update(type, select.name, parseInt(select.options[select.selectedIndex].value));
+      });
+      var timerDelayUpdate = undefined;
+      var startTimerOnBlur = false;
+      var attrsToChange = {};
+      [typeElement.querySelector('.js-type-name'), typeElement.querySelector('.js-type-ident1'), typeElement.querySelector('.js-type-ident2')].forEach(function (el) {
+        el.addEventListener('focus', function (e) {
+          if (timerDelayUpdate) {
+            startTimerOnBlur = true;
+            timerDelayUpdate = clearTimeout(timerDelayUpdate);
+          }
+        });
+        el.addEventListener('blur', function (e) {
+          if (startTimerOnBlur) {
+            startTimerOnBlur = false;
+            timerDelayUpdate = setTimeout(function () {
+              _this.update(type, attrsToChange).then(function (success) {
+                if (success) {
+                  var _attrsToChange$name, _attrsToChange$ident_, _attrsToChange$ident_2;
+
+                  typeElement.querySelector('.js-type-name').value = (_attrsToChange$name = attrsToChange['name']) !== null && _attrsToChange$name !== void 0 ? _attrsToChange$name : type.name;
+                  typeElement.querySelector('.js-type-ident1').value = (_attrsToChange$ident_ = attrsToChange['ident_1']) !== null && _attrsToChange$ident_ !== void 0 ? _attrsToChange$ident_ : type.ident_1;
+                  typeElement.querySelector('.js-type-ident2').value = (_attrsToChange$ident_2 = attrsToChange['ident_2']) !== null && _attrsToChange$ident_2 !== void 0 ? _attrsToChange$ident_2 : type.ident_2;
+                }
+
+                attrsToChange = {};
+              });
+            }, 1000);
+          }
+        });
+        el.addEventListener('change', function (e) {
+          startTimerOnBlur = true;
+          attrsToChange[el.name] = el.value;
+        });
+      });
+    });
+    this.dragndrop();
+  } else {
+    this.emptyContainer.classList.remove('hidden');
+
+    if (!!this.renderCallback) {
+      this.renderCallback(false);
+    }
+  }
+};
+/**
+ * Adds event listeners for drag and drop.
+ * Deals with changing position of a Type within the list.
+ * Calls render() when necessary and a custom callback function on drop.
+ */
+
+
+TypeList.prototype.dragndrop = function () {
+  // Create Drag'n'Drop features
+  var draggable = Array.from(document.querySelectorAll('.draggable-item .js-btn-drag'));
+  var draggedItemIndex;
+  draggable.forEach(function (el) {
+    var parent = el.closest('.draggable-item');
+    el.addEventListener('dragstart', function (e) {
+      draggedItemIndex = parseInt(parent.querySelector('.drag-target').getAttribute('data-target'), 10);
+      parent.classList.add('dragging');
+    });
+    el.addEventListener('dragend', function (e) {
+      parent.classList.remove('dragging');
+    });
+  });
+  var that = this;
+  Array.from(document.querySelectorAll('.drag-target')).forEach(function (el) {
+    var draggedItemTargetIndex = parseInt(el.getAttribute('data-target'));
+    el.addEventListener('dragover', function (e) {
+      // auto fires every 350ms-ish
+      e.preventDefault();
+    });
+    el.addEventListener('drop', function (e) {
+      if (draggedItemTargetIndex > draggedItemIndex) {
+        var _that$types; // = is excluded below
+
+
+        (_that$types = that.types).splice.apply(_that$types, [draggedItemTargetIndex, 0].concat(_toConsumableArray(that.types.splice(draggedItemIndex, 1))));
+      } else {
+        var _that$types2; // if a type is moved upwards (lower index) we need to add 1 to target,
+        // or we move before the target, ie 2 upwards instead of 1
+
+
+        (_that$types2 = that.types).splice.apply(_that$types2, [draggedItemTargetIndex + 1, 0].concat(_toConsumableArray(that.types.splice(draggedItemIndex, 1))));
+      }
+
+      that.render();
+
+      if (!!that.dragndropCallback) {
+        that.dragndropCallback();
+      }
+    });
+    el.addEventListener('dragenter', function (e) {
+      // skip draggable-item's own drag-target and the target directly before that
+      if (draggedItemIndex === draggedItemTargetIndex || draggedItemIndex - 1 === draggedItemTargetIndex) {
+        return;
+      }
+
+      e.currentTarget.classList.add('drop');
+    });
+    el.addEventListener('dragleave', function (e) {
+      e.currentTarget.classList.remove('drop');
+    });
+  });
+
+  if (!!this.renderCallback) {
+    this.renderCallback(true);
+  }
+};
+
+TypeList.prototype.update = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(type, attrsToChange) {
+    var _this2 = this;
+
+    var keys, uniqueNameError, copy;
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            keys = Object.keys(attrsToChange); // Name has a unique constraint for a user
+
+            if (!keys.some(function (key) {
+              return key === 'name';
+            })) {
+              _context.next = 6;
+              break;
+            }
+
+            uniqueNameError = this.types.some(function (tp) {
+              return tp.name === attrsToChange['name'] && tp.id !== type.id;
+            });
+
+            if (!uniqueNameError) {
+              _context.next = 6;
+              break;
+            }
+
+            notify.danger('Error', 'Name of Type must be unique!');
+            return _context.abrupt("return", this.render());
+
+          case 6:
+            if (!this.updateTypeCallback) {
+              _context.next = 9;
+              break;
+            }
+
+            copy = Object.assign({}, type, attrsToChange);
+            return _context.abrupt("return", this.updateTypeCallback(copy).then(function (success) {
+              if (success) {
+                keys.forEach(function (key) {
+                  type[key] = attrsToChange[key];
+                });
+              } else {
+                // resets to old value
+                _this2.render();
+              }
+
+              return success;
+            }));
+
+          case 9:
+            return _context.abrupt("return", Promise.solve(true));
+
+          case 10:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee, this);
+  }));
+
+  return function (_x, _x2) {
+    return _ref.apply(this, arguments);
+  };
+}();
+
+/***/ }),
+
 /***/ "./resources/js/options.js":
 /*!*********************************!*\
   !*** ./resources/js/options.js ***!
@@ -3649,7 +3754,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Modal__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_components_Modal__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/Pending */ "./resources/js/components/Pending.js");
 /* harmony import */ var _components_Pending__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_components_Pending__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _components_TypeList__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/TypeList */ "./resources/js/components/TypeList.js");
+/* harmony import */ var _components_options_TypeList__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/options/TypeList */ "./resources/js/components/options/TypeList.js");
 /* harmony import */ var _components_options_Options__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/options/Options */ "./resources/js/components/options/Options.js");
 function ownKeys(object, enumerableOnly) {
   var keys = Object.keys(object);
@@ -3720,7 +3825,7 @@ var options = new _components_options_Options__WEBPACK_IMPORTED_MODULE_4__["defa
 
 var removalConfirmModal = new _components_Modal__WEBPACK_IMPORTED_MODULE_1___default.a($('template#modal-remove-confirm').innerHTML); // Init Types
 
-var typeList = new _components_TypeList__WEBPACK_IMPORTED_MODULE_3__["default"]({
+var typeList = new _components_options_TypeList__WEBPACK_IMPORTED_MODULE_3__["default"]({
   container: $('.js-types-container'),
   emptyContainer: $('.js-types-empty'),
   template: $('template#type-item').innerHTML,

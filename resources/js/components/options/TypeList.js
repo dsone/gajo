@@ -96,7 +96,7 @@ TypeList.prototype.render = function() {
 				]
 			]);
 		});
-		
+
 		// No set events as needed
 		this.types.forEach((type, index) => {
 			let typeElement = this.container.querySelector(`div[data-id="${ type.id }"]`);
@@ -105,13 +105,39 @@ TypeList.prototype.render = function() {
 				select.addEventListener('change', e => {
 					this.update(type, select.name, parseInt(select.options[select.selectedIndex].value));
 				});
+
+			let timerDelayUpdate = undefined;
+			let startTimerOnBlur = false;
+			let attrsToChange = {};
 			[
 				typeElement.querySelector('.js-type-name'),
 				typeElement.querySelector('.js-type-ident1'),
 				typeElement.querySelector('.js-type-ident2')
 			].forEach(el => {
+				el.addEventListener('focus', e => {
+					if (timerDelayUpdate) {
+						startTimerOnBlur = true;
+						timerDelayUpdate = clearTimeout(timerDelayUpdate);
+					}
+				});
+				el.addEventListener('blur', e => {
+					if (startTimerOnBlur) {
+						startTimerOnBlur = false;
+						timerDelayUpdate = setTimeout(() => {
+								this.update(type, attrsToChange).then(success => {
+									if (success) {
+										typeElement.querySelector('.js-type-name').value = attrsToChange['name'] ?? type.name;
+										typeElement.querySelector('.js-type-ident1').value = attrsToChange['ident_1'] ?? type.ident_1;
+										typeElement.querySelector('.js-type-ident2').value = attrsToChange['ident_2'] ?? type.ident_2;
+									}
+									attrsToChange = {};
+								});
+							}, 1000);
+					}
+				});
 				el.addEventListener('change', e => {
-					this.update(type, el.name, el.value);
+					startTimerOnBlur = true;
+					attrsToChange[el.name] = el.value;
 				});
 			});
 		});
@@ -188,11 +214,12 @@ TypeList.prototype.dragndrop = function() {
 	}
 };
 
-TypeList.prototype.update = function(type, attrName, value) {
+TypeList.prototype.update = async function(type, attrsToChange) {
+	let keys = Object.keys(attrsToChange);
 	// Name has a unique constraint for a user
-	if (attrName === 'name') {
+	if (keys.some(key => key === 'name')) {
 		let uniqueNameError = this.types.some(tp => {
-			return tp.name === value && tp.id !== type.id;
+			return tp.name === attrsToChange['name'] && tp.id !== type.id;
 		});
 
 		if (uniqueNameError) {
@@ -202,15 +229,20 @@ TypeList.prototype.update = function(type, attrName, value) {
 	}
 
 	if (!!this.updateTypeCallback) {
-		let copy = Object.assign({}, type);
-			copy[attrName] = value;
-		this.updateTypeCallback(copy).then(success => {
+		let copy = Object.assign({}, type, attrsToChange);
+		return this.updateTypeCallback(copy).then(success => {
 			if (success) {
-				type[attrName] = value;
+				keys.forEach(key => {
+					type[key] = attrsToChange[key];
+				});
+			} else {
+				// resets to old value
+				this.render();
 			}
 
-			// if error, success = false -> reset to old value
-			this.render();
+			return success;
 		});
 	}
+
+	return Promise.solve(true);
 };

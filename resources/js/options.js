@@ -1,7 +1,7 @@
 import Ajax from './components/Ajax';
 import Modal from './components/Modal';
 import Pending from './components/Pending';
-import TypeList from './components/TypeList';
+import TypeList from './components/options/TypeList';
 import Options from './components/options/Options';
 
 // Init Options
