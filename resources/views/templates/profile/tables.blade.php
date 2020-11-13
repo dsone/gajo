@@ -9,11 +9,11 @@
 	</svg>
 </template>
 <template id="skeleton-table-section">
-	<div class="w-full mt-10 md:mx-auto md:w-2/3 lg:w-1/2">
+	<div class="w-full mt-10 md:mx-auto md:w-3/4 lg:w-2/3">
 		<section class="section-table-entries">
 			<h3 class="section-title" bind-section-title></h3>
 
-			<div class="" bind-table>
+			<div class="px-4" bind-table>
 				{{-- #table-skeleton --}}
 			</div>
 		</section>
@@ -22,17 +22,17 @@
 <template id="skeleton-table">
 	<ul class="table-entries">
 		<li class="select-none table-headline">
-			<div class="flex flex-row thead">
-				<div class="w-4/12">
+			<div class="flex flex-col md:flex-row thead">
+				<div class="w-full mb-2 text-center md:mb-0 md:text-left md:w-4/12 xl:w-5/12">
 					<span bind-ident1 sortby="ident_1"></span>
 				</div>
-				<div class="w-4/12">
+				<div class="w-full mb-2 text-center md:mb-0 md:text-left md:w-4/12 xl:w-4/12">
 					<span bind-ident2 sortby="ident_2"></span>
 				</div>
-				<div class="w-2/12">
+				<div class="w-full mb-2 text-center md:mb-0 md:text-left md:w-2/12 xl:w-2/12">
 					<span sortby="release_at">Release</span>
 				</div>
-				<div class="w-2/12" private>&nbsp;</div>
+				<div class="hidden md:block md:w-2/12 xl:w-1/12" private>&nbsp;</div>
 			</div>
 		</li>
 		{{-- #table-list-entry --}}
@@ -40,9 +40,9 @@
 </template>
 <template id="skeleton-table-entry">
 	<li class="table-entry">
-		<div class="flex flex-row tbody" bind-edit="dblclick">
-			<div class="flex flex-row w-4/12">
-				<div class="inline mr-2 text-black entry-availability cursor-help" bind-availability>
+		<div class="flex flex-col md:flex-row tbody" bind-edit="dblclick">
+			<div class="flex flex-row w-full md:w-4/12 xl:w-5/12">
+				<div class="absolute top-0 left-0 mt-3 ml-3 text-black entry-availability cursor-help" bind-availability>
 					<svg class="h-4 mb-1 text-red-800 svg-icon release-available" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" title="Release available">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
 					</svg>
@@ -56,17 +56,17 @@
 					</svg>
 					<span class="release-later" title=""></span>
 				</div>
-				<div bind-ident1></div>
+				<div class="w-full ml-6 font-bold text-center md:w-10/12 md:text-left md:font-normal" bind-ident1></div>
 			</div>
-			<div class="w-4/12" bind-ident2></div>
-			<div class="w-3/12" bind-release></div>
-			<div class="entry-options" private>
-				<div class="z-10 w-1/2 transition-colors duration-200 hover:text-green-500" bind-edit="click">
+			<div class="w-full text-center md:text-left md:w-4/12 xl:w-4/12" bind-ident2></div>
+			<div class="w-full mt-1 text-sm italic text-center md:text-left md:w-2/12 xl:w-1/12 md:text-base md:not-italic md:mt-0" bind-release></div>
+			<div class="w-full text-center md:text-left md:w-2/12 xl:w-2/12 entry-options" private>
+				<div class="z-10 mr-2 transition-colors duration-200 lg:mr-4 hover:text-green-500" bind-edit="click">
 					<svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
 					</svg>
 				</div>
-				<div class="z-10 w-1/2 transition-colors duration-200 hover:text-red-500" bind-remove>
+				<div class="z-10 mr-2 transition-colors duration-200 lg:mr-4 hover:text-red-500" bind-remove>
 					<svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
 					</svg>

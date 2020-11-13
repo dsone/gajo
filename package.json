@@ -13,15 +13,16 @@
         "@tailwindcss/custom-forms": "^0.2.1",
         "axios": "^0.19",
         "cross-env": "^7.0",
-        "laravel-mix": "^5.0.5",
+        "laravel-mix": "^5.0.9",
         "laravel-mix-purgecss": "^5.0.0",
         "lodash": "^4.17.19",
         "luxon": "^1.25.0",
         "mix-tailwindcss": "^1.2.0",
         "resolve-url-loader": "^3.1.2",
-        "sass": "^1.26.11",
+        "sass": "^1.29.0",
         "sass-loader": "^8.0.2",
-        "tailwindcss": "^1.8.10",
+        "tailwindcss": "^1.9.6",
+        "tailwindcss-debug-screens": "^1.1.0",
         "vue-template-compiler": "^2.6.12"
     }
 }

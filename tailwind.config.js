@@ -6,6 +6,11 @@ module.exports = {
 	purge: [],
 	theme: {
 		extend: {
+			screens: {
+				xs: '430px',
+				'2xl': '1700px',
+			},
+
 			colors: {
 				primary: {
 					50: '#F5F6F7',
@@ -47,6 +52,7 @@ module.exports = {
 		color: [ 'hover' ],
 	},
 	plugins: [
-		require('@tailwindcss/custom-forms')
+		require('@tailwindcss/custom-forms'),
+		require('tailwindcss-debug-screens')
 	],
 }

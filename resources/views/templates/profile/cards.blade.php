@@ -1,5 +1,5 @@
 <template id="skeleton-card-section">
-	<div class="w-full mt-10 md:mx-auto md:w-2/3 lg:w-1/2">
+	<div class="w-full mt-10 md:mx-auto md:w-3/4 lg:w-2/3">
 		<section class="section-card-entries">
 			<h3 class="section-title" bind-section-title></h3>
 			<div class="card-container" bind-cards></div>
@@ -23,10 +23,10 @@
 				</div>
 			</div>
 			<div class="card-meta">
-				<h4 class="text-2xl text-center" bind-ident1></h4>
-				<div class="mt-2 tracking-widest text-center">
-					<div class="" bind-ident2>PC</div>
-					<div class="" bind-release>Thu, 03 Dec 2020</div>
+				<h4 class="font-serif text-2xl font-medium text-center md:text-xl lg:text-2xl" bind-ident1></h4>
+				<div class="mt-1 tracking-widest text-center">
+					<div class="font-mono text-lg text-center" bind-ident2></div>
+					<div class="text-base italic md:text-sm" bind-release></div>
 				</div>
 			</div>
 
