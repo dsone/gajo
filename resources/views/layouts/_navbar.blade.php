@@ -13,7 +13,7 @@
 					</a>
 
 					@auth
-						<button class="px-4 py-2 text-sm font-semibold bg-transparent rounded-lg focus:outline-none focus:shadow-outline md:hidden" href="#">
+						<button class="px-4 py-2 text-sm font-semibold bg-transparent rounded-lg focus:outline-none focus:shadow-outline md:hidden btn btn-success js-navbar-add-entry">
 							Add
 						</button>
 					@endif
@@ -28,7 +28,7 @@
 				<nav class="flex-col flex-grow hidden pb-4 md:pb-0 md:flex md:justify-end md:flex-row js-menu-items">
 					@auth
 						@if (Request::routeIs('user-profile') && ($ownProfile ?? false) && count($types) > 0)
-						<button class="hidden px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg md:mt-0 focus:outline-none focus:shadow-outline md:inline-block js-navbar-add-entry" href="#">
+						<button class="hidden px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg md:mt-0 focus:outline-none focus:shadow-outline md:inline-block js-navbar-add-entry btn btn-success">
 							Add
 						</button>
 						@endif

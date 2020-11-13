@@ -243,12 +243,12 @@ if (btnCloseEntryModal) {
 }
 
 // Navbar button to trigger Add Entry modal
-let navbarBtn = $('.js-navbar-add-entry');
-if (navbarBtn) {
+let navbarBtns = [ ...$$('.js-navbar-add-entry') ];
+navbarBtns.forEach(navbarBtn => {
 	navbarBtn.addEventListener('click', e => {
 		addEntryModal.show();
 	});
-}
+});
 
 
 // Edit Entry modal
