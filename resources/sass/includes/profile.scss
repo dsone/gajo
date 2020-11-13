@@ -196,10 +196,10 @@ body:not(.is-owner) {
 				}
 
 				.card-inner {
-					@apply bg-red-300;
+					@apply bg-red-200;
 
 					&:hover {
-						@apply bg-red-400;
+						@apply bg-red-300;
 					}
 				}
 			}
@@ -210,10 +210,10 @@ body:not(.is-owner) {
 				}
 
 				.card-inner {
-					@apply bg-orange-300;
+					@apply bg-orange-200;
 
 					&:hover {
-						@apply bg-orange-400;
+						@apply bg-orange-300;
 					}
 				}
 			}
@@ -224,10 +224,10 @@ body:not(.is-owner) {
 				}
 
 				.card-inner {
-					@apply bg-green-300;
+					@apply bg-green-200;
 
 					&:hover {
-						@apply bg-green-400;
+						@apply bg-green-300;
 					}
 				}
 			}

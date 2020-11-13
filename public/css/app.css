@@ -1556,14 +1556,14 @@ body:not(.is-owner) .section-table-entries .table-entry .tbody div:nth-child(3) 
 
 .section-card-entries .card-container .card-entry.release-available .card-inner {
   --bg-opacity: 1;
-  background-color: #feb2b2;
-  background-color: rgba(254, 178, 178, var(--bg-opacity));
+  background-color: #fed7d7;
+  background-color: rgba(254, 215, 215, var(--bg-opacity));
 }
 
 .section-card-entries .card-container .card-entry.release-available .card-inner:hover {
   --bg-opacity: 1;
-  background-color: #fc8181;
-  background-color: rgba(252, 129, 129, var(--bg-opacity));
+  background-color: #feb2b2;
+  background-color: rgba(254, 178, 178, var(--bg-opacity));
 }
 
 .section-card-entries .card-container .card-entry.release-48-hours .card-availability svg.release-48-hours {
@@ -1572,14 +1572,14 @@ body:not(.is-owner) .section-table-entries .table-entry .tbody div:nth-child(3) 
 
 .section-card-entries .card-container .card-entry.release-48-hours .card-inner {
   --bg-opacity: 1;
-  background-color: #fbd38d;
-  background-color: rgba(251, 211, 141, var(--bg-opacity));
+  background-color: #feebc8;
+  background-color: rgba(254, 235, 200, var(--bg-opacity));
 }
 
 .section-card-entries .card-container .card-entry.release-48-hours .card-inner:hover {
   --bg-opacity: 1;
-  background-color: #f6ad55;
-  background-color: rgba(246, 173, 85, var(--bg-opacity));
+  background-color: #fbd38d;
+  background-color: rgba(251, 211, 141, var(--bg-opacity));
 }
 
 .section-card-entries .card-container .card-entry.release-1-week .card-availability svg.release-1-week {
@@ -1588,14 +1588,14 @@ body:not(.is-owner) .section-table-entries .table-entry .tbody div:nth-child(3) 
 
 .section-card-entries .card-container .card-entry.release-1-week .card-inner {
   --bg-opacity: 1;
-  background-color: #9ae6b4;
-  background-color: rgba(154, 230, 180, var(--bg-opacity));
+  background-color: #c6f6d5;
+  background-color: rgba(198, 246, 213, var(--bg-opacity));
 }
 
 .section-card-entries .card-container .card-entry.release-1-week .card-inner:hover {
   --bg-opacity: 1;
-  background-color: #68d391;
-  background-color: rgba(104, 211, 145, var(--bg-opacity));
+  background-color: #9ae6b4;
+  background-color: rgba(154, 230, 180, var(--bg-opacity));
 }
 
 .section-card-entries .card-container .card-entry .card-inner {
