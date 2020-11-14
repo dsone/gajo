@@ -62,10 +62,14 @@ npm
 `touch database/database.sqlite`  
 5. Create the tables inside the database:  
 `php artisan migrate`  
+For live deployment that's it.
+
+Additionally, for development purposes:
 6. Install JS/CSS dependencies:  
 `npm install`  
-7. Production build css/js:  
-`gulp`  
+7. Build css/js:  
+	* Product (minified CSS/JS, purged CSS): `npm run production`  
+	* Development (non-minified): `npm run dev` or `npm run watch`
 
 Open your browser and visit APP_URL as entered inside .env.  
 Register your account that you use to login.  
