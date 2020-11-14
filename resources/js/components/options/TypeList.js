@@ -74,7 +74,7 @@ TypeList.prototype.render = function() {
 			inputs: [],
 			selectedIndex: {}
 		};
-		//! Setting innerHTML with '+=' resets events and the selectedIndex on previous selects
+		//? Setting innerHTML with '+=' resets events and the selectedIndex on previous selects
 		this.types.forEach((type, index) => {
 			let element = this.template.slice(0);
 				element = element.replace(/#type_id#/gim, type.id)
