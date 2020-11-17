@@ -12,7 +12,7 @@
 						@endif
 					</a>
 
-					@auth
+					@if (Request::routeIs('user-profile') && ($ownProfile ?? false) && count($types) > 0)
 						<button class="px-4 py-2 text-sm font-semibold bg-transparent rounded-lg focus:outline-none focus:shadow-outline md:hidden btn btn-success js-navbar-add-entry">
 							Add
 						</button>
