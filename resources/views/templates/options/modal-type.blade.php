@@ -6,7 +6,7 @@
 				<div>
 					<label class="block">
 						<span class="block mb-1 font-bold">Name</span>
-						<input class="block w-full form-input" name="name" type="text" placeholder="Name" value="{{ old('name') }}" autocomplete="off" required>
+						<input class="block w-full md:w-2/3 2xl:w-1/2 form-input" name="name" type="text" placeholder="Name" value="{{ old('name') }}" autocomplete="off" required>
 					</label>
 
 					<div class="hidden mt-1 text-sm font-semibold text-red-700" error-name>
@@ -19,7 +19,7 @@
 				<div class="mt-4">
 					<label class="block">
 						<span class="block mb-1 font-bold">Descriptor 1</span>
-						<input class="block w-full form-input" name="ident_1" type="text" value="" placeholder="Descriptor 1" autocomplete="off" required>
+						<input class="block w-full md:w-2/3 2xl:w-1/2 form-input" name="ident_1" type="text" value="" placeholder="Descriptor 1" autocomplete="off" required>
 					</label>
 
 					<div class="hidden mt-1 text-sm font-semibold text-red-700" error-ident1>
@@ -33,7 +33,7 @@
 				<div class="mt-4">
 					<label class="block">
 						<span class="block mb-1 font-bold">Descriptor 2</span>
-						<input class="block w-full form-input" name="ident_2" type="text" value="" placeholder="Descriptor 2" autocomplete="off" required>
+						<input class="block w-full md:w-2/3 2xl:w-1/2 form-input" name="ident_2" type="text" value="" placeholder="Descriptor 2" autocomplete="off" required>
 					</label>
 
 					<div class="hidden mt-1 text-sm font-semibold text-red-700" error-ident2>
@@ -47,7 +47,7 @@
 				<div class="mt-4">
 					<label class="block">
 						<span class="block mb-1 font-bold">Display Style</span>
-						<select class="w-full form-select" name="display">
+						<select class="w-full md:w-2/3 2xl:w-1/2 form-select" name="display">
 							<option selected="selected" value="1">List Display</option>
 							<option value="2">Card Display</option>
 						</select>

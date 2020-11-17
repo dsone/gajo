@@ -7,7 +7,7 @@
 				<div>
 					<label class="block">
 						<span class="block mb-1 font-bold">Type</span>
-						<select class="w-1/2 form-select" name="type" bind-types>
+						<select class="w-full md:w-2/3 2xl:w-1/2 form-select" name="type" bind-types>
 							{{-- dynamically filled --}}
 						</select>
 					</label>
@@ -18,7 +18,7 @@
 				<div class="mt-4">
 					<label class="block">
 						<span class="block mb-1 font-bold" bind-ident1></span>
-						<input class="block w-full form-input" name="ident_1" type="text" placeholder="" value="" autocomplete="off" required>
+						<input class="block w-full md:w-2/3 2xl:w-1/2 form-input" name="ident_1" type="text" placeholder="" value="" autocomplete="off" required>
 					</label>
 
 					<div class="hidden mt-1 text-sm font-semibold text-red-700" error-ident1>
@@ -31,7 +31,7 @@
 				<div class="mt-4">
 					<label class="block">
 						<span class="block mb-1 font-bold" bind-ident2></span>
-						<input class="block w-full form-input" name="ident_2" type="text" value="" placeholder="" autocomplete="off">
+						<input class="block w-full md:w-2/3 2xl:w-1/2 form-input" name="ident_2" type="text" value="" placeholder="" autocomplete="off">
 					</label>
 
 					<div class="hidden mt-1 text-sm font-semibold text-red-700" error-ident2>
@@ -45,7 +45,7 @@
 				<div class="mt-4">
 					<label class="block">
 						<span class="block mb-1 font-bold">Release</span>
-						<input class="block w-1/2 form-input" name="release" type="date" value="" required>
+						<input class="block w-full md:w-2/3 2xl:w-1/2 form-input" name="release" type="date" value="" required>
 					</label>
 
 					<span class="block mt-1 text-sm">
