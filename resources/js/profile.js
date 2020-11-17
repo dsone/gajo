@@ -246,6 +246,10 @@ if (btnCloseEntryModal) {
 let navbarBtns = [ ...$$('.js-navbar-add-entry') ];
 navbarBtns.forEach(navbarBtn => {
 	navbarBtn.addEventListener('click', e => {
+		// Closing form resets input but doesn't update descriptors unless change is triggered
+		let selectType = addEntryModal.querySelector('[bind-types]');
+		selectType.dispatchEvent(new Event('change'));
+
 		addEntryModal.show();
 	});
 });

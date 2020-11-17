@@ -4198,6 +4198,9 @@ var navbarBtns = _toConsumableArray($$('.js-navbar-add-entry'));
 
 navbarBtns.forEach(function (navbarBtn) {
   navbarBtn.addEventListener('click', function (e) {
+    // Closing form resets input but doesn't update descriptors unless change is triggered
+    var selectType = addEntryModal.querySelector('[bind-types]');
+    selectType.dispatchEvent(new Event('change'));
     addEntryModal.show();
   });
 }); // Edit Entry modal
