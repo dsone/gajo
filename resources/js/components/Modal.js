@@ -37,6 +37,9 @@ let Modal = (() => {
 		window.scrollTo(0, 0);
 		this.element.classList.remove('hidden', 'opacity-0');
 		document.body.classList.add('overflow-hidden');
+
+		// Auto select first form input
+		this.element.querySelector('input[type=text]').focus();
 	};
 	Modal.prototype.open = function() {
 		this.show();
