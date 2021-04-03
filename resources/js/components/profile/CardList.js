@@ -3,7 +3,7 @@ import Card from './Card';
 export default function CardList(config = {}) {
 	if (!(this instanceof CardList)) {
 		return new CardList(config);
-    }
+	}
 
 	this.config = {
 		ajax:				config.ajax,

@@ -3,7 +3,7 @@ import TableEntry from './TableEntry';
 export default function TableList(config = {}) {
 	if (!(this instanceof TableList)) {
 		return new TableList(config);
-    }
+	}
 
 	this.config = {
 		ajax:				config.ajax,
@@ -130,6 +130,8 @@ TableList.prototype.sort = function() {
 	});
 };
 TableList.prototype.render = function() {
+	this.sort();
+
 	let tableTarget = this.config.sectionContainer.querySelector('div[bind-table]');
 	tableTarget.innerHTML = '';
 
@@ -170,7 +172,6 @@ TableList.prototype.render = function() {
 				this.config.sortAscending = true;
 				this.config.sortby = head.getAttribute('sortby');
 			}
-			this.sort();
 			this.render();
 		});
 	});
