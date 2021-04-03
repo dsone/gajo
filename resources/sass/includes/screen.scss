@@ -1,0 +1,46 @@
+html, body {
+	min-height: 100%;
+
+	@apply bg-primary-50 antialiased font-sans text-black text-base relative p-0 m-0;
+
+	.main-navbar {
+		@apply fixed top-0 left-0 right-0 z-10 shadow-md;
+
+		a:not(.app-name):not(.btn-logout):hover,
+		button:hover {
+			@apply bg-primary-100 text-black;
+		}
+
+		a:focus,
+		button:focus {
+			@apply shadow-none;
+		}
+	}
+
+	main {
+		padding-top: 3.75rem;
+		padding-bottom: 1.75rem;
+		min-height: 100vh;
+
+		@apply bg-primary-50;
+	}
+
+	.main-footer {
+		@apply w-full px-6 py-2 shadow-inner bg-primary-100 bottom-0;
+	}
+}
+
+::selection {
+	@apply text-white bg-primary-500;
+}
+
+::-moz-selection {
+	@apply text-white bg-primary-500;
+}
+
+.form-input:focus, .form-select:focus {
+    outline: none;
+    box-shadow: none;
+
+	@apply border-primary-400;
+}

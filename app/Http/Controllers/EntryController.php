@@ -1,151 +1,170 @@
 <?php
 
-namespace Gajo\Http\Controllers;
+namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Auth;
 use Carbon\Carbon;
+use App\Models\Entry;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class EntryController extends Controller {
+class EntryController extends Controller
+{
     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct() {
-        $this->middleware('auth');
-    }
-
-    /**
-     * Show the application dashboard.
+     * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
-        $data = $this->validate($request, [
-            'ident_1' => 'required|string|min:2',
-            'ident_2' => '',  // can be empty
-            'release_at' => 'nullable|date',  // can be empty, hence nullable
-            'type_id' => 'required|integer|min:1',
-            'visibility' => 'required|integer|min:1',
-        ]);
+    public function index()
+    {
+        //
+    }
 
-        $release_at = null;
-        $release_at = strlen($data['release_at']) == 0 ? '1970-01-01T00:00:00.000Z' : $data['release_at'];
-        $release_at = Carbon::instance(new \DateTime($release_at));
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+		$validated = $this->validate($request, [
+						'type'			=> 'required|integer',
+						'ident_1'		=> 'required|string',
+						'ident_2'		=> 'nullable|string',
+						'release'		=> 'nullable|date_format:"Y-m-d"',
+						'visibility'	=> 'required|integer|min:1|max:4',
+					]);
 
-        $entry = null;
+		$type = Auth::user()->types()->find($validated['type']);
+		if (!$type) {
+			return response()->json([
+				'error' => true,
+				'message' => 'Invalid Type provided!',
+				'data' => []
+			]);
+		}
+
+        $release = strlen($validated['release']) == 0 ? null : Carbon::instance(new \DateTime($validated['release']));
+
+		$entry = null;
 		try {
-            $user = \Auth::user();
-			$entry = \Gajo\Entry::create([
-                'ident_1' => e($data['ident_1']),
-                'ident_2' => e($data['ident_2']),
-                'release_at' => $release_at,
-                'visibility' => $data['visibility'],
-                'type_id' => $data['type_id'],
-                'user_id' => $user->id
+			$entry = Entry::create([
+                'ident_1'		=> e($validated['ident_1']),
+                'ident_2'		=> strlen($validated['ident_2']) === 0 ? 'TBA' : e($validated['ident_2']),
+                'release_at'	=> $release,
+                'visibility'	=> $validated['visibility'],
+                'type_id'		=> $validated['type'],
+                'user_id'		=> Auth::user()->id
             ]);
 		} catch(\Exception $e) {
 			return response()->json([
-				'error' => true,
-				'message' => $e->getMessage()
-			]);
+					'error' => true,
+					'message' => 'You already have an entry with this information!'
+				]);
 		}
 
 		return response()->json([
-            'error' => false,
-            'entry' => $entry
-        ]);
+				'error' => false,
+				'data' => [
+					'entry' => $entry
+				]
+			]);
     }
 
-    public function update(Request $request) {
-        $data = $this->validate($request, [
-            'id' =>         'required|integer|min:1',
-            'ident_1' =>    'required|string|min:2',
-            'ident_2' =>    '',  // can be empty
-            'release_at' => 'nullable|date',  // can be empty, hence nullable
-            'type_id' =>    'required|integer|min:1',
-            'visibility' => 'required|integer|min:1',
-        ]);
-
-        $release_at = null;
-        $release_at = strlen($data['release_at']) == 0 ? '1970-01-01T00:00:00.000Z' : $data['release_at'];
-        $release_at = Carbon::instance(new \DateTime($release_at));
-
-        $entry = null;
-		try {
-            $user = \Auth::user();
-            $entry = \Gajo\Entry::where([
-                'id' => $data['id'],
-                'user_id' => $user->id
-            ])->firstOrFail();
-
-            $entry->ident_1 = e($data['ident_1']);
-            $entry->ident_2 = e($data['ident_2']);
-            $entry->release_at = $release_at;
-            $entry->type_id = $data['type_id'];
-            $entry->visibility = $data['visibility'];
-            $entry->save();
-		} catch(\Exception $e) {
-			return response()->json([
-				'error' => true,
-				'message' => $e->getMessage()
-			]);
-		}
-
-		return response()->json([
-            'error' => false,
-            'entry' => $entry
-        ]);
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Entry  $entry
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Entry $entry)
+    {
+        //
     }
 
-    public function changeVisibility(Request $request) {
-        $data = $this->validate($request, [
-            'id' => 'required|integer|min:1',
-            'visibility' => 'required|integer|min:1',
-        ]);
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Entry  $entry
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Entry $entry)
+    {
+        $validated = $this->validate($request, [
+						'id'			=> 'required|integer',
+						'type'			=> 'required|integer',
+						'ident_1'		=> 'required|string',
+						'ident_2'		=> 'nullable|string',
+						'release'		=> 'nullable|date_format:"Y-m-d"',
+						'visibility'	=> 'required|integer|min:1|max:4',
+					]);
+
+		$user = Auth::user();
+		$type = Auth::user()->types()->find($validated['type']);
+		if (!$type) {
+			return response()->json([
+				'error' => true, 'message' => 'Type does not exist!'
+			]);
+		}
+		
+		$entry = Auth::user()->entries()->find($validated['id']);
+		if (!$entry) {
+			return response()->json([
+				'error' => true, 'message' => 'Entry does not exist!'
+			]);
+		}
 
 		try {
-            $user = \Auth::user();
-			$entry = \Gajo\Entry::where([
-                'id' => $data['id'],
-                'user_id' => $user->id
-            ])->firstOrFail();
-            $entry->visibility = $data['visibility'];
-            $entry->save();
-		} catch(\Exception $e) {
+			$release = strlen($validated['release']) == 0 ? null : Carbon::instance(new \DateTime($validated['release']));
+			$entry->update([
+				'ident_1'		=> e($validated['ident_1']),
+				'ident_2'		=> strlen($validated['ident_2']) === 0 ? 'TBA' : e($validated['ident_2']),
+				'release_at'	=> $release,
+				'visibility'	=> $validated['visibility'],
+				'type_id'		=> $validated['type']
+			]);
+		} catch (\Exception $e) {
 			return response()->json([
-				'error' => true,
-				'message' => $e->getMessage()
+				'error' => true, 'message' => 'Update failed. DB is busy or unique constraints failed.'
 			]);
 		}
 
 		return response()->json([
-            'error' => false,
-            'entry' => $entry
-        ]);
+			'error' => false,
+			'message' => 'Entry updated!',
+			'data' => [
+				'entry' => $entry
+			]
+		]);
     }
 
-    public function remove(Request $request) {
-        $data = $this->validate($request, [
-            'id' => 'required|integer|min:1'
-        ]);
+    /**
+     * Remove the specified resource from storage.
+	 * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request)
+    {
+        $this->validate($request, [
+					'id'		=> 'required|integer',
+				]);
+		$entry = Auth::user()->entries()->find($request->id);
 
-		try {
-            $user = \Auth::user();
-			$entry = \Gajo\Entry::where([
-                'id' => $data['id'],
-                'user_id' => $user->id
-            ])->firstOrFail();
-            $entry->delete();
-		} catch(\Exception $e) {
+		if ($entry) {
+			$entry->delete();
+
 			return response()->json([
-				'error' => true,
-				'message' => $e->getMessage()
-			]);
+					'error' => false,
+					'message' => 'Entry removed',
+					'data' => []
+				]);
 		}
 
 		return response()->json([
-            'error' => false
-        ]);
+			'error' => true, 'message' => 'Entry not found!'
+		]);
     }
 }

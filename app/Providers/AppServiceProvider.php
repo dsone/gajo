@@ -1,20 +1,12 @@
 <?php
 
-namespace Gajo\Providers;
+namespace App\Providers;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot() {
-
-    }
-
     /**
      * Register any application services.
      *
@@ -23,5 +15,17 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
+    }
+
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        Blade::if('registerable', function() {
+            return registerable();
+        });
     }
 }

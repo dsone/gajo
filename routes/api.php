@@ -1,6 +1,11 @@
 <?php
 
+use App\Http\Controllers\EntryController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\OptionsController;
+use App\Http\Controllers\RSSController;
+use App\Http\Controllers\TypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,20 +18,17 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::group(['prefix' => '/v1'], function () {
-    Route::group(['middleware' => ['auth']], function () {
-        Route::post('/entry/change-visibility', 'EntryController@changeVisibility');
-        Route::post('/entry/remove', 'EntryController@remove');
-        
-        Route::post('/entry', 'EntryController@store');
-        Route::put('/entry', 'EntryController@update');
+Route::group([ 'prefix' => '/v1', 'middleware' => [ 'auth' ] ], function () {
+	Route::put('/{user}/options',	[ OptionsController::class, 'update' ])->name('user-options-update');
 
-        Route::post('/options/save-type', 'TypeController@store');
-        Route::delete('/options/type', 'TypeController@destroy');
-        Route::put('/options/type', 'TypeController@update');
-        Route::put('/options/type-order', 'TypeController@refreshOrder'); 
-        
-        Route::put('/options', 'OptionsController@update');
-        Route::get('/options/refresh/rss', 'OptionsController@refreshRss');
-    });
+	Route::get('/options/rss',		[ RSSController::class, 'changeToken' ])->name('api-refresh-rss');
+
+	Route::post('/type/order',		[ TypeController::class, 'order' ])->name('api-type-order');
+	Route::post('/type',			[ TypeController::class, 'store' ])->name('api-type-store');
+	Route::put('/type',				[ TypeController::class, 'update' ])->name('api-type-update');
+	Route::delete('/type',			[ TypeController::class, 'destroy' ])->name('api-type-destroy');
+
+	Route::post('/entry',			[ EntryController::class, 'store' ])->name('api-entry-store');
+	Route::put('/entry',			[ EntryController::class, 'update' ])->name('api-entry-update');
+	Route::delete('/entry',			[ EntryController::class, 'destroy' ])->name('api-entry-destroy');
 });

@@ -1,163 +1,148 @@
 <?php
 
-namespace Gajo\Http\Controllers;
+namespace App\Http\Controllers;
 
-use Roumen\Feed\Feed;
-use Illuminate\Http\Request;
+use Auth;
+use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Option;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\App;
 
 class ProfileController extends Controller {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct() {
-        //$this->middleware('auth');
-    }
-
     /**
      * Show the user profile
      *
      * @return \Illuminate\Http\Response
      */
     public function index($user) {
-        $u = \Gajo\User::where('name', $user)->first();
+		$authUser = Auth::user();
+		// Auth'd user tries to access own profile, but has no verified mail
+		if ($authUser && $authUser->name === $user && !$authUser->hasVerifiedEmail()) {
+			return redirect()->route('verification.notice', 303);
+		}
 
-        // User not found, or the profile is set to private and it's not the logged in user accessing that same profile
-        if (!$u || $u->options->private && (!\Auth::user() || \Auth::user()->name != $user)) {
-            return view('user-profile.forbidden');
-        }
+		// User or 404
+		$userProfile = $authUser && $authUser->name === $user ? $authUser : User::where('name', $user)->firstOrFail();
+		$ownProfile = $authUser && $authUser->name === $user;
+		
+		// Other user's profile, but that user has no verified mail or is in privatemode
+		if (!$userProfile->hasVerifiedEmail() || (!$ownProfile && $userProfile->options->privateProfile)) {
+			abort(404);
+		}
 
-        $entries = [];
-        if (!\Auth::user() || \Auth::user()->name != $user) {
-            $entries = $u->entries()->with(['Type'])
-                         ->where('visibility', '>=', config('app.settings.list.visibility.public'))
-                         ->orderBy('ident_2');
+		$types = null;
+		if (!$ownProfile) {
+			$types = $userProfile->types()->whereHas('entries')->with('entries', function($q) use($userProfile) {
+						$q->where('visibility', '>=', config('gajo.settings.list.visibility.public'));
 
-            // Have internally 1970 as dates, model converts them to null
-            if ($u->options->hideTBA && !$u->options->hideReleased) {
-                $entries = $entries
-                        ->where('release_at', '>=', \Carbon\Carbon::create(1971, 1, 1, 0, 0, 0))
-                        ->where('ident_2', '!=', 'TBA');
-            // Hiding released only but display TBAs
-            } else if ($u->options->hideReleased && !$u->options->hideTBA) {
-                $entries = $entries
-                        ->where('release_at', '>', \Carbon\Carbon::now()->startOfDay())
-                        ->OrWhere('release_at', '=', \Carbon\Carbon::create(1970, 1, 1, 0, 0, 0));
-            } else if ($u->options->hideTBA && $u->options->hideReleased) {  // hide both
-                $entries = $entries
-                        ->where('release_at', '>', \Carbon\Carbon::now()->startOfDay())
-                        ->where('ident_2', '!=', 'TBA');
-            }
-            $entries = $entries->get();
-        } else {
-            $entries = $u->entries()->with(['Type'])->orderBy('ident_1')->get();
-        }
+						if ($userProfile->options->hideReleased) {
+							$q->where('release_at', '>', Carbon::now()->startOfDay()->format('c'));
+						}
+						if ($userProfile->options->hideTBA) {
+							$q->where('ident_2', '!=', 'TBA')->where('entries.release_at', '!=', null);
+						}
+						$q->orderBy('ident_1');
+					});
+			$types = $types->get();
+		} else {
+			$types = $authUser->types()->with([ 'entries' ])->get();
+		}
 
-        $rel = [];
-        foreach ($entries as $r) {
-            $key = $r->Type->sort . '_' . $r->Type->name;
-            if (!isset($rel[$key])) {
-                $rel[$key] = [
-                    'type' => $r->Type,
-                    'data' => []
-                ];
-            }
-            $rel[$key]['data'][] = $r;
-        }
-        asort($rel);
-
-        return view('user-profile.index', [
-            'userName' => $user,
-            'types' => $u->types,
-            'entries' => $rel,
-            'options' => [
-                'colorblind' => $u->options->colorblind
-            ]
-        ]);
+        return view('user.profile', [
+				'user'			=> $userProfile,
+				'types'			=> $types,
+				'ownProfile'	=> $ownProfile,
+			]);
     }
 
-    public function rss($user, $id) {
-        $u = \Gajo\User::where('name', $user)->with(['options'])->first();
-        $feed = new Feed();
+	/**
+     * Show the user's rss feed
+     *
+	 * @param	string	$token		The secret RSS token to use.
+     * @return \Illuminate\Http\Response
+     */
+	public function rss($token) {
+        $options = Option::where('rss', $token)->with([ 'user' ])->first();
+		if (!$options || $options->privateProfile || !$options->user->hasVerifiedEmail()) {
+			abort(404);
+		}
 
-        if ($u === null || $u->options->private || $id !== $u->options->rss) {
-            $feed->title = 'Gajo - Release list';
-            $feed->description = 'Gajo is a reminder for releases in the (far) future.';
-            $feed->link = route('index');
-            $feed->setDateFormat('datetime'); // 'datetime', 'timestamp' or 'carbon'
-            $feed->pubdate = \Carbon\Carbon::now()->toRssString();
-            $feed->lang = 'en';
-            $feed->setShortening(true); // true or false
-            $feed->setTextLimit(50); // maximum length of description text
-            $feed->add(
-                "404 - NOT FOUND", "Gajo",
-                route('index'), $feed->pubdate,
-                '', 'Whatever you were looking for is not here.'
-            );
-            return $feed->render('atom', 0);
-        }
+        // create new feed
+		$feed = App::make("feed");
 
-        $entries = $u->entries()
-                     ->with(['Type'])
-                     ->where('visibility', '>=', config('app.settings.list.visibility.private'))
-                     ->orderBy('release_at')
-                     ->get()->toArray();
-        usort($entries, function($a, $b) {
-            if ($a['release_at'] === null) { return 1; }
-            else if ($b['release_at'] === null) { return -1; }
+		$feed->setCache(30, 'rss_feed_' . $options->user->name);
+		if (!$feed->isCached()) {
+			$types = $options->user->types()->whereHas('entries')->with('entries', function($q) use($options) {
+						$q->where('visibility', '>=', config('gajo.settings.list.visibility.public'));
 
-            return $a['release_at'] <=> $b['release_at'];
-        });
+						if ($options->hideReleased) {
+							$q->where('release_at', '>', Carbon::now()->startOfDay()->format('c'));
+						}
+						if ($options->hideTBA) {
+							$q->where('ident_2', '!=', 'TBA')->where('entries.release_at', '!=', null);
+						}
+						$q->orderBy('ident_1');
+					})->get();
 
-        // cache the feed for 30 minutes (second parameter is optional)
-        $feed->setCache(5, 'feedKey'.$u->id);
+			// set your feed's title, description, link, pubdate and language
+			$feed->title = 'Gajo RSS | ' . $options->user->name;
+			$feed->description = 'This is ' . $options->user->name . '\'s reminder for upcoming releases.';
+			$feed->logo = route('index') . '/favicon.ico';
+			$feed->link = route('user-rss', [ 'token' => $token ]);
+			$feed->setDateFormat('datetime');
+			$feed->lang = 'en';
+			$feed->setShortening(true);
 
-        // check if there is cached feed and build new only if is not
-        if (!$feed->isCached()) {
-            $feed->title = 'Gajo - ' . $u->name . ' release list';
-            $feed->description = 'Release list data for ' . $u->name;
-            $feed->link = route('user-rss', [ 'user' => $u->name, 'id' => $u->options->rss ]);
-            $feed->setDateFormat('datetime'); // 'datetime', 'timestamp' or 'carbon'
-            $feed->pubdate = \Carbon\Carbon::now()->toRssString();
-            $feed->lang = 'en';
-            $feed->setShortening(true); // true or false
-            $feed->setTextLimit(50); // maximum length of description text
+			$userProfileUrl = route('user-profile', [ 'user' => $options->user->name ]);
+			$currentDate = Carbon::now()->setTimezone('utc')->startOfDay();
+            $immediateRange = Carbon::now()->setTimezone('utc')->addDays(2);
+            $soonRange = Carbon::now()->setTimezone('utc')->addDays(7);
+			foreach ($types as $type) {
+				$name = "$type->name: ";
+				foreach ($type->entries as $entry) {
+					if ($entry->release_at === null || $entry->visibility < config('gajo.settings.list.visibility.private')) {
+						continue;
+					}
 
-            $currentDate = \Carbon\Carbon::now();
-            $immediateRange = \Carbon\Carbon::now()->startOfDay()->addDays(2);
-            $soonRange = \Carbon\Carbon::now()->startOfDay()->addDays(7);
-            $userProfile = route('user-profile', [ 'user' => $u->name ]);
-            foreach ($entries as $entry) {
-                $parsedReleaseAt = strlen($entry['release_at']) > 0 ? \Carbon\Carbon::parse($entry['release_at']) : null;
-                if ($parsedReleaseAt === null) { continue; }
+					// Prepare timestamp comparisons
+					$releaseAt = Carbon::parse($entry->release_at);
+					$isReleased = $releaseAt->lt($currentDate);
+					$isImmediate = $releaseAt->lt($immediateRange);
+					$isSoon = $releaseAt->lt($soonRange);
 
-                $isReleased = $parsedReleaseAt->lt($currentDate);
-                $isImmediate = $parsedReleaseAt->lt($immediateRange);
-                $isSoon = $parsedReleaseAt->lt($soonRange);
+					if ($releaseAt->gt($isSoon) || $options->user->hideReleased && $isReleased || $options->user->hideTBA && $entry->ident_2 == 'TBA') {
+						continue;
+					}
 
-                $content = '';
-                if ($isReleased) {
-                    $content = $entry['ident_2'] . ' was already released!';
-                } else if ($isImmediate) {
-                    $content = $entry['ident_2'] . ' is going to be released within 48 hours!';
-                } else if ($isSoon) {
-                    $content = $entry['ident_2'] . ' will be released soon!';
-                } else {
-                    $content = "{$entry['ident_2']} ({$entry['ident_1']}) is scheduled for {$parsedReleaseAt->format('l jS \\of F')}.";
-                }
+					$content = '';
+					$title = $name . "$entry->ident_1 - $entry->ident_2";
+					if ($isReleased) {
+						$content = "$entry->ident_1 - $entry->ident_2 has been released already!<br>It's release was {$releaseAt->format('l jS \\of F')}.";
+						$title .= ' is available!';
+					} else if ($isImmediate) {
+						$content = "$entry->ident_1 - $entry->ident_2 is going to be released within 48 hours!";
+						$title .= ' will be released within 48 hours!';
+					} else if ($isSoon) {
+						$content = "$entry->ident_1 - $entry->ident_2 will be released soon, in less than 7 days!";
+						$title .= ' release is coming soon.';
+					} else {
+						$content = "$entry->ident_1 - $entry->ident_2 is scheduled to release on {$releaseAt->format('l jS \\of F')}.";
+					}
 
-                // set item's title, author, url, pubdate, description, content, enclosure (optional)*
-                $feed->add(
-                    "{$entry['type']['name']}: {$entry['ident_1']} - {$entry['ident_2']}",
-                    $u->name,
-                    $userProfile,
-                    $entry['updated_at'],
-                    $entry['ident_1'],
-                    $content
-                );
-            }
-        }
-        return $feed->render('atom', 0);
+					$feed->addItem([
+						'title'		=> $title,
+						'author'	=> $options->user->name,
+						'url'		=> $userProfileUrl,
+						'link'		=> $userProfileUrl . "#$entry->id-" . Str::slug($entry->updated_at),
+						'pubdate'	=> $entry->updated_at,
+						'description' => $entry->ident_1,
+						'content'	=> $content
+					]);
+				}
+			}
+		}
+
+		return $feed->render('atom');
     }
 }

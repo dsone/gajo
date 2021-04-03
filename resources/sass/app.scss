@@ -1,0 +1,13 @@
+@tailwind base;
+
+@tailwind components;
+
+@import 'includes/animation';
+@import 'includes/buttons';
+@import 'includes/notifications';
+@import 'includes/switch';
+@import 'includes/profile';
+@import 'includes/screen';
+@import 'includes/dragdrop';
+
+@tailwind utilities;

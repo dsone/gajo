@@ -1,52 +1,78 @@
 <?php
 
-namespace Gajo\Http\Controllers;
+namespace App\Http\Controllers;
 
-use Gajo\Option;
+use Auth;
 use Illuminate\Http\Request;
 
-class OptionsController extends Controller {
+class OptionsController extends Controller
+{
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($user) {
-        if (!\Auth::user() || \Auth::user()->name != $user) {
-            return redirect()->route('index');
-        }
-        $user = \Auth::user();
-        return view('user-options.index', [
-            'user' => $user,
-            'options' => $user->options,
-            'types' => $user->types()->orderBy('sort')->get()
-        ]);
+    public function index()
+    {
+		$user = Auth::user();
+		// Auth'd non-verified user
+		if (!$user->hasVerifiedEmail()) {
+			return redirect()->route('verification.notice', 303);
+		}
+
+        return view('user.options', [
+			'user' => $user,
+			'types' => $user->types()->withCount('entries')->get(),
+			'options' => $user->options,
+		]);
     }
 
-    public function update(Request $request) {
-        $data = $this->validate($request, [
-            'colorblind_mode' => 'required|boolean',
-            'private_profile' => 'required|boolean',
-            'list_hide_released' => 'required|boolean',
-            'list_hide_tba' => 'required|boolean',
-        ]);
-        
-        $user = \Auth::user();
-        $user->options->private = $data['private_profile'];
-        $user->options->colorblind = $data['colorblind_mode'];
-        $user->options->hideReleased = $data['list_hide_released'];
-        $user->options->hideTBA = $data['list_hide_tba'];
-        $user->options->save();
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
     }
 
-    public function refreshRss() {
-        $user = \Auth::user();
-        $user->options->rss = str_random(42);
-        $user->options->save();
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+		try {
+			$data = $this->validate($request, [
+				'hideTBA'			=> 'required|boolean',
+				'hideReleased'		=> 'required|boolean',
+				'privateProfile'	=> 'required|boolean',
+			]);
 
-        return response()->json([
-            'error' => false,
-            'data' => $user->options->rss
-        ]);
+			$user = Auth::user();
+			$userOptions = $user->options;
+			$userOptions->update([
+				'hideTBA'			=> $data['hideTBA'],
+				'hideReleased'		=> $data['hideReleased'],
+				'privateProfile'	=> $data['privateProfile'],
+			]);
+
+			return response()->json([
+					'error' => false,
+					'data' => [
+						'options' => $userOptions
+					]
+				]);
+		} catch (\Exception $e) {
+			return response()->json([
+					'error' => true,
+					'message' => $e->getMessage()
+				]);
+		}
     }
 }

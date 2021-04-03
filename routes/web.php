@@ -1,5 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\OptionsController;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,25 +16,26 @@
 |
 */
 
-Route::get('/', function () {
-    if (\Auth::user()) {
-        return redirect()->route('user-profile', [ 'user' => \Auth::user()->name ]);
-    } else {
-        return view('start.index');
-    }
+Route::get('/', function() {
+	if (\Auth::user()) {
+		return redirect()->route('user-profile', [ 'user' => \Auth::user()->name ], 301);
+	}
+
+	return view('welcome');
 })->name('index');
-Route::get('/profile/{user}', 'ProfileController@index')->name('user-profile');
-Route::get('/profile/{user}/options', 'OptionsController@index')->name('user-options');
-Route::get('/rss/{user}/{id}', 'ProfileController@rss')->name('user-rss');
-Route::get('/privacy', function() { return view('page.privacy'); })->name('privacy');
 
-Route::get('/home', function () { return redirect('/'); });
+Route::get('/rss/{token}', [ ProfileController::class, 'rss' ])->name('user-rss');
 
-Auth::routes();
+Route::group([ 'prefix' => '/profile' ], function() {
+	Route::get('/{user}', [ ProfileController::class, 'index' ])->name('user-profile');
 
-Route::get('/profile', function() {
-    if (\Auth::user()) { return redirect()->route('user-profile', [ 'user' => \Auth::user()->name ]); }
-    return redirect('/');
+	Route::get('/{user}/options', [ OptionsController::class, 'index' ])->name('user-options')->middleware('auth');
 });
 
-Route::any('{catchall}', function($page) { abort(404); })->where('catchall', '(.*)');
+Route::group([ 'prefix' => '/page' ], function() {
+	Route::get('/privacy', function() { return view('page.privacy'); })->name('page-privacy');
+});
+
+Route::any('{catchall}', function($page) {
+	abort(404);
+})->where('catchall', '(.*)');

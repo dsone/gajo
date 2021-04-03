@@ -1,6 +1,6 @@
 # Gajo
 ## About
-Gajo helps you to remember any kind of releases in the future.  
+Gajo helps you remember any kind of releases in the future.  
 Your favourite band announced their world tour at the end of the year?  
 A new record in 6 months? That new fantasy movie trilogy's third part is coming out this christmas?  
 Add all of those neatly categorized to your Gajo lists.  
@@ -9,26 +9,27 @@ Check your list frequently, add new releases, remove them, share your list with 
 Main purpose for Gajo is to be used with a single user but it is possible to enable multi user registrations up to an optional limit of users.
 
 ## Screenshots
-Everybody likes to see what they get.  Here's an example:
+Everybody likes to see what they get.  
+Here's an example:
 
 ### Profile view
-![Ideally here should be displayed /resources/assets/screenshots/0_gajo_list.png](./resources/assets/screenshots/0_gajo_list.png)
+![Ideally here should be displayed /resources/screenshots/0_gajo_list.png](./resources/screenshots/0_gajo_list.png)
 
 ### List and/or card display for entries
 
-![Ideally here should be displayed /resources/assets/screenshots/4_gajo_alternative_display.png](./resources/assets/screenshots/4_gajo_alternative_display.png)
+![Ideally here should be displayed /resources/screenshots/3_gajo_alternative_display.png](./resources/screenshots/3_gajo_alternative_display.png)
 
 ### More screenshots
-Take a look inside _[resources/assets/screenshots](./resources/assets/screenshots)_ for more examples!
+Take a look inside _[resources/screenshots](./resources/screenshots)_ for more examples!
 
 ## Philosophy
 This project uses a simple approach to give you the ability to create lists and display them in a simple yet visually appealing way. There are no _bloated_ frameworks, just the necessities to get up and running quickly.
 
-Built upon Laravel, Axios, Bulma, SVGs and plain JavaScript, saving data into an SQLite database.
+Built upon Laravel, Axios, TailwindCSS, SVGs and plain JavaScript, saving data into an SQLite database.
 
 ## Privacy
 By default, your list is only visible when you login to Gajo.  
-Your user profile is set to hidden by default and not visible from the outside. The same goes for things you put on to your list.  
+Your user profile is set to hidden by default and not visible from the outside. The same goes for things you put onto your list.  
 
 But you can set your profile to public and only certain list entries as hidden.  
 Each list entry has three states:  
@@ -44,8 +45,10 @@ To be able to get notifications through any other service you can use a personal
 Upcoming entries with a release within the next two weeks will start to appear in that RSS Feed.
 
 ## Requirements
-PHP >=7.1, git, composer, npm and support for SQLite.
+PHP >=7.3, git, composer and support for SQLite.
 
+### Development requirements
+npm
 
 ## Installation
 1. Clone the repository:  
@@ -59,19 +62,27 @@ PHP >=7.1, git, composer, npm and support for SQLite.
 `touch database/database.sqlite`  
 5. Create the tables inside the database:  
 `php artisan migrate`  
+For live deployment that's it.
+
+Additionally, for development purposes:
 6. Install JS/CSS dependencies:  
 `npm install`  
-7. Production build css/js:  
-`gulp`  
+7. Build css/js:  
+	* Product (minified CSS/JS, purged CSS): `npm run production`  
+	* Development (non-minified): `npm run dev` or `npm run watch`
 
 Open your browser and visit APP_URL as entered inside .env.  
 Register your account that you use to login.  
 Done.
 
-**Beware**: As long as _APP_ENV_ inside .env equals exactly to "_local_", you can login to user with id = 1 with any password. This is intended for local development.
-Put your APP_ENV into "_production_" or any other label and this behaviour is disabled.
+**Beware**: Set your _APP_ENV_ inside .env to "_production_" when you use this on a live server.  
+That prevents crucial information from accidentally being leaked.
 
 ## Settings
 Most settings are inside .env. But to enable a multi user environment, you need to edit _config/app.php_ and the key _settings.multiUser_, set it to `true`.  
 
 If you run Gajo in multi user mode, perhaps change the database from SQLite to some DB system that supports parallel write access. 
+
+## Attribution
+
+Favicon made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon" rel="noopener noreferrer"> www.flaticon.com</a>
