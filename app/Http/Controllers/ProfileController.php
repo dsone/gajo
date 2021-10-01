@@ -6,16 +6,15 @@ use Auth;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Option;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\App;
 
 class ProfileController extends Controller {
-    /**
-     * Show the user profile
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index($user) {
+	/**
+	 * Show the user profile
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function index($user) {
 		$authUser = Auth::user();
 		// Auth'd user tries to access own profile, but has no verified mail
 		if ($authUser && $authUser->name === $user && !$authUser->hasVerifiedEmail()) {
@@ -49,30 +48,30 @@ class ProfileController extends Controller {
 			$types = $authUser->types()->with([ 'entries' ])->get();
 		}
 
-        return view('user.profile', [
+		return view('user.profile', [
 				'user'			=> $userProfile,
 				'types'			=> $types,
 				'ownProfile'	=> $ownProfile,
 			]);
-    }
+	}
 
 	/**
-     * Show the user's rss feed
-     *
+	 * Show the user's rss feed
+	 * 
 	 * @param	string	$token		The secret RSS token to use.
-     * @return \Illuminate\Http\Response
-     */
+	 * @return \Illuminate\Http\Response
+	 */
 	public function rss($token) {
-        $options = Option::where('rss', $token)->with([ 'user' ])->first();
+		$options = Option::where('rss', $token)->with([ 'user' ])->first();
 		if (!$options || $options->privateProfile || !$options->user->hasVerifiedEmail()) {
 			abort(404);
 		}
-
-        // create new feed
+		
+		// create new feed
 		$feed = App::make("feed");
 
-		$feed->setCache(30, 'rss_feed_' . $options->user->name);
-		if (!$feed->isCached()) {
+		//$feed->setCache(30, 'rss_feed_' . $options->user->name);
+		if (true/*!$feed->isCached()*/) {
 			$types = $options->user->types()->whereHas('entries')->with('entries', function($q) use($options) {
 						$q->where('visibility', '>=', config('gajo.settings.list.visibility.public'));
 
@@ -96,8 +95,9 @@ class ProfileController extends Controller {
 
 			$userProfileUrl = route('user-profile', [ 'user' => $options->user->name ]);
 			$currentDate = Carbon::now()->setTimezone('utc')->startOfDay();
-            $immediateRange = Carbon::now()->setTimezone('utc')->addDays(2);
-            $soonRange = Carbon::now()->setTimezone('utc')->addDays(7);
+			$immediateRange = Carbon::now()->setTimezone('utc')->addDays(2);
+			$soonRange = Carbon::now()->setTimezone('utc')->addDays(7);
+			$feedItems = [];
 			foreach ($types as $type) {
 				$name = "$type->name: ";
 				foreach ($type->entries as $entry) {
@@ -107,7 +107,7 @@ class ProfileController extends Controller {
 
 					// Prepare timestamp comparisons
 					$releaseAt = Carbon::parse($entry->release_at);
-					$isReleased = $releaseAt->lt($currentDate);
+					$isReleased = $releaseAt->lte($currentDate);
 					$isImmediate = $releaseAt->lt($immediateRange);
 					$isSoon = $releaseAt->lt($soonRange);
 
@@ -118,7 +118,7 @@ class ProfileController extends Controller {
 					$content = '';
 					$title = $name . "$entry->ident_1 - $entry->ident_2";
 					if ($isReleased) {
-						$content = "$entry->ident_1 - $entry->ident_2 has been released already!<br>It's release was {$releaseAt->format('l jS \\of F')}.";
+						$content = "$entry->ident_1 - $entry->ident_2 has been released already!<br>Its release was {$releaseAt->format('l jS \\of F')}.";
 						$title .= ' is available!';
 					} else if ($isImmediate) {
 						$content = "$entry->ident_1 - $entry->ident_2 is going to be released within 48 hours!";
@@ -130,19 +130,26 @@ class ProfileController extends Controller {
 						$content = "$entry->ident_1 - $entry->ident_2 is scheduled to release on {$releaseAt->format('l jS \\of F')}.";
 					}
 
-					$feed->addItem([
-						'title'		=> $title,
-						'author'	=> $options->user->name,
-						'url'		=> $userProfileUrl,
-						'link'		=> $userProfileUrl . "#$entry->id-" . Str::slug($entry->updated_at),
-						'pubdate'	=> $entry->updated_at,
-						'description' => $entry->ident_1,
-						'content'	=> $content
-					]);
+					$feedItems[] = [
+							'title'		=> $title,
+							'author'	=> $options->user->name,
+							'url'		=> $userProfileUrl,
+							'link'		=> $userProfileUrl . "#$entry->id" . md5( $isReleased ? $releaseAt->addMinutes(5) : ($isImmediate ? $releaseAt->addMinutes(10) : ($isSoon ? $entry->release_at : $entry->updated_at )) ),
+							'pubdate'	=> $entry->release_at,
+							'description' => $entry->ident_1,
+							'content'	=> $content
+						];
+					
 				}
+			}
+			usort($feedItems, function($a, $b) { 
+				return strcmp($a['pubdate'], $b['pubdate']);
+			});
+			foreach ($feedItems as $feedItem) {
+				$feed->addItem($feedItem);
 			}
 		}
 
 		return $feed->render('atom');
-    }
+	}
 }
