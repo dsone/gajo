@@ -69,9 +69,8 @@ class ProfileController extends Controller {
 		
 		// create new feed
 		$feed = App::make("feed");
-
-		//$feed->setCache(30, 'rss_feed_' . $options->user->name);
-		if (true/*!$feed->isCached()*/) {
+		$feed->setCache(30, 'rss_feed_' . $options->user->name);
+		if (!$feed->isCached()) {
 			$types = $options->user->types()->whereHas('entries')->with('entries', function($q) use($options) {
 						$q->where('visibility', '>=', config('gajo.settings.list.visibility.public'));
 
