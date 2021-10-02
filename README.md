@@ -1,4 +1,5 @@
 # Gajo
+
 ## About
 Gajo helps you remember any kind of releases in the future.  
 Your favourite band announced their world tour at the end of the year?  
@@ -17,7 +18,7 @@ Here's an example:
 
 ### List and/or card display for entries
 
-![Ideally here should be displayed /resources/screenshots/3_gajo_alternative_display.png](./resources/screenshots/3_gajo_alternative_display.png)
+![Ideally here should be displayed /resources/screenshots/3_gajo_alternative_display.png](./resources/screenshots/4_gajo_alternative_display.png)
 
 ### More screenshots
 Take a look inside _[resources/screenshots](./resources/screenshots)_ for more examples!
