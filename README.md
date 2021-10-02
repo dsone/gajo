@@ -64,7 +64,6 @@ npm
 5. Create the tables inside the database:  
 `php artisan migrate`  
 For live deployment that's it.
-
 Additionally, for development purposes:
 6. Install JS/CSS dependencies:  
 `npm install`  
