@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Str;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -42,31 +42,37 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-	protected static function boot() {
+    protected static function boot()
+    {
         parent::boot();
 
-        static::created(function($user) {
+        static::created(function ($user) {
             $options = new Option();
             while (true) {
                 try {
                     $options->rss = Str::random(42);
                     $options->user_id = $user->id;
                     $options->save();
+
                     return;
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
             }
         });
     }
 
-	public function options() {
+    public function options()
+    {
         return $this->hasOne('App\Models\Option');
     }
 
-    public function types() {
+    public function types()
+    {
         return $this->hasMany('App\Models\Type')->orderBy('sort');
     }
 
-    public function entries() {
+    public function entries()
+    {
         return $this->hasMany('App\Models\Entry')->orderBy('ident_1');
     }
 }
