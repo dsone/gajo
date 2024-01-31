@@ -14,17 +14,17 @@ class OptionsController extends Controller
      */
     public function index()
     {
-		$user = Auth::user();
-		// Auth'd non-verified user
-		if (!$user->hasVerifiedEmail()) {
-			return redirect()->route('verification.notice', 303);
-		}
+        $user = Auth::user();
+        // Auth'd non-verified user
+        if (! $user->hasVerifiedEmail()) {
+            return redirect()->route('verification.notice', 303);
+        }
 
         return view('user.options', [
-			'user' => $user,
-			'types' => $user->types()->withCount('entries')->get(),
-			'options' => $user->options,
-		]);
+            'user' => $user,
+            'types' => $user->types()->withCount('entries')->get(),
+            'options' => $user->options,
+        ]);
     }
 
     /**
@@ -41,38 +41,37 @@ class OptionsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-		try {
-			$data = $this->validate($request, [
-				'hideTBA'			=> 'required|boolean',
-				'hideReleased'		=> 'required|boolean',
-				'privateProfile'	=> 'required|boolean',
-			]);
+        try {
+            $data = $this->validate($request, [
+                'hideTBA' => 'required|boolean',
+                'hideReleased' => 'required|boolean',
+                'privateProfile' => 'required|boolean',
+            ]);
 
-			$user = Auth::user();
-			$userOptions = $user->options;
-			$userOptions->update([
-				'hideTBA'			=> $data['hideTBA'],
-				'hideReleased'		=> $data['hideReleased'],
-				'privateProfile'	=> $data['privateProfile'],
-			]);
+            $user = Auth::user();
+            $userOptions = $user->options;
+            $userOptions->update([
+                'hideTBA' => $data['hideTBA'],
+                'hideReleased' => $data['hideReleased'],
+                'privateProfile' => $data['privateProfile'],
+            ]);
 
-			return response()->json([
-					'error' => false,
-					'data' => [
-						'options' => $userOptions
-					]
-				]);
-		} catch (\Exception $e) {
-			return response()->json([
-					'error' => true,
-					'message' => $e->getMessage()
-				]);
-		}
+            return response()->json([
+                'error' => false,
+                'data' => [
+                    'options' => $userOptions,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 }

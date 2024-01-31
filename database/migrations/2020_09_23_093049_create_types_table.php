@@ -23,7 +23,7 @@ class CreateTypesTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->timestamps();
 
-            $table->unique([ 'name', 'user_id' ]);
+            $table->unique(['name', 'user_id']);
         });
     }
 
